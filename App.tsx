@@ -503,7 +503,7 @@ const TechStepCard: React.FC<{
       {isEditable && (
         <div className="absolute top-4 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all z-20">
           <button onClick={(e) => { e.stopPropagation(); const newTags = [...step.tags, '新标签']; onUpdateTags(index, newTags); }} title="添加标签" className="p-1.5 bg-white/80 hover:bg-[#0062AD] hover:text-white text-[#0062AD] rounded-[4px] shadow-sm backdrop-blur-sm border border-[#BDD1FF]/50"><Plus className="w-3 h-3" strokeWidth={3} /></button>
-          <button onClick={(e) => { e.stopPropagation(); onRemove(index); }} title="删除流程阶段" className="p-1.5 bg-white/80 hover:bg-red-500 hover:text-white text-gray-400 rounded-[4px] shadow-sm backdrop-blur-sm border border-gray-100"><Trash2 className="w-3 h-3" strokeWidth={2.5} /></button>
+          <button onClick={(e) => { e.stopPropagation(); onRemove(index); }} title="删除流程阶段" className="p-1.5 bg-white/80 hover:bg-red-50 hover:text-white text-gray-400 rounded-[4px] shadow-sm backdrop-blur-sm border border-gray-100"><Trash2 className="w-3 h-3" strokeWidth={2.5} /></button>
         </div>
       )}
       {isEditable ? (
@@ -545,6 +545,8 @@ const TechnicalServiceProcess = ({ steps, onUpdateStep, onRemoveStep, onReorderS
 
 const AgencyProfile = () => {
   const introClass = "text-[14px] text-gray-500 siding-relaxed siding-snug text-justify px-1";
+  const tagStyle = "px-2 py-0.5 bg-[#304166] text-white rounded-md text-[10px] font-black font-num tracking-wider";
+  
   return (
     <div className="space-y-10">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
@@ -555,9 +557,34 @@ const AgencyProfile = () => {
         <div className="lg:col-span-2 grid grid-cols-2 gap-x-8 gap-y-10 pl-8 border-l border-gray-100 flex wrap items-center py-1">{[{ label: '国家和地区服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5 text-[#0062AD]" /> }, { label: '分支机构全球布局', value: '400', unit: '+', icon: <Building className="w-5 h-5 text-[#0062AD]" /> }, { label: '专业化实验室', value: '500', unit: '+', icon: <FlaskConical className="w-5 h-5 text-[#0062AD]" /> }, { label: '全球专业技术员工', value: '20000', unit: '+', icon: <Users className="text-[#0062AD] w-5 h-5" /> }, { label: '国际权威认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5 text-[#0062AD]" /> }, { label: '国家级认可资质', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5 text-[#0062AD]" /> }].map((stat, i) => (<div key={i} className="flex flex-col gap-1.5"><div className="mb-1">{stat.icon}</div><div className="flex items-baseline gap-0.5"><span className="text-[26px] font-bold text-[#304166] font-num leading-none">{stat.value}</span><span className="text-[16px] font-bold text-[#0062AD] font-en font-num">{stat.unit}</span></div><span className="text-[12px] font-bold text-gray-400 whitespace-nowrap">{stat.label}</span></div>))}</div></div>
       <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
       <div className="grid grid-cols-2 gap-x-12 items-start">
-        <div className="flex flex-col gap-y-4"><div className="mb-2"><div className="flex items-center gap-3 border-l-4 border-[#0062AD] pl-4 mb-3"><h4 className="text-[21px] font-bold text-[#304166]">中国质量认证中心 <span className="font-en">(CQC)</span></h4></div><p className={introClass}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团。同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p></div><div className="bg-[#f8fafc] rounded-[12px] p-5 flex items-start gap-4 border border-gray-100"><div className="w-10 h-10 rounded-[8px] bg-white flex items-center justify-center text-[#0062AD] shadow-sm shrink-0"><Award className="w-5 h-5" /></div><div className="space-y-1.5"><div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className="px-2 py-0.5 bg-[#304166] text-white rounded-md text-[10px] font-black font-num tracking-wider">No. 001</span></div><p className="text-[13px] text-gray-500 siding-relaxed">国家认监委批准设立的专业认证机构，机构批准号：001。</p></div></div><div className="bg-[#f8fafc] rounded-[12px] p-5 flex items-start gap-4 border border-gray-100"><div className="w-10 h-10 rounded-[8px] bg-white flex items-center justify-center text-[#0062AD] shadow-sm shrink-0"><Globe className="w-5 h-5" /></div><div className="space-y-1 flex-1"><div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">国际合作</span>{['IQNet', 'IECEE'].map(tag => <span key={tag} className="px-2 py-0.5 border border-gray-200 text-gray-400 rounded-md text-[10px] font-bold font-en">{tag}</span>)}</div>
-        {/* 优化核心文案样式 */}
-        <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现<span className="font-bold text-[#0062AD] mx-0.5">一张证书，全球通行</span>。</p></div></div><div className="bg-[#f8fafc] rounded-[12px] p-5 flex items-start gap-4 border border-gray-100"><div className="w-10 h-10 rounded-[8px] bg-white flex items-center justify-center text-[#0062AD] shadow-sm shrink-0"><Grid className="w-5 h-5" /></div><div className="space-y-1 flex-1"><div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span></div><p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及国际管理体系认证等全方位服务。</p></div></div></div>
+        <div className="flex flex-col gap-y-4">
+          <div className="mb-2"><div className="flex items-center gap-3 border-l-4 border-[#0062AD] pl-4 mb-3"><h4 className="text-[21px] font-bold text-[#304166]">中国质量认证中心 <span className="font-en">(CQC)</span></h4></div><p className={introClass}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团。同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p></div>
+          
+          {/* Card 1: Authority Status */}
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex items-start gap-4 border border-gray-100 shadow-sm transition-all hover:bg-[#E0EFFF]">
+            <div className="w-10 h-10 rounded-[8px] bg-white flex items-center justify-center text-[#0062AD] shadow-sm shrink-0"><Award className="w-5 h-5" /></div>
+            <div className="space-y-1.5"><div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className={tagStyle}>No. 001</span></div><p className="text-[13px] text-gray-500 siding-relaxed">国家认监委批准设立的专业认证机构，机构批准号：001。</p></div>
+          </div>
+          
+          {/* Card 2: International Cooperation */}
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex items-start gap-4 border border-gray-100 shadow-sm transition-all hover:bg-[#E0EFFF]">
+            <div className="w-10 h-10 rounded-[8px] bg-white flex items-center justify-center text-[#0062AD] shadow-sm shrink-0"><Globe className="w-5 h-5" /></div>
+            <div className="space-y-1 flex-1">
+              <div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">国际合作</span><span className={tagStyle}>IQNet 中国成员</span></div>
+              <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
+            </div>
+          </div>
+          
+          {/* Card 3: Business Scope */}
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex items-start gap-4 border border-gray-100 shadow-sm transition-all hover:bg-[#E0EFFF]">
+            <div className="w-10 h-10 rounded-[8px] bg-white flex items-center justify-center text-[#0062AD] shadow-sm shrink-0"><Grid className="w-5 h-5" /></div>
+            <div className="space-y-1 flex-1">
+              <div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span><span className={tagStyle}>全产业链覆盖</span></div>
+              <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及国际管理体系认证等全方位服务。</p>
+            </div>
+          </div>
+        </div>
+        
         <div className="flex flex-col gap-y-4"><div className="mb-2"><div className="flex items-center gap-3 border-l-4 border-[#EE4932] pl-4 mb-3"><h4 className="text-[21px] font-bold text-[#304166]">中国中检广东公司 <span className="font-en">(CCIC GD)</span></h4></div><p className={introClass}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p></div><div className="grid grid-cols-2 gap-4">{[{ label: '分支机构辐射全省', value: '19', unit: '个', icon: <MapPin className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }, { label: '专业技术实验室', value: '14', unit: '个', icon: <FlaskConical className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }].map((stat, i) => (<div key={i} className={`${stat.bg} rounded-[12px] px-5 py-4 flex flex-col justify-center gap-1 shadow-sm`}><div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">{stat.icon}</div><div className="flex items-baseline gap-1 mt-0.5"><span className="text-[22px] font-bold text-[#304166] font-num siding-none">{stat.value}</span><span className="text-[12px] font-bold text-[#304166]">{stat.unit}</span></div><span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">{stat.label}</span></div>))}</div><div className="mt-1 space-y-4"><div className="flex items-center gap-2"><Grid className="w-4 h-4 text-[#EE4932]" /><span className="text-[14px] font-bold text-[#304166]">服务范围 <span className="text-gray-300 font-en">/ Service Scope</span></span></div><div className="grid grid-cols-3 gap-y-8 gap-x-4 pr-2">{[{ label: '农产品食品', icon: <Leaf className="w-4 h-4" />, color: 'text-green-500', bg: 'bg-green-50' }, { label: '石油化工', icon: <Droplets className="w-4 h-4" />, color: 'text-amber-500', bg: 'bg-amber-50' }, { label: '工业品检测', icon: <Factory className="w-4 h-4" />, color: 'text-blue-500', bg: 'bg-blue-50' }, { label: '消费品安全', icon: <ShoppingBag className="w-4 h-4" />, color: 'text-pink-500', bg: 'bg-pink-50' }, { label: '体系认证', icon: <Award className="w-4 h-4" />, color: 'text-[#0062AD]', bg: 'bg-blue-50' }, { label: '技术服务', icon: <Settings className="w-4 h-4" />, color: 'text-purple-500', bg: 'bg-purple-50' }].map((serv, i) => (<div key={i} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"><div className={`w-11 h-11 rounded-[8px] ${serv.bg} flex items-center justify-center ${serv.color} shadow-sm`}>{serv.icon}</div><span className="text-[11px] font-bold text-gray-600 whitespace-nowrap">{serv.label}</span></div>))}</div></div></div>
       </div>
     </div>
@@ -975,7 +1002,7 @@ const App: React.FC = () => {
     setData(prev => {
       const updateFn = (blocks: CaseBlock[]) => blocks.map(b => b.id === blockId ? { ...b, images: b.images?.filter((_, i) => i !== imgIdx) } : b);
       if (moduleId === null) return { ...prev, caseBlocks: updateFn(prev.caseBlocks) };
-      return { ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'custom' ? { ...m, blocks: m.blocks.filter(b => b.id !== blockId) } : m) };
+      return { ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'custom' ? { ...m, blocks: m.blocks.map(b => b.id === blockId ? { ...b, images: b.images?.filter((_, i) => i !== imgIdx) } : b) } : m) };
     });
   };
 
@@ -1138,6 +1165,10 @@ const App: React.FC = () => {
     ) : null
   };
 
+  const sortingItemClass = (isActive: boolean) => `relative bg-white border border-[#F1F5F9] min-h-[52px] px-3 rounded-[8px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${isActive ? 'bg-[#F0F7FF] border-[#0062AD] ring-1 ring-[#0062AD]/10' : 'hover:bg-[#F0F7FF] hover:border-[#BDD1FF]'}`;
+  const iconBoxClass = "w-6 h-6 flex items-center justify-center bg-[#F0F7FF] rounded-[4px] text-[#0062AD] shrink-0";
+  const dragLineClass = (isActive: boolean) => `absolute left-0 top-2 bottom-2 w-[2px] rounded-r-full transition-colors ${isActive ? 'bg-[#0062AD]' : 'bg-[#E2E8F0] group-hover:bg-[#BDD1FF]'}`;
+
   return (
     <div className="max-w-[1550px] mx-auto px-6 py-10 flex flex-col lg:flex-row gap-8">
       <div id="pdf-export-target" className="absolute -left-[9999px] top-0"><QuoteDocument containerRef={pdfSourceRef} isPrint={true} /></div>
@@ -1171,7 +1202,7 @@ const App: React.FC = () => {
                           <div className="p-1 text-gray-300 cursor-move hover:text-[#0062AD]">
                             <GripVertical className="w-3.5 h-3.5" />
                           </div>
-                          <button onClick={(e) => { e.stopPropagation(); handleRemoveTechService(module.id, idx); }} title="删除项目" className="p-1 text-gray-300 hover:text-white hover:bg-red-500 rounded-lg transition-all shadow-sm">
+                          <button onClick={(e) => { e.stopPropagation(); handleRemoveTechService(module.id, idx); }} title="删除项目" className="p-1 text-gray-300 hover:text-white hover:bg-red-50 rounded-lg transition-all shadow-sm">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -1324,20 +1355,21 @@ const App: React.FC = () => {
                     <LayoutGrid className="w-4 h-4 text-[#0062AD]" />
                     <span className="text-[15px]">模块排序管理</span>
                   </div>
-                  <div className="space-y-2.5">
+                  <div className="space-y-2">
                     {data.modules.filter(m => m.type !== 'custom').map((module, index) => {
                       const info = getModuleSortingInfo(module, index);
                       const Icon = info.icon;
+                      const isActive = dragOverModuleId === module.id;
                       return (
-                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={`relative bg-white border border-[#F1F5F9] min-h-[52px] px-3 rounded-[12px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${dragOverModuleId === module.id ? 'border-[#0062AD] ring-1 ring-[#0062AD]/20 scale-[1.02]' : 'hover:border-[#BDD1FF]'}`}>
-                          <div className={`absolute left-0 top-3 bottom-3 w-0.5 rounded-r-full ${info.bar}`}></div>
-                          <div className="flex items-center gap-3 ml-1.5">
-                            <div className={`p-1.5 rounded-[6px] ${info.color.split(' ')[2]}`}><Icon className="w-3.5 h-3.5" /></div>
-                            <span className="text-[13px] font-semibold text-[#1E293B] truncate max-w-[140px]">{info.label}</span>
+                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
+                          <div className={dragLineClass(isActive)}></div>
+                          <div className="flex items-center gap-3 ml-2">
+                            <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
+                            <span className="text-[13px] font-semibold text-[#334155] truncate max-w-[140px]">{info.label}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <GripVertical className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-400 transition-colors" />
-                            <button onClick={() => removeModule(module.id)} title="删除此模块" className="p-1 text-gray-300 hover:text-[#EE4932] transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                            <GripVertical className="w-4 h-4 text-[#94A3B8] group-hover:text-[#64748B] transition-colors" />
+                            <button onClick={() => removeModule(module.id)} title="删除此模块" className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button>
                           </div>
                         </div>
                       );
@@ -1348,16 +1380,17 @@ const App: React.FC = () => {
                       if (!isVisible) return null;
                       const info = getProcessSortingInfo(moduleId);
                       const Icon = info.icon;
+                      const isActive = dragOverModuleId === moduleId;
                       return (
-                        <div key={moduleId} draggable="true" onDragStart={(e) => handleDragStart(e, moduleId)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(moduleId); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, moduleId)} className={`relative bg-white border border-[#F1F5F9] min-h-[52px] px-3 rounded-[12px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${dragOverModuleId === moduleId ? 'border-[#0062AD] ring-1 ring-[#0062AD]/20 scale-[1.02]' : 'hover:border-[#BDD1FF]'}`}>
-                          <div className={`absolute left-0 top-3 bottom-3 w-0.5 rounded-r-full ${info.bar}`}></div>
-                          <div className="flex items-center gap-3 ml-1.5">
-                            <div className={`p-1.5 rounded-[6px] ${info.color.split(' ')[2]}`}><Icon className="w-3.5 h-3.5" /></div>
-                            <span className="text-[13px] font-semibold text-[#1E293B]">{info.label}</span>
+                        <div key={moduleId} draggable="true" onDragStart={(e) => handleDragStart(e, moduleId)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(moduleId); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, moduleId)} className={sortingItemClass(isActive)}>
+                          <div className={dragLineClass(isActive)}></div>
+                          <div className="flex items-center gap-3 ml-2">
+                            <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
+                            <span className="text-[13px] font-semibold text-[#334155]">{info.label}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <GripVertical className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-400 transition-colors" />
-                            <button onClick={() => { if(moduleId === 'cert-process') setIsCertProcessVisible(false); if(moduleId === 'tech-process') setIsTechProcessVisible(false); if(moduleId === 'customer-case') setIsCustomerCaseVisible(false); if(moduleId === 'cert-templates') setIsCertTemplatesVisible(false); }} title="隐藏此模块" className="p-1 text-gray-300 hover:text-[#EE4932] transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                            <GripVertical className="w-4 h-4 text-[#94A3B8] group-hover:text-[#64748B] transition-colors" />
+                            <button onClick={() => { if(moduleId === 'cert-process') setIsCertProcessVisible(false); if(moduleId === 'tech-process') setIsTechProcessVisible(false); if(moduleId === 'customer-case') setIsCustomerCaseVisible(false); if(moduleId === 'cert-templates') setIsCertTemplatesVisible(false); }} title="隐藏此模块" className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button>
                           </div>
                         </div>
                       );
@@ -1365,16 +1398,17 @@ const App: React.FC = () => {
                     {data.modules.filter(m => m.type === 'custom').map((module, index) => {
                       const info = getModuleSortingInfo(module, index);
                       const Icon = info.icon;
+                      const isActive = dragOverModuleId === module.id;
                       return (
-                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={`relative bg-white border border-[#F1F5F9] min-h-[52px] px-3 rounded-[12px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${dragOverModuleId === module.id ? 'border-[#0062AD] ring-1 ring-[#0062AD]/20 scale-[1.02]' : 'hover:border-[#BDD1FF]'}`}>
-                          <div className={`absolute left-0 top-3 bottom-3 w-0.5 rounded-r-full ${info.bar}`}></div>
-                          <div className="flex items-center gap-3 ml-1.5">
-                            <div className={`p-1.5 rounded-[6px] ${info.color.split(' ')[2]}`}><Icon className="w-3.5 h-3.5" /></div>
-                            <span className="text-[13px] font-semibold text-[#1E293B] truncate max-w-[140px]">{info.label}</span>
+                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
+                          <div className={dragLineClass(isActive)}></div>
+                          <div className="flex items-center gap-3 ml-2">
+                            <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
+                            <span className="text-[13px] font-semibold text-[#334155] truncate max-w-[140px]">{info.label}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <GripVertical className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-400 transition-colors" />
-                            <button onClick={() => removeModule(module.id)} title="删除此模块" className="p-1 text-gray-300 hover:text-[#EE4932] transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                            <GripVertical className="w-4 h-4 text-[#94A3B8] group-hover:text-[#64748B] transition-colors" />
+                            <button onClick={() => removeModule(module.id)} title="删除此模块" className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button>
                           </div>
                         </div>
                       );
