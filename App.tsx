@@ -547,41 +547,105 @@ const AgencyProfile = () => {
   const tagStyle = "px-2 py-0.5 bg-[#304166] text-white rounded-md text-[10px] font-black font-num tracking-wider";
   
   return (
-    <div className="space-y-10">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
-        <div className="lg:col-span-3 space-y-6 flex flex-col justify-between py-1">
-          <div className="space-y-4"><h3 className="text-[28px] font-bold text-[#304166] tracking-tight siding-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3><p className={introClass}>中国检验认证集团（简称中国中检）是经国务院批准设立、由国务院国资委管理的中央企业。作为以“检验、检测、认证、标准、计量”为主业的综合性质量服务机构，机构在全球范围内提供专业、高效、一站式的质量安全服务。</p></div>
-          <div className="pt-4"><div className="flex items-center gap-3 mb-4"><div className="h-[2px] bg-blue-100 flex-1"></div><span className="text-[11px] font-black text-[#0062AD] uppercase tracking-[0.2em] whitespace-nowrap">三大品牌</span><div className="h-[2px] bg-blue-100 flex-1"></div></div><div className="grid grid-cols-3 gap-4">{[{ name: '中国中检 CCIC', icon: 'https://img.meituan.net/content/85a4fc82d05398fc2174b38f3079c047286176.png' }, { name: '中国质量认证中心 CQC', icon: 'https://img.meituan.net/content/3c7d0f7f8939199ffc2353fd439669e9284944.png' }, { name: '中国汽研 CAERI', icon: 'https://img.meituan.net/content/277ebe8f724c51cf401237b50ba688a051357.jpg' }].map((sub, i) => (<div key={i} className="bg-white rounded-[12px] p-4 border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105 min-h-[110px]"><div className="h-14 w-full flex items-center justify-center"><img src={sub.icon} alt={sub.name} loading="lazy" className="max-h-full max-w-full object-contain" /></div><span className="text-[11px] font-bold text-gray-400 text-center whitespace-nowrap">{sub.name}</span></div>))}</div></div>
+    <div className="space-y-10 px-5 md:px-10 lg:px-0 text-center lg:text-left">
+      <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8 items-center lg:items-stretch">
+        <div className="lg:col-span-3 space-y-6 flex flex-col justify-between py-1 items-center lg:items-start">
+          <div className="space-y-4">
+            <h3 className="text-[28px] font-bold text-[#304166] tracking-tight siding-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3>
+            <p className={introClass}>中国检验认证集团（简称中国中检）是经国务院批准设立、由国务院国资委管理的中央企业。作为以“检验、检测、认证、标准、计量”为主业的综合性质量服务机构，机构在全球范围内提供专业、高效、一站式的质量安全服务。</p>
+          </div>
+          <div className="pt-4 w-full my-5 lg:my-0">
+            <div className="flex items-center gap-3 mb-4"><div className="h-[2px] bg-blue-100 flex-1"></div><span className="text-[11px] font-black text-[#0062AD] uppercase tracking-[0.2em] whitespace-nowrap">三大品牌</span><div className="h-[2px] bg-blue-100 flex-1"></div></div>
+            <div className="grid grid-cols-3 gap-4">
+              {[{ name: '中国中检 CCIC', icon: 'https://img.meituan.net/content/85a4fc82d05398fc2174b38f3079c047286176.png' }, { name: '中国质量认证中心 CQC', icon: 'https://img.meituan.net/content/3c7d0f7f8939199ffc2353fd439669e9284944.png' }, { name: '中国汽研 CAERI', icon: 'https://img.meituan.net/content/277ebe8f724c51cf401237b50ba688a051357.jpg' }].map((sub, i) => (
+                <div key={i} className="bg-white rounded-[12px] p-4 border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105 min-h-[110px]">
+                  <div className="h-14 w-full flex items-center justify-center">
+                    <img src={sub.icon} alt={sub.name} loading="lazy" className="max-h-full max-w-full object-contain" />
+                  </div>
+                  <span className="text-[11px] font-bold text-gray-400 text-center whitespace-nowrap">{sub.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="lg:col-span-2 grid grid-cols-2 gap-x-8 gap-y-10 pl-8 border-l border-gray-100 flex wrap items-center py-1">{[{ label: '国家和地区服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5 text-[#0062AD]" /> }, { label: '分支机构全球布局', value: '400', unit: '+', icon: <Building className="w-5 h-5 text-[#0062AD]" /> }, { label: '专业化实验室', value: '500', unit: '+', icon: <FlaskConical className="w-5 h-5 text-[#0062AD]" /> }, { label: '全球专业技术员工', value: '20000', unit: '+', icon: <Users className="text-[#0062AD] w-5 h-5" /> }, { label: '国际权威认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5 text-[#0062AD]" /> }, { label: '国家级认可资质', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5 text-[#0062AD]" /> }].map((stat, i) => (<div key={i} className="flex flex-col gap-1.5"><div className="mb-1">{stat.icon}</div><div className="flex items-baseline gap-0.5"><span className="text-[26px] font-bold text-[#304166] font-num leading-none">{stat.value}</span><span className="text-[16px] font-bold text-[#0062AD] font-en font-num">{stat.unit}</span></div><span className="text-[12px] font-bold text-gray-400 whitespace-nowrap">{stat.label}</span></div>))}</div></div>
+        <div className="w-full lg:col-span-2 grid grid-cols-3 gap-[15px] md:gap-[30px] lg:pl-8 lg:border-l border-gray-100 items-center py-1">
+          {[{ label: '国家和地区服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5 text-[#0062AD]" /> }, { label: '分支机构全球布局', value: '400', unit: '+', icon: <Building className="w-5 h-5 text-[#0062AD]" /> }, { label: '专业化实验室', value: '500', unit: '+', icon: <FlaskConical className="w-5 h-5 text-[#0062AD]" /> }, { label: '全球专业技术员工', value: '20000', unit: '+', icon: <Users className="text-[#0062AD] w-5 h-5" /> }, { label: '权威认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5 text-[#0062AD]" /> }, { label: '国家级认可资质', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5 text-[#0062AD]" /> }].map((stat, i) => (
+            <div key={i} className="flex flex-col items-center lg:items-start gap-1">
+              <div className="mb-1">{stat.icon}</div>
+              <div className="flex items-baseline gap-0.5">
+                <span className="text-[20px] font-bold text-[#304166] font-num leading-none">{stat.value}</span>
+                <span className="text-[14px] font-bold text-[#0062AD] font-en font-num">{stat.unit}</span>
+              </div>
+              <span className="text-[12px] font-bold text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis w-full">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
       <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
-      <div className="grid grid-cols-2 gap-x-12 items-start">
-        <div className="flex flex-col gap-y-4">
-          <div className="mb-2"><div className="flex items-center gap-3 border-l-4 border-[#0062AD] pl-4 mb-3"><h4 className="text-[21px] font-bold text-[#304166]">中国质量认证中心 <span className="font-en">(CQC)</span></h4></div><p className={introClass}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团.同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p></div>
-          
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Award className="w-5 h-5" /></div>
-            <div className="space-y-1.5"><div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className={tagStyle}>No. 001</span></div><p className="text-[13px] text-gray-500 siding-relaxed">国家认监委批准设立的专业认证机构，机构批准号：001。</p></div>
+      
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-x-12 items-start text-center lg:text-left">
+        <div className="flex flex-col gap-y-4 w-full">
+          <div className="mb-2">
+            <div className="flex items-center justify-center lg:justify-start gap-3 border-l-0 lg:border-l-4 border-[#0062AD] lg:pl-4 mb-3">
+              <h4 className="text-[21px] font-bold text-[#304166]">中国质量认证中心 <span className="font-en">(CQC)</span></h4>
+            </div>
+            <p className={introClass}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团.同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p>
           </div>
           
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
+            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Award className="w-5 h-5" /></div>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className={tagStyle}>No. 001</span></div>
+              <p className="text-[13px] text-gray-500 siding-relaxed">国家认监委批准设立的专业认证机构，机构批准号：001。</p>
+            </div>
+          </div>
+          
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
             <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Globe className="w-5 h-5" /></div>
             <div className="space-y-1 flex-1">
-              <div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">国际合作</span><span className={tagStyle}>IQNet 中国成员</span></div>
+              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">合作</span><span className={tagStyle}>IQNet 中国成员</span></div>
               <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
             </div>
           </div>
           
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
             <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Grid className="w-5 h-5" /></div>
             <div className="space-y-1 flex-1">
-              <div className="flex items-center gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span><span className={tagStyle}>全产业链覆盖</span></div>
-              <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及国际管理体系认证等全方位服务。</p>
+              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span><span className={tagStyle}>全产业链覆盖</span></div>
+              <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
             </div>
           </div>
         </div>
         
-        <div className="flex flex-col gap-y-4"><div className="mb-2"><div className="flex items-center gap-3 border-l-4 border-[#EE4932] pl-4 mb-3"><h4 className="text-[21px] font-bold text-[#304166]">中国中检广东公司 <span className="font-en">(CCIC GD)</span></h4></div><p className={introClass}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p></div><div className="grid grid-cols-2 gap-4">{[{ label: '分支机构辐射全省', value: '19', unit: '个', icon: <MapPin className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }, { label: '专业技术实验室', value: '14', unit: '个', icon: <FlaskConical className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }].map((stat, i) => (<div key={i} className={`${stat.bg} border border-[#E5E7EB] rounded-[12px] px-5 py-4 flex flex-col justify-center gap-1 shadow-none`}><div className="w-8 h-8 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center shrink-0">{stat.icon}</div><div className="flex items-baseline gap-1 mt-0.5"><span className="text-[22px] font-bold text-[#304166] font-num siding-none">{stat.value}</span><span className="text-[12px] font-bold text-[#304166]">{stat.unit}</span></div><span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">{stat.label}</span></div>))}</div><div className="mt-1 space-y-4"><div className="flex items-center gap-2"><Grid className="w-4 h-4 text-[#EE4932]" /><span className="text-[14px] font-bold text-[#304166]">服务范围 <span className="text-gray-300 font-en">/ Service Scope</span></span></div><div className="grid grid-cols-3 gap-y-8 gap-x-4 pr-2">{[{ label: '农产品食品', icon: <Leaf className="w-4 h-4" />, color: 'text-green-500', bg: 'bg-green-50' }, { label: '石油化工', icon: <Droplets className="w-4 h-4" />, color: 'text-amber-500', bg: 'bg-amber-50' }, { label: '工业品检测', icon: <Factory className="w-4 h-4" />, color: 'text-blue-500', bg: 'bg-blue-50' }, { label: '消费品安全', icon: <ShoppingBag className="w-4 h-4" />, color: 'text-pink-500', bg: 'bg-pink-50' }, { label: '体系认证', icon: <Award className="w-4 h-4" />, color: 'text-[#0062AD]', bg: 'bg-blue-50' }, { label: '技术服务', icon: <Settings className="w-4 h-4" />, color: 'text-purple-500', bg: 'bg-purple-50' }].map((serv, i) => (<div key={i} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1"><div className={`w-11 h-11 border border-[#E5E7EB] rounded-[8px] ${serv.bg} flex items-center justify-center ${serv.color}`}>{serv.icon}</div><span className="text-[11px] font-bold text-gray-600 whitespace-nowrap">{serv.label}</span></div>))}</div></div></div>
+        <div className="flex flex-col gap-y-4 w-full mt-10 lg:mt-0">
+          <div className="mb-2">
+            <div className="flex items-center justify-center lg:justify-start gap-3 border-l-0 lg:border-l-4 border-[#EE4932] lg:pl-4 mb-3">
+              <h4 className="text-[21px] font-bold text-[#304166]">中国中检广东公司 <span className="font-en">(CCIC GD)</span></h4>
+            </div>
+            <p className={introClass}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {[{ label: '分支机构辐射全省', value: '19', unit: '个', icon: <MapPin className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }, { label: '专业技术实验室', value: '14', unit: '个', icon: <FlaskConical className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }].map((stat, i) => (
+              <div key={i} className={`${stat.bg} border border-[#E5E7EB] rounded-[12px] px-5 py-4 flex flex-col items-center lg:items-start justify-center gap-1 shadow-none`}>
+                <div className="w-8 h-8 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center shrink-0">{stat.icon}</div>
+                <div className="flex items-baseline gap-1 mt-0.5"><span className="text-[22px] font-bold text-[#304166] font-num siding-none">{stat.value}</span><span className="text-[12px] font-bold text-[#304166]">{stat.unit}</span></div>
+                <span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-1 space-y-4">
+            <div className="flex items-center justify-center lg:justify-start gap-2"><Grid className="w-4 h-4 text-[#EE4932]" /><span className="text-[14px] font-bold text-[#304166]">服务范围 <span className="text-gray-300 font-en">/ Service Scope</span></span></div>
+            <div className="grid grid-cols-3 gap-y-8 gap-x-4 pr-0 lg:pr-2">
+              {[{ label: '农产品食品', icon: <Leaf className="w-4 h-4" />, color: 'text-green-500', bg: 'bg-green-50' }, { label: '石油化工', icon: <Droplets className="w-4 h-4" />, color: 'text-amber-500', bg: 'bg-amber-50' }, { label: '工业品检测', icon: <Factory className="w-4 h-4" />, color: 'text-blue-500', bg: 'bg-blue-50' }, { label: '消费品安全', icon: <ShoppingBag className="w-4 h-4" />, color: 'text-pink-500', bg: 'bg-pink-50' }, { label: '体系认证', icon: <Award className="w-4 h-4" />, color: 'text-[#0062AD]', bg: 'bg-blue-50' }, { label: '技术服务', icon: <Settings className="w-4 h-4" />, color: 'text-purple-500', bg: 'bg-purple-50' }].map((serv, i) => (
+                <div key={i} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1">
+                  <div className={`w-11 h-11 border border-[#E5E7EB] rounded-[8px] ${serv.bg} flex items-center justify-center ${serv.color}`}>{serv.icon}</div>
+                  <span className="text-[11px] font-bold text-gray-600 whitespace-nowrap">{serv.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1122,7 +1186,7 @@ const App: React.FC = () => {
               <div key={block.id} draggable onDragStart={(e) => { e.dataTransfer.setData('sourceBlockIdx', idx.toString()); e.dataTransfer.setData('sourceModuleId', moduleId || ''); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('sourceBlockIdx')); const sModuleId = e.dataTransfer.getData('sourceModuleId'); if (sModuleId === (moduleId || '') && !isNaN(sIdx) && sIdx !== idx) handleReorderBlocksInModule(moduleId, sIdx, idx); }} className="relative group/block bg-white p-6 rounded-[12px] border border-[#E5E7EB] hover:border-[#BDD1FF] transition-all"><div className="absolute -left-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-200 opacity-0 group-hover/block:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeBlockFromModule(moduleId, block.id)} className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover/block:opacity-100 shadow-sm z-20"><X className="w-3 h-3" /></button>
                 {block.type === 'text' ? (<div className="space-y-4"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-[#0062AD] font-bold text-xs uppercase tracking-widest"><Type className="w-3 h-3" /> 文本样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 14)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['normal', 'bold', 'black'] as const).map(w => (<button key={w} onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', w)} className={`px-2 py-0.5 text-[10px] rounded-[4px] transition-all font-bold ${block.fontWeight === w ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{w === 'normal' ? '细' : w === 'bold' ? '粗' : '极'}</button>))}</div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div></div></div><textarea className="w-full bg-slate-50 border-none rounded-[8px] p-4 focus:bg-white transition-all min-h-[120px] outline-none" style={{ fontSize: `${block.fontSize}px`, fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), color: block.color, textAlign: block.align }} value={block.content} onChange={e => updateBlockInModule(moduleId, block.id, 'content', e.target.value)} /></div>
                 ) : block.type === 'table' ? (<div className="space-y-4"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest"><Table2 className="w-3 h-3" /> 表格管理</div><div className="flex gap-2"><button onClick={() => addTableRowInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1"><Plus className="w-3 h-3" /><span className="text-[10px] font-bold">加行</span></button><button onClick={() => addTableColInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1"><Columns className="w-3 h-3" /><span className="text-[10px] font-bold">加列</span></button></div></div><div className="overflow-x-auto border border-slate-100 rounded-[12px]"><table className="w-full border-collapse bg-[#f1f5f9] table-fixed" data-table-block-id={block.id}><thead><tr className="bg-[#304166]">{block.tableData?.[0].map((cell, i) => (<th key={i} className="p-0 border-r border-white/10 last:border-0 relative group/th" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}><input className="w-full bg-transparent border-none text-white text-xs font-bold px-3 py-2 focus:ring-0 text-left outline-none" value={cell} onChange={e => updateTableCellInModule(moduleId, block.id, 0, i, e.target.value)} />{i < (block.tableData?.[0].length || 0) - 1 && (<div className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#0062AD] z-10 transition-colors" onMouseDown={(e) => { resizingInfo.current = { blockId: block.id, colIdx: i, startX: e.clientX, startWidths: [...(block.columnWidths || [])] }; document.body.style.cursor = 'col-resize'; }} />)}</th>))}</tr></thead><tbody className="divide-y divide-slate-200">{block.tableData?.slice(1).map((row, ri) => (<tr key={ri}>{row.map((cell, ci) => (<td key={ci} className="p-0 border-r border-slate-200 last:border-0"><textarea className="w-full bg-transparent border-none text-slate-600 text-xs px-3 focus:ring-0 resize-none font-quote outline-none" style={{ paddingBlock: `${block.rowSpacing}px`, textAlign: 'right' }} value={cell} rows={cell.split('\n').length || 1} onChange={e => updateTableCellInModule(moduleId, block.id, ri + 1, ci, e.target.value)} /></td>))}</tr>))}</tbody></table></div></div>
-                ) : (<div className="space-y-4"><div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest border-b border-gray-50 pb-4 mb-4"><ImageIcon className="w-3 h-3" /> 图片管理</div><div className="w-full flex wrap gap-4">{block.images?.map((img, iIdx) => (<div key={iIdx} className="w-[calc(33.333%-12px)] relative group/caseimg border border-[#E5E7EB] rounded-[8px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02]"><img src={img} className="w-full h-auto block" loading="lazy" /><button onClick={() => removeImageFromBlock(moduleId, block.id, iIdx)} className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/caseimg:opacity-100 transition-opacity"><Trash2 className="w-3.5 h-3" /></button></div>))}<div onClick={() => { activeCaseBlockIdRef.current = block.id; caseImageInputRef.current?.click(); }} className="w-[calc(33.333%-12px)] aspect-square border border-dashed border-[#E5E7EB] rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] transition-all text-gray-400"><Plus className="w-5 h-5 mb-1" /><span className="text-[9px] font-bold">继续添加</span></div></div></div>)}
+                ) : (<div className="space-y-4"><div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest border-b border-gray-50 pb-4 mb-4"><ImageIcon className="w-3 h-3" /> 图片管理</div><div className="w-full flex wrap gap-4">{block.images?.map((img, iIdx) => (<div key={iIdx} className="w-[calc(33.333%-12px)] relative group/caseimg border border-[#E5E7EB] rounded-[8px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02]"><img src={img} className="w-full h-auto block" loading="lazy" /><button onClick={() => removeImageFromBlock(moduleId, block.id, iIdx)} className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/caseimg:opacity-100 transition-opacity"><Trash2 className="w-3 h-3" /></button></div>))}<div onClick={() => { activeCaseBlockIdRef.current = block.id; caseImageInputRef.current?.click(); }} className="w-[calc(33.333%-12px)] aspect-square border border-dashed border-[#E5E7EB] rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] transition-all text-gray-400"><Plus className="w-5 h-5 mb-1" /><span className="text-[9px] font-bold">继续添加</span></div></div></div>)}
               </div>
             ))}
           </div>
@@ -1150,7 +1214,7 @@ const App: React.FC = () => {
 
   const extraModulesMap = {
     'cert-process': isCertProcessVisible ? ( <section key="cert-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-8"><div className="section-header !mb-0"><LayoutGrid className="w-5 h-5" /><span>管理体系认证流程</span></div><div className="flex items-center bg-[#EFF5FC] p-1 rounded-[12px] border border-[#BDD1FF] shadow-none transition-all duration-300"><button onClick={() => setProcessValidity('1year')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 ${processValidity === '1year' ? 'bg-[#0062AD] text-white' : 'text-gray-500 hover:text-[#0062AD]'}`}><Clock className="w-3.5 h-3.5" /> 一年有效期</button><button onClick={() => setProcessValidity('3years')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 ${processValidity === '3years' ? 'bg-[#0062AD] text-white' : 'text-gray-500 hover:text-[#0062AD]'}`}><Clock className="w-3.5 h-3.5" /> 三年有效期</button></div></div><CertificationProcess validity={processValidity} /></section> ) : null,
-    'tech-process': isTechProcessVisible ? ( <section key="tech-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('tech-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'tech-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0"><Zap className="w-5 h-5" /><span>专业技术服务流程</span></div><div className="flex gap-2"><button onClick={resetTechSteps} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 重置</button><button onClick={addTechStep} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Plus className="w-3 h-3" /> 添加流程</button><button onClick={handleRemoveLastStep} className="flex items-center gap-1.5 text-[13px] font-bold border border-red-100 text-red-500 px-3 py-1.5 rounded-[12px] hover:bg-red-50 transition-all"><Minus className="w-3 h-3" /> 移除流程</button></div></div><TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={true} /></section> ) : null,
+    'tech-process': isTechProcessVisible ? ( <section key="tech-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('tech-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'tech-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'tech-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0"><Zap className="w-5 h-5" /><span>专业技术服务流程</span></div><div className="flex gap-2"><button onClick={resetTechSteps} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 重置</button><button onClick={addTechStep} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Plus className="w-3 h-3" /> 添加流程</button><button onClick={handleRemoveLastStep} className="flex items-center gap-1.5 text-[13px] font-bold border border-red-100 text-red-500 px-3 py-1.5 rounded-[12px] hover:bg-red-50 transition-all"><Minus className="w-3 h-3" /> 移除流程</button></div></div><TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={true} /></section> ) : null,
     'agency-profile': ( <section key="agency-profile" className="card overflow-hidden transition-all duration-300 border border-[#E5E7EB]"><div className="section-header"><Building className="w-5 h-5" /><span>机构简介</span></div><AgencyProfile /></section> ),
     'business-qualifications': ( <section key="business-qualifications" className="card overflow-hidden transition-all duration-300 border border-[#E5E7EB]"><div className="section-header"><FileCheck className="w-5 h-5" /><span>业务资质</span></div><Qualifications /></section> ),
     'customer-case': isCustomerCaseVisible ? (
@@ -1357,7 +1421,7 @@ const App: React.FC = () => {
                     <div className="flex items-center gap-2 font-normal text-left">
                       <span className="text-gray-600 font-bold shrink-0">指导周期：</span>
                       <span className="text-gray-600 shrink-0">不少于（现场+远程）</span>
-                      <div className={InputWrapperStyle + " !min-h-0 !p-1 w-16"}>
+                      <div className={InputWrapperStyle + " !min-h-0 !p-1.5 w-16"}>
                         <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-bold text-[#0062AD] font-quote outline-none" value={module.details.minDays} onChange={e => updateTechModuleDetails(module.id, 'minDays', parseInt(e.target.value) || 0)} />
                       </div>
                       <span className="text-gray-600">人天</span>
@@ -1365,7 +1429,7 @@ const App: React.FC = () => {
                     <div className="h-3 w-px bg-[#E5E7EB] mx-1"></div>
                     <div className="flex items-center gap-2 font-normal">
                       <span className="text-gray-600 font-bold">内审员证书:</span>
-                      <div className={InputWrapperStyle + " !min-h-0 !p-1 w-16"}>
+                      <div className={InputWrapperStyle + " !min-h-0 !p-1.5 w-16"}>
                         <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-bold text-[#0062AD] font-quote outline-none" value={module.details.auditCerts} onChange={e => updateTechModuleDetails(module.id, 'auditCerts', parseInt(e.target.value) || 0)} />
                       </div>
                       <span className="text-gray-600">份</span>
@@ -1412,15 +1476,19 @@ const App: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 flex-wrap text-left justify-start">
                 <span className="text-[13px] text-gray-500 whitespace-nowrap">以上按</span>
-                <textarea 
-                  className="flex-1 min-w-[200px] !py-1 text-left font-normal text-[13px] bg-white rounded-[8px] border-[#E5E7EB] resize-none h-auto overflow-hidden outline-none" 
-                  rows={1}
-                  style={{ height: 'auto' }}
-                  onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
-                  value={data.note1Prefix} 
-                  onChange={e => setData({...data, note1Prefix: e.target.value})} 
-                />
-                <input className="!w-20 !py-1 text-center font-normal text-[13px] text-[#0062AD] bg-white border border-[#E5E7EB] !rounded-[8px] outline-none" type="number" value={data.note1Count} onChange={e => setData({...data, note1Count: parseInt(e.target.value) || 0})} />
+                <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
+                  <textarea 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] resize-none h-auto overflow-hidden outline-none" 
+                    rows={1}
+                    style={{ height: 'auto' }}
+                    onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
+                    value={data.note1Prefix} 
+                    onChange={e => setData({...data, note1Prefix: e.target.value})} 
+                  />
+                </div>
+                <div className={InputWrapperStyle + " !w-20 !min-h-0 !p-1.5"}>
+                  <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-normal text-[13px] text-[#0062AD] outline-none" type="number" value={data.note1Count} onChange={e => setData({...data, note1Count: parseInt(e.target.value) || 0})} />
+                </div>
                 <span className="text-[13px] text-gray-500 whitespace-nowrap">人以内规模的基础上报价，本报价单60天有效。</span>
               </div>
             </div>
@@ -1446,13 +1514,15 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest"><ReceiptText className="w-3.5 h-3.5" /> 备注 3：发票及缴纳</div>
                 <button onClick={() => setIsNote3Visible(!isNote3Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote3Visible ? 'text-amber-600 hover:bg-amber-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote3Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
               </div>
-              <textarea 
-                className="!bg-white border border-[#E5E7EB] !p-3 text-[13px] font-normal focus:ring-1 focus:ring-amber-500/20 leading-relaxed min-h-[40px] h-auto rounded-[8px] text-left outline-none" 
-                value={data.note3Text} 
-                onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
-                onChange={e => setData({...data, note3Text: e.target.value})} 
-                placeholder="输入发票及收费说明" 
-              />
+              <div className={InputWrapperStyle + " !p-1.5"}>
+                <textarea 
+                  className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-[13px] font-normal leading-relaxed min-h-[40px] h-auto text-left outline-none" 
+                  value={data.note3Text} 
+                  onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
+                  onChange={e => setData({...data, note3Text: e.target.value})} 
+                  placeholder="输入发票及收费说明" 
+                />
+              </div>
             </div>
 
             {data.additionalRemarks.map((remark, index) => (
@@ -1460,14 +1530,16 @@ const App: React.FC = () => {
                 <button onClick={() => removeRemark(index)} className="absolute top-2 right-2 p-1 text-gray-300 hover:text-[#EE4932] opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
                 <div className="flex flex-col gap-2 w-full">
                   <div className="field-label !mb-0 text-[#0062AD] text-left">追加备注 {index + 1}</div>
-                  <textarea 
-                    className="w-full bg-transparent border-b border-dashed border-[#E5E7EB] focus:border-[#0062AD] outline-none p-0.5 text-[13px] font-normal text-gray-700 text-left resize-none" 
-                    value={remark} 
-                    rows={1}
-                    onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
-                    onChange={e => updateAdditionalRemark(index, e.target.value)} 
-                    placeholder="点击输入补充备注内容" 
-                  />
+                  <div className={InputWrapperStyle + " !min-h-0 !p-1.5 !rounded-[8px]"}>
+                    <textarea 
+                      className="w-full bg-transparent !p-0 !border-0 focus:ring-0 outline-none text-[13px] font-normal text-gray-700 text-left resize-none" 
+                      value={remark} 
+                      rows={1}
+                      onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
+                      onChange={e => updateAdditionalRemark(index, e.target.value)} 
+                      placeholder="点击输入补充备注内容" 
+                    />
+                  </div>
                 </div>
               </div>
             ))}
@@ -1475,7 +1547,7 @@ const App: React.FC = () => {
         </section>
         
         {/* Module 4: Contact Info */}
-        <section className="card"><div className="section-header"><ImageIcon className="w-5 h-5" /><span>名片及联系信息</span></div><div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4"><div className="space-y-3"><div className="relative" ref={managerSelectRef}><label className="field-label">姓名</label><div className="flex items-center gap-1"><div className="relative flex-1"><input className="!py-1.5 font-normal text-left pr-8 !rounded-[8px] outline-none" value={data.contact.name} placeholder="自定义姓名" onChange={e => setData({...data, contact: {...data.contact, name: e.target.value}})} /><button onClick={() => setIsManagerSelectOpen(!isManagerSelectOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-[4px] transition-colors"><ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isManagerSelectOpen ? 'rotate-180' : ''}`} /></button></div></div>{isManagerSelectOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">预设经理人快速选择</span></div>{PREDEFINED_MANAGERS.map((mgr) => (<div key={mgr.name} onClick={() => handleSelectManager(mgr)} className="group flex items-center justify-between px-4 py-3 hover:bg-[#EFF5FC] cursor-pointer transition-colors border-b last:border-0 border-gray-50"><div className="flex items-center gap-3"><div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${data.contact.name === mgr.name ? 'bg-[#0062AD] text-white' : 'bg-gray-100 text-gray-500'}`}>{mgr.name.charAt(0)}</div><div className="flex flex-col"><span className="text-[14px] font-bold text-gray-700">{mgr.name}</span><span className="text-[11px] text-gray-400">{mgr.jobTitle1}</span></div></div>{data.contact.name === mgr.name && <UserCheck className="w-4 h-4 text-[#0062AD]" />}</div>))}</div>)}</div><div><label className="field-label">职位 1</label><input className="!py-1.5 font-normal text-left !rounded-[8px] border-[#E5E7EB] outline-none" value={data.contact.jobTitle1} onChange={e => setData({...data, contact: {...data.contact, jobTitle1: e.target.value}})} /></div><div><label className="field-label">职位 2</label><input className="!py-1.5 font-normal text-left !rounded-[8px] border-[#E5E7EB] outline-none" value={data.contact.jobTitle2} onChange={e => setData({...data, contact: {...data.contact, jobTitle2: e.target.value}})} /></div></div><div className="space-y-3"><div><label className="field-label">电话</label><input className="!py-1.5 font-quote text-left !rounded-[8px] border-[#E5E7EB] outline-none" value={data.contact.phone} onChange={e => setData({...data, contact: {...data.contact, phone: e.target.value}})} /></div><div><label className="field-label">邮箱</label><input className="!py-1.5 font-en text-left !rounded-[8px] border-[#E5E7EB] outline-none" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} /></div><div><label className="field-label">地址</label><input className="!py-1.5 font-normal text-left !rounded-[8px] border-[#E5E7EB] outline-none" value={data.contact.officeAddress} onChange={e => setData({...data, contact: {...data.contact, officeAddress: e.target.value}})} /></div></div><div className="flex flex-col items-center pl-6 border-l border-gray-100"><label className="field-label self-center mb-2">联系二维码</label><EditableBrandLogo src={data.contact.qrCode} label="" onUpload={(base64) => setData({...data, contact: {...data.contact, qrCode: base64}})} className="w-full" align="center" /><div className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> 上传二维码</div></div></div></section>
+        <section className="card"><div className="section-header"><ImageIcon className="w-5 h-5" /><span>名片及联系信息</span></div><div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4"><div className="space-y-3"><div className="relative" ref={managerSelectRef}><label className="field-label">姓名</label><div className="flex items-center gap-1"><div className="relative flex-1"><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left pr-8 outline-none" value={data.contact.name} placeholder="自定义姓名" onChange={e => setData({...data, contact: {...data.contact, name: e.target.value}})} /></div><button onClick={() => setIsManagerSelectOpen(!isManagerSelectOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-[4px] transition-colors"><ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isManagerSelectOpen ? 'rotate-180' : ''}`} /></button></div></div>{isManagerSelectOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">预设经理人快速选择</span></div>{PREDEFINED_MANAGERS.map((mgr) => (<div key={mgr.name} onClick={() => handleSelectManager(mgr)} className="group flex items-center justify-between px-4 py-3 hover:bg-[#EFF5FC] cursor-pointer transition-colors border-b last:border-0 border-gray-50"><div className="flex items-center gap-3"><div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${data.contact.name === mgr.name ? 'bg-[#0062AD] text-white' : 'bg-gray-100 text-gray-500'}`}>{mgr.name.charAt(0)}</div><div className="flex flex-col"><span className="text-[14px] font-bold text-gray-700">{mgr.name}</span><span className="text-[11px] text-gray-400">{mgr.jobTitle1}</span></div></div>{data.contact.name === mgr.name && <UserCheck className="w-4 h-4 text-[#0062AD]" />}</div>))}</div>)}</div><div><label className="field-label">职位 1</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle1}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle1} onChange={e => setData({...data, contact: {...data.contact, jobTitle1: e.target.value}})} /></div></div><div><label className="field-label">职位 2</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle2}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle2} onChange={e => setData({...data, contact: {...data.contact, jobTitle2: e.target.value}})} /></div></div></div><div className="space-y-3"><div><label className="field-label">电话</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-quote text-left outline-none" value={data.contact.phone} onChange={e => setData({...data, contact: {...data.contact, phone: e.target.value}})} /></div></div><div><label className="field-label">邮箱</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-en text-left outline-none" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} /></div></div><div><label className="field-label">地址</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.officeAddress}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.officeAddress} onChange={e => setData({...data, contact: {...data.contact, officeAddress: e.target.value}})} /></div></div></div><div className="flex flex-col items-center pl-6 border-l border-gray-100"><label className="field-label self-center mb-2">联系二维码</label><EditableBrandLogo src={data.contact.qrCode} label="" onUpload={(base64) => setData({...data, contact: {...data.contact, qrCode: base64}})} className="w-full" align="center" /><div className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> 上传二维码</div></div></div></section>
 
         {/* Level 5+: Process and Custom Modules */}
         {processOrder.map(moduleId => extraModulesMap[moduleId as keyof typeof extraModulesMap])}
