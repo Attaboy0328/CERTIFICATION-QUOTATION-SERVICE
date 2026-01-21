@@ -568,7 +568,8 @@ const AgencyProfile = () => {
             </div>
           </div>
         </div>
-        <div className="w-full lg:col-span-2 grid grid-cols-3 gap-[15px] md:gap-[30px] lg:pl-8 lg:border-l border-gray-100 items-center py-1">
+        {/* Statistics Grid: 2 columns on desktop, 3 columns on tablet/mobile */}
+        <div className="w-full lg:col-span-2 grid grid-cols-3 lg:grid-cols-2 gap-[15px] md:gap-[30px] lg:pl-8 lg:border-l border-gray-100 items-center py-1">
           {[{ label: '国家和地区服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5 text-[#0062AD]" /> }, { label: '分支机构全球布局', value: '400', unit: '+', icon: <Building className="w-5 h-5 text-[#0062AD]" /> }, { label: '专业化实验室', value: '500', unit: '+', icon: <FlaskConical className="w-5 h-5 text-[#0062AD]" /> }, { label: '全球专业技术员工', value: '20000', unit: '+', icon: <Users className="text-[#0062AD] w-5 h-5" /> }, { label: '权威认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5 text-[#0062AD]" /> }, { label: '国家级认可资质', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5 text-[#0062AD]" /> }].map((stat, i) => (
             <div key={i} className="flex flex-col items-center lg:items-start gap-1">
               <div className="mb-1">{stat.icon}</div>
@@ -593,26 +594,29 @@ const AgencyProfile = () => {
             <p className={introClass}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团.同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p>
           </div>
           
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Award className="w-5 h-5" /></div>
+          {/* CQC Card 1: Authority Status */}
+          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#D1E4FF] transition-all hover:bg-[#E0EFFF]">
+            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#D1E4FF] flex items-center justify-center text-[#0062AD] shrink-0"><Award className="w-5 h-5" /></div>
             <div className="space-y-1.5">
-              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className={tagStyle}>No. 001</span></div>
+              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className="px-2 py-0.5 bg-[#0062AD] text-white rounded-md text-[10px] font-black font-num tracking-wider">No. 001</span></div>
               <p className="text-[13px] text-gray-500 siding-relaxed">国家认监委批准设立的专业认证机构，机构批准号：001。</p>
             </div>
           </div>
           
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Globe className="w-5 h-5" /></div>
+          {/* CQC Card 2: International Cooperation */}
+          <div className="bg-[#F2FCF5] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#D3F2DB] transition-all hover:bg-[#E8F8EE]">
+            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#D3F2DB] flex items-center justify-center text-[#34A853] shrink-0"><Globe className="w-5 h-5" /></div>
             <div className="space-y-1 flex-1">
-              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">合作</span><span className={tagStyle}>IQNet 中国成员</span></div>
+              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">国际合作</span><span className="px-2 py-0.5 bg-[#34A853] text-white rounded-md text-[10px] font-black font-num tracking-wider">IQNet 中国成员</span></div>
               <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
             </div>
           </div>
           
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#E5E7EB] transition-all hover:bg-[#E0EFFF]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center text-[#0062AD] shrink-0"><Grid className="w-5 h-5" /></div>
+          {/* CQC Card 3: Business Scope */}
+          <div className="bg-[#FFF9F0] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#FFE8C8] transition-all hover:bg-[#FFF4E5]">
+            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#FFE8C8] flex items-center justify-center text-[#FBBC05] shrink-0"><Grid className="w-5 h-5" /></div>
             <div className="space-y-1 flex-1">
-              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span><span className={tagStyle}>全产业链覆盖</span></div>
+              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span><span className="px-2 py-0.5 bg-[#FBBC05] text-white rounded-md text-[10px] font-black font-num tracking-wider">全产业链覆盖</span></div>
               <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
             </div>
           </div>
