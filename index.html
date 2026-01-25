@@ -23,11 +23,24 @@
             --color-red: #EE4932;
             --color-light-blue: #BDD1FF;
             --color-bg-soft: #EFF5FC;
+
+            /* 按钮色卡 - 物理参数统一 */
+            --color-btn-static-bg: #F2F3F5;
+            
+            /* 类型 A：建设性操作 */
+            --color-btn-func-text: #4E5969;
+            --color-btn-func-hover-bg: #E8F3FF;
+            --color-btn-func-hover-text: #0075CB;
+            
+            /* 类型 B：破坏性操作 */
+            --color-btn-dest-text: #86909C;
+            --color-btn-dest-hover-bg: #FFF1F0;
+            --color-btn-dest-hover-text: #F53F3F;
         }
 
         body {
             font-family: var(--font-zh);
-            background-color: #F5F7FA; 
+            background-color: #F8FAFC; 
             color: #1e293b;
             -webkit-font-smoothing: antialiased;
         }
@@ -63,7 +76,7 @@
             border-radius: 16px;
             padding: 32px;
             margin-bottom: 24px;
-            border: 1px solid #E5E7EB;
+            border: 1px solid #E5E6EB;
         }
 
         @media (max-width: 768px) {
@@ -126,6 +139,46 @@
             .no-print {
                 display: none !important;
             }
+        }
+
+        /* 规范按钮通用样式 - 类型 A */
+        .btn-header-func {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--color-btn-static-bg);
+            color: var(--color-btn-func-text);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .btn-header-func:hover {
+            color: var(--color-btn-func-hover-text);
+            background-color: var(--color-btn-func-hover-bg);
+        }
+
+        /* 规范按钮通用样式 - 类型 B */
+        .btn-header-dest {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--color-btn-static-bg);
+            color: var(--color-btn-dest-text);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .btn-header-dest:hover {
+            color: var(--color-btn-dest-hover-text);
+            background-color: var(--color-btn-dest-hover-bg);
         }
 
         /* checkbox settings 👇 */

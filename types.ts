@@ -55,6 +55,7 @@ export interface CaseBlock {
   images?: string[];
   fontSize?: number;
   fontWeight?: string;
+  underline?: boolean;
   color?: string;
   align?: 'left' | 'center' | 'right';
   rowSpacing?: number; // 用于表格行高/间距

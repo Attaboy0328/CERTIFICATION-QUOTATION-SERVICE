@@ -60,7 +60,8 @@ import {
   Activity,
   UserPlus,
   Target,
-  Target as Rocket, // Fallback for Rocket
+  Target as TargetIcon,
+  Rocket,
   Compass,
   Lightbulb,
   Cpu,
@@ -73,6 +74,7 @@ import {
   AlignCenter,
   AlignRight,
   Bold,
+  Underline,
   Palette,
   Type as TypeIcon,
   ChevronsUpDown,
@@ -82,7 +84,12 @@ import {
   Layers,
   Info,
   CarTaxiFront,
-  ReceiptText
+  ReceiptText,
+  Bug,
+  Scaling,
+  Network,
+  GitBranch,
+  EyeOff
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { QuoteData, CertItem, TechnicalService, QuoteModule, CertModule, TechModule, TechServiceStep, CaseBlock, CustomModule } from './types';
@@ -168,7 +175,7 @@ const DEFAULT_TECH_STEP_CONTENT: TechServiceStep[] = [
   {
     id: "04",
     title: "体系运行指导与整改",
-    desc: "实施定期的现场跟踪排查，通过闭环机制确保体系运行持续有效。",
+    desc: "实施定期的现场跟踪排查，通过闭闭环机制确保体系运行持续有效。",
     tags: ["运行指导", "内审实施", "管理评审指导", "不符合项整改"]
   },
   {
@@ -180,32 +187,42 @@ const DEFAULT_TECH_STEP_CONTENT: TechServiceStep[] = [
 ];
 
 const STEP_COLORS = [
-  { bg: "bg-[#EFF5FC]", text: "text-[#0062AD]", num: "text-[#0062AD]/10", tag: "bg-white text-[#0062AD]" },
-  { bg: "bg-[#F0FDF4]", text: "text-[#16A34A]", num: "text-[#16A34A]/10", tag: "bg-white text-[#16A34A]" },
-  { bg: "bg-[#FFFBEB]", text: "text-[#D97706]", num: "text-[#D97706]/10", tag: "bg-white text-[#D97706]" },
-  { bg: "bg-[#F5F3FF]", text: "text-[#7C3AED]", num: "text-[#7C3AED]/10", tag: "bg-white text-[#7C3AED]" },
-  { bg: "bg-[#FFF1F2]", text: "text-[#E11D48]", num: "text-[#E11D48]/10", tag: "bg-white text-[#E11D48]" },
-  { bg: "bg-[#F0FDFA]", text: "text-[#0D9488]", num: "text-[#0D9488]/10", tag: "bg-white text-[#0D9488]" },
-  { bg: "bg-[#F8FAFC]", text: "text-[#475569]", num: "text-[#475569]/10", tag: "bg-white text-[#475569]" },
-  { bg: "bg-[#FEF3C7]", text: "text-[#B45309]", num: "text-[#B45309]/10", tag: "bg-white text-[#B45309]" },
-  { bg: "bg-[#E0E7FF]", text: "text-[#4338CA]", num: "text-[#4338CA]/10", tag: "bg-white text-[#4338CA]" },
-  { bg: "bg-[#FFE4E6]", text: "text-[#BE123C]", num: "text-[#BE123C]/10", tag: "bg-white text-[#BE123C]" }
+  { bg: "bg-[#EFF5FC]", text: "text-[#0062AD]", darkText: "text-[#00467A]", num: "text-[#0062AD]/10", tag: "bg-white text-[#0062AD]" },
+  { bg: "bg-[#F0FDF4]", text: "text-[#16A34A]", darkText: "text-[#166534]", num: "text-[#16A34A]/10", tag: "bg-white text-[#16A34A]" },
+  { bg: "bg-[#FFFBEB]", text: "text-[#D97706]", darkText: "text-[#92400E]", num: "text-[#D97706]/10", tag: "bg-white text-[#D97706]" },
+  { bg: "bg-[#F5F3FF]", text: "text-[#7C3AED]", darkText: "text-[#5B21B6]", num: "text-[#7C3AED]/10", tag: "bg-white text-[#7C3AED]" },
+  { bg: "bg-[#FFF1F2]", text: "text-[#E11D48]", darkText: "text-[#9F1239]", num: "text-[#E11D48]/10", tag: "bg-white text-[#E11D48]" },
+  { bg: "bg-[#F0FDFA]", text: "text-[#0D9488]", darkText: "text-[#115E59]", num: "text-[#0D9488]/10", tag: "bg-white text-[#0D9488]" },
+  { bg: "bg-[#F8FAFC]", text: "text-[#475569]", darkText: "text-[#1E293B]", num: "text-[#475569]/10", tag: "bg-white text-[#475569]" },
+  { bg: "bg-[#FEF3C7]", text: "text-[#B45309]", darkText: "text-[#994B00]", num: "text-[#B45309]/10", tag: "bg-white text-[#B45309]" },
+  { bg: "bg-[#E0E7FF]", text: "text-[#4338CA]", darkText: "text-[#3730A3]", num: "text-[#4338CA]/10", tag: "bg-white text-[#4338CA]" },
+  { bg: "bg-[#FFE4E6]", text: "text-[#BE123C]", darkText: "text-[#881337]", num: "text-[#BE123C]/10", tag: "bg-white text-[#BE123C]" }
 ];
 
 const STEP_ICONS = [Search, Activity, UserPlus, Zap, CheckCircle2, Rocket, Compass, Lightbulb, Cpu, Fingerprint];
 
 const BRAND_COLORS = {
-  primary: '#0062AD',
+  primary: '#0075CB',
+  primaryDeep: '#005691',
+  primaryLight: '#F0F8FF',
+  primaryHover: '#E0F2FF',
   deep: '#304166',
   red: '#EE4932',
   lightBlue: '#BDD1FF',
   bgSoft: '#EFF5FC',
   green: '#00b050',
-  teal: '#0d9488'
+  teal: '#0d9488',
+  charcoal: '#1D2129',
+  navy: '#072A4A',
+  lightBlueBase: '#F0F8FF',
+  lightBlueHover: '#DFEFFF',
+  addButtonText: '#055087',
+  neutralText: '#595959',
+  line: '#F2F3F5'
 };
 
-const INITIAL_LEFT_LOGO = "https://img.meituan.net/content/a9cfaa78007ceea1101b8524ce9d309c121236.png"; 
-const INITIAL_RIGHT_LOGO = "https://img.meituan.net/content/ced347feedea9d2757a88ba1715be430123826.png"; 
+const INITIAL_LEFT_LOGO = "https://wp-cdn.4ce.cn/v2/Pmf7UFF.png"; // CQC Default Left
+const INITIAL_RIGHT_LOGO = "https://wp-cdn.4ce.cn/v2/cDFtr81.png"; // CCIC Default Right
 
 const PREDEFINED_MANAGERS = [
   {
@@ -246,15 +263,15 @@ const PREDEFINED_MANAGERS = [
 ];
 
 const COMMON_LOGOS = [
-  { id: 'logo-cqc', url: 'https://wp-cdn.4ce.cn/v2/OfhUkRT.png', name: '中国质量认证中心 (CQC)' },
-  { id: 'logo-ccic', url: 'https://wp-cdn.4ce.cn/v2/6p37qt1.png', name: '中国检验认证集团 (CCIC)' },
+  { id: 'logo-cqc', url: 'https://wp-cdn.4ce.cn/v2/Pmf7UFF.png', name: '中国质量认证中心 (CQC)' },
+  { id: 'logo-ccic', url: 'https://wp-cdn.4ce.cn/v2/cDFtr81.png', name: '中国检验认证集团 (CCIC)' },
 ];
 
 const COMMON_WEBSITES = [
   { id: 'site-cnca', logo: 'https://img.meituan.net/content/268dce338d6c33df9ef63ce4369ddfc422893.jpg', name: 'CNCA 认监委', url: 'http://cx.cnca.cn' },
-  { id: 'site-cqc', logo: 'https://img.meituan.net/content/4f05fc80e1c584a38b4c4dd274bc7e9949625.jpg', name: 'CQC 官网', url: 'https://www.cqc.com.cn' },
+  { id: 'site-cqc', logo: 'https://img.meituan.net/content/4f05fc80e1c584a38b4c4dd274bc7e9949625.jpg', name: 'CQC官网', url: 'https://www.cqc.com.cn' },
   { id: 'site-tianyancha', logo: 'https://img.meituan.net/content/fc494661773359d8eb74250657de423d10240.png', name: '天眼查', url: 'https://www.tianyancha.com' },
-  { id: 'site-qizhidao', logo: 'https://img.meituan.net/content/7e0ad8a677eda56cd63536741d1c805e7170.webp', name: '企知道', url: 'https://www.qizhidao.com' }
+  { id: 'site-qizhidao', logo: 'https://wp-cdn.4ce.cn/v2/yGS3zHx.png', name: '企知道', url: 'https://www.qizhidao.com' }
 ];
 
 const COMMON_CERT_TEMPLATES = [
@@ -421,7 +438,7 @@ const EditableBrandLogo: React.FC<{
     <div className={`relative flex flex-col ${align === 'left' ? 'items-start' : align === 'right' ? 'items-end' : 'items-center'} ${className}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
       {label && <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> {label}</label>}
       <div className={`relative group transition-all flex items-center justify-center border rounded-[12px] cursor-pointer ${isDragOver ? `border-[${BRAND_COLORS.primary}] bg-[${BRAND_COLORS.bgSoft}] scale-[1.02]` : src ? 'border-transparent bg-transparent shadow-none' : 'border-[#E2E8F0] bg-white shadow-sm'}`} style={{ minHeight: '80px', minWidth: '120px' }} onClick={() => fileInputRef.current?.click()}>
-        <input type="file" border-radius="12px" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
+        <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
         {src && !error ? <img src={src} alt={label} loading="lazy" className="block max-w-full max-h-[120px] object-contain p-1" onError={() => setError(true)} /> : <div className="flex flex-col items-center justify-center w-full h-full text-[#94A3B8] p-4 font-quote"><Upload className="w-8 h-8 mb-2 group-hover:text-[var(--color-primary)] transition-colors" /><span className="text-[10px] font-bold">上传或拖放</span></div>}
         {src && <div className="absolute inset-0 bg-[#304166cc] opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-[12px]"><div className="bg-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform"><Edit2 className="w-3.5 h-3.5 text-[#0062AD]" /><span className="text-xs font-bold text-[#304166]">更换</span></div></div>}
         {src && <button onClick={handleDelete} title="删除" className="absolute -top-2 -right-2 p-1 bg-[#EE4932] text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all transform hover:scale-110 active:scale-95 z-10"><X className="w-3.5 h-3.5" strokeWidth={3} /></button>}
@@ -433,15 +450,15 @@ const EditableBrandLogo: React.FC<{
 const CertificationProcess = ({ validity = '3years' }: { validity?: '1year' | '3years' }) => {
   const stages = [
     { title: "前期准备阶段", icon: <ClipboardList className="w-5 h-5" />, color: "amber", steps: [ { id: "1", title: "认证受理", desc: "明确需求 → 签合同 → 交资料" }, { id: "2", title: "方案策划", desc: "定时间 → 组审核员" }, { id: "3", title: "顾客沟通", desc: "沟通事宜 → 确认计划" } ] },
-    { title: "审核与整改阶段", icon: <ShieldCheck className="w-5 h-5" />, color: "blue", steps: [ { id: "4", title: "现场审核", desc: "进驻现场 + 按标审核" }, { id: "5", title: "整改", desc: "整改问题 → 交见证材料" }, { id: "6", title: "材料上报", desc: "确认材料 → 报总部" } ] },
+    { title: "审核与整改阶段", icon: <ShieldCheck className="w-5 h-5" />, color: "blue", steps: [ { id: "4", title: "现场审核", desc: "进驻现场 + 按标审核" }, { id: "5", title: "整改", desc: "整改问题 → 交见证材料" }, { id: "6", title: "材料上报", desc: "确认材料 →报总部" } ] },
     { title: "评审与后续监督阶段", icon: <CheckCircle2 className="w-5 h-5" />, color: "purple", steps: [ { id: "7", title: "总部评审", desc: "评审材料有效性" }, { id: "8", title: "发证书", desc: "制证 → 寄送" }, { id: "9", title: validity === '3years' ? "后续监督" : "再认证", desc: validity === '3years' ? "3年2次监督审核" : "证书到期前3个月进行再认证" } ] }
   ];
   const getColorClasses = (color: string) => {
     switch (color) {
-      case 'amber': return { bg: 'bg-[#fffbeb]', border: 'border-[#fef3c7]', text: 'text-[#d97706]', badge: 'bg-[#fef3c7] text-[#d97706]' };
-      case 'blue': return { bg: 'bg-[#eff6ff]', border: 'border-[#dbeafe]', text: 'text-[#0062AD]', badge: 'bg-[#dbeafe] text-[#0062AD]' };
-      case 'purple': return { bg: 'bg-[#f5f3ff]', border: 'border-[#ede9fe]', text: 'text-[#7c3aed]', badge: 'bg-[#ede9fe] text-[#7c3aed]' };
-      default: return { bg: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-600', badge: 'bg-gray-100 text-gray-600' };
+      case 'amber': return { bg: 'bg-[#fffbeb]', border: 'border-transparent', text: 'text-[#D48806]', badge: 'bg-[#FFF7E6] text-[#D48806]', stepTitle: 'text-[#D48806]', stepDesc: 'text-[#D48806]/60' };
+      case 'blue': return { bg: 'bg-[#eff6ff]', border: 'border-transparent', text: 'text-[#005691]', badge: 'bg-[#F0F5FF] text-[#005691]', stepTitle: 'text-[#005691]', stepDesc: 'text-[#005691]/60' };
+      case 'purple': return { bg: 'bg-[#F9F0FF]', border: 'border-transparent', text: 'text-[#722ED1]', badge: 'bg-[#F9F0FF] text-[#722ED1]', stepTitle: 'text-[#722ED1]', stepDesc: 'text-[#722ED1]/60' };
+      default: return { bg: 'bg-gray-50', border: 'border-gray-100', text: 'text-gray-600', badge: 'bg-gray-100 text-gray-600', stepTitle: 'text-[#1D2129]', stepDesc: 'text-gray-400' };
     }
   };
   return (
@@ -449,20 +466,20 @@ const CertificationProcess = ({ validity = '3years' }: { validity?: '1year' | '3
       {stages.map((stage, idx) => {
         const cls = getColorClasses(stage.color);
         return (
-          <div key={idx} className={`relative flex-1 rounded-[12px] border-2 ${cls.border} ${cls.bg} p-6 flex flex-col gap-5 transition-all duration-500`}>
+          <div key={idx} className={`relative flex-1 rounded-[12px] ${cls.bg} p-[24px] flex flex-col gap-5 transition-all duration-500`}>
             <div className={`flex items-center gap-2 font-bold text-[16px] ${cls.text}`}>{stage.icon}{stage.title}</div>
             <div className="flex flex-col gap-4">
               {stage.steps.map((step, sIdx) => (
                 <React.Fragment key={step.id}>
-                  <div className="bg-white rounded-[8px] p-4 shadow-sm border border-gray-100/50 flex flex-col gap-1.5 transition-all hover:scale-[1.02]">
-                    <div className="flex items-center gap-3"><span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black tracking-tight ${cls.badge}`}>Step {step.id}</span><span className="font-bold text-[14px] text-gray-800 animate-fade-in">{step.title}</span></div>
-                    <div className="text-[10px] text-gray-400 font-medium pl-0.5 animate-fade-in whitespace-nowrap overflow-visible" title={step.desc}>{step.desc}</div>
+                  <div className="bg-white rounded-[8px] p-4 shadow-sm flex flex-col gap-1.5 transition-all hover:scale-[1.02]">
+                    <div className="flex items-center gap-3"><span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black tracking-tight ${cls.badge}`}>Step {step.id}</span><span className={`font-semibold text-[14px] ${cls.stepTitle} animate-fade-in`}>{step.title}</span></div>
+                    <div className={`text-[12px] ${cls.stepDesc} font-normal leading-[1.6] pl-0.5 animate-fade-in whitespace-nowrap overflow-visible`} title={step.desc}>{step.desc}</div>
                   </div>
-                  {sIdx < stage.steps.length - 1 && <div className="flex justify-center -my-1"><ArrowDown className={`w-4 h-4 opacity-30 ${cls.text}`} /></div>}
+                  {sIdx < stage.steps.length - 1 && <div className="flex justify-center -my-1"><ArrowDown className="w-4 h-4 opacity-20 text-gray-400" /></div>}
                 </React.Fragment>
               ))}
             </div>
-            {idx < stages.length - 1 && <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-1 border border-gray-100 shadow-sm"><ChevronRight className="w-4 h-4 text-gray-300" /></div>}
+            {idx < stages.length - 1 && <div className="hidden md:flex absolute -right-[18px] top-1/2 -translate-y-1/2 z-10"><ChevronRight className="w-5 h-5 text-gray-300 opacity-50" /></div>}
           </div>
         );
       })}
@@ -496,28 +513,28 @@ const TechStepCard: React.FC<{
     }
   };
   return (
-    <div draggable={isEditable} onDragStart={(e) => onDragStart(e, index)} onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }} onDrop={(e) => onDrop(e, index)} className={`group flex flex-col relative p-5 rounded-[10px] ${color.bg} overflow-hidden transition-all duration-300 border h-full min-h-[220px] cursor-default ${isEditable ? 'cursor-move' : ''} border-[#E5E7EB] hover:scale-[1.02] hover:border-[#0062AD]/30`} style={{ }}>
+    <div draggable={isEditable} onDragStart={(e) => onDragStart(e, index)} onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }} onDrop={(e) => onDrop(e, index)} className={`group flex flex-col relative p-5 rounded-[10px] ${color.bg} overflow-hidden transition-all duration-300 border h-full min-h-0 cursor-default ${isEditable ? 'cursor-move' : ''} border-[#E5E6EB] hover:scale-[1.02] hover:border-[#0062AD]/30`} style={{ }}>
       <div className={`absolute -right-2 -top-4 text-[5rem] font-black italic select-none ${color.num} font-num`}>{step.id}</div>
-      <div className={`w-9 h-9 rounded-[8px] bg-white border border-[#E5E7EB] flex items-center justify-center ${color.text} mb-3 relative z-10 shrink-0`}><Icon className="w-4.5 h-4.5" /></div>
+      <div className={`w-9 h-9 flex items-center justify-start ${color.text} mb-3 relative z-10 shrink-0`}><Icon className="w-[22px] h-[22px]" /></div>
       {isEditable && (
         <div className="absolute top-4 right-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all z-20">
           <button onClick={(e) => { e.stopPropagation(); const newTags = [...step.tags, '新标签']; onUpdateTags(index, newTags); }} title="添加标签" className="p-1.5 bg-white/80 hover:bg-[#0062AD] hover:text-white text-[#0062AD] rounded-[4px] border border-[#BDD1FF]/50"><Plus className="w-3 h-3" strokeWidth={3} /></button>
-          <button onClick={(e) => { e.stopPropagation(); onRemove(index); }} title="删除流程阶段" className="p-1.5 bg-white/80 hover:bg-red-50 hover:text-white text-gray-400 rounded-[4px] border border-gray-100"><Trash2 className="w-3 h-3" strokeWidth={2.5} /></button>
+          <button onClick={(e) => { e.stopPropagation(); onRemove(index); }} title="删除流程阶段" className="p-1.5 bg-white/80 hover:bg-red-50 hover:text-white text-gray-400 rounded-[4px] border border-gray-100"><Trash2 className="w-3.5 h-3.5" strokeWidth={2.5} /></button>
         </div>
       )}
       {isEditable ? (
         <div className="space-y-1.5 relative z-10 flex flex-col mb-2">
-          <input className="!p-0 !border-0 bg-transparent focus:ring-0 text-[15px] font-bold !text-inherit leading-tight w-full outline-none" style={{ color: 'inherit' }} value={step.title} onChange={e => onUpdate(index, 'title', e.target.value)} />
-          <textarea className="!p-0 !border-0 bg-transparent focus:ring-0 text-[11px] text-gray-500 siding-relaxed resize-none w-full h-12 no-scrollbar outline-none" value={step.desc} onChange={e => onUpdate(index, 'desc', e.target.value)} />
+          <input className={`!p-0 !border-0 bg-transparent focus:ring-0 text-[15px] font-semibold ${color.text} leading-tight w-full outline-none`} value={step.title} onChange={e => onUpdate(index, 'title', e.target.value)} />
+          <textarea className="!p-0 !border-0 bg-transparent focus:ring-0 text-[12px] text-[#86909C] font-normal leading-[1.6] resize-none w-full h-12 no-scrollbar outline-none" value={step.desc} onChange={e => onUpdate(index, 'desc', e.target.value)} />
         </div>
       ) : (
-        <><h4 className={`text-[15px] font-bold ${color.text} mb-2 relative z-10 leading-tight shrink-0`}>{step.title}</h4><p className="text-[11px] text-gray-500 siding-relaxed mb-2 relative z-10 opacity-90">{step.desc}</p></>
+        <><h4 className={`text-[15px] font-semibold ${color.text} mb-2 relative z-10 leading-tight shrink-0`}>{step.title}</h4><p className="text-[12px] text-[#86909C] font-normal leading-[1.6] mb-2 relative z-10 opacity-90">{step.desc}</p></>
       )}
       <div className="grid grid-cols-2 gap-1.5 relative z-10 mt-auto shrink-0 pb-1">
         {step.tags.map((tag, tIdx) => (
-          <div key={`${step.id}-tag-${tIdx}`} draggable={isEditable} onDragStart={(e) => handleTagDragStart(e, tIdx)} onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setTagDragOver(tIdx); }} onDragLeave={() => setTagDragOver(null)} onDrop={(e) => handleTagDrop(e, tIdx)} className={`relative px-2 py-1.5 rounded-[8px] text-[10px] font-bold ${color.tag} border border-[#E5E7EB] flex items-center justify-center text-center transition-all group/tag ${tagDragOver === tIdx ? 'ring-2 ring-[#0062AD]' : ''}`}>
+          <div key={`${step.id}-tag-${tIdx}`} draggable={isEditable} onDragStart={(e) => handleTagDragStart(e, tIdx)} onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setTagDragOver(tIdx); }} onDragLeave={() => setTagDragOver(null)} onDrop={(e) => handleTagDrop(e, tIdx)} className={`relative px-2 py-1.5 rounded-[8px] text-[10px] font-bold ${color.tag} border border-[#E5E6EB] flex items-center justify-center text-center transition-all group/tag ${tagDragOver === tIdx ? 'ring-2 ring-[#0062AD]' : ''}`}>
             {isEditable ? (
-              <div className="flex items-center gap-1 w-full justify-center"><input className="!p-0 !border-0 bg-transparent focus:ring-0 text-[10px] font-bold w-full text-center placeholder:opacity-50 outline-none" value={tag} placeholder="标签" onChange={e => { const newTags = [...step.tags]; newTags[tIdx] = e.target.value; onUpdateTags(index, newTags); }} /><button onClick={() => { const newTags = step.tags.filter((_, i) => i !== tIdx); onUpdateTags(index, newTags); }} className="text-gray-300 hover:text-red-500 shrink-0 opacity-0 group-hover/tag:opacity-100 transition-opacity"><X className="w-2.5 h-2.5" /></button></div>
+              <div className="flex items-center gap-1.5 w-full justify-center"><input className={`!p-0 !border-0 bg-transparent focus:ring-0 text-[10px] font-bold w-full text-center placeholder:opacity-50 outline-none ${color.text}`} value={tag} placeholder="标签" onChange={e => { const newTags = [...step.tags]; newTags[tIdx] = e.target.value; onUpdateTags(index, newTags); }} /><button onClick={() => { const newTags = step.tags.filter((_, i) => i !== tIdx); onUpdateTags(index, newTags); }} className="text-gray-300 hover:text-red-500 shrink-0 opacity-0 group-hover/tag:opacity-100 transition-opacity"><X className="w-2.5 h-2.5" /></button></div>
             ) : (
               <span className="leading-tight text-center break-all">{tag}</span>
             )}
@@ -543,41 +560,49 @@ const TechnicalServiceProcess = ({ steps, onUpdateStep, onRemoveStep, onReorderS
 };
 
 const AgencyProfile = () => {
-  const introClass = "text-[14px] text-gray-500 siding-relaxed siding-snug text-justify px-1";
-  const tagStyle = "px-2 py-0.5 bg-[#304166] text-white rounded-md text-[10px] font-black font-num tracking-wider";
+  const introClass = "text-[14px] text-gray-500 leading-relaxed text-justify px-1";
   
   return (
     <div className="space-y-10 px-5 md:px-10 lg:px-0 text-center lg:text-left">
       <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8 items-center lg:items-stretch">
         <div className="lg:col-span-3 space-y-6 flex flex-col justify-between py-1 items-center lg:items-start">
-          <div className="space-y-4">
-            <h3 className="text-[28px] font-bold text-[#304166] tracking-tight siding-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3>
+          <div className="space-y-4 text-left">
+            <h3 className="text-[20px] font-bold text-[#005691] tracking-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3>
             <p className={introClass}>中国检验认证集团（简称中国中检）是经国务院批准设立、由国务院国资委管理的中央企业。作为以“检验、检测、认证、标准、计量”为主业的综合性质量服务机构，机构在全球范围内提供专业、高效、一站式的质量安全服务。</p>
           </div>
           <div className="pt-4 w-full my-5 lg:my-0">
             <div className="flex items-center gap-3 mb-4"><div className="h-[2px] bg-blue-100 flex-1"></div><span className="text-[11px] font-black text-[#0062AD] uppercase tracking-[0.2em] whitespace-nowrap">三大品牌</span><div className="h-[2px] bg-blue-100 flex-1"></div></div>
             <div className="grid grid-cols-3 gap-4">
-              {[{ name: '中国中检 CCIC', icon: 'https://img.meituan.net/content/85a4fc82d05398fc2174b38f3079c047286176.png' }, { name: '中国质量认证中心 CQC', icon: 'https://img.meituan.net/content/3c7d0f7f8939199ffc2353fd439669e9284944.png' }, { name: '中国汽研 CAERI', icon: 'https://img.meituan.net/content/277ebe8f724c51cf401237b50ba688a051357.jpg' }].map((sub, i) => (
+              {[{ name: 'CCIC', icon: 'https://img.meituan.net/content/85a4fc82d05398fc2174b38f3079c047286176.png' }, { name: 'CQC', icon: 'https://img.meituan.net/content/3c7d0f7f8939199ffc2353fd439669e9284944.png' }, { name: 'CAERI', icon: 'https://img.meituan.net/content/277ebe8f724c51cf401237b50ba688a051357.jpg' }].map((sub, i) => (
                 <div key={i} className="bg-white rounded-[12px] p-4 border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105 min-h-[110px]">
                   <div className="h-14 w-full flex items-center justify-center">
                     <img src={sub.icon} alt={sub.name} loading="lazy" className="max-h-full max-w-full object-contain" />
                   </div>
-                  <span className="text-[11px] font-bold text-gray-400 text-center whitespace-nowrap">{sub.name}</span>
+                  <span className="text-[13px] font-medium text-[#4E5969] text-center whitespace-nowrap">{sub.name}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        {/* Statistics Grid: 2 columns on desktop, 3 columns on tablet/mobile */}
-        <div className="w-full lg:col-span-2 grid grid-cols-3 lg:grid-cols-2 gap-[15px] md:gap-[30px] lg:pl-8 lg:border-l border-gray-100 items-center py-1">
-          {[{ label: '国家和地区服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5 text-[#0062AD]" /> }, { label: '分支机构全球布局', value: '400', unit: '+', icon: <Building className="w-5 h-5 text-[#0062AD]" /> }, { label: '专业化实验室', value: '500', unit: '+', icon: <FlaskConical className="w-5 h-5 text-[#0062AD]" /> }, { label: '全球专业技术员工', value: '20000', unit: '+', icon: <Users className="text-[#0062AD] w-5 h-5" /> }, { label: '权威认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5 text-[#0062AD]" /> }, { label: '国家级认可资质', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5 text-[#0062AD]" /> }].map((stat, i) => (
-            <div key={i} className="flex flex-col items-center lg:items-start gap-1">
-              <div className="mb-1">{stat.icon}</div>
-              <div className="flex items-baseline gap-0.5">
-                <span className="text-[20px] font-bold text-[#304166] font-num leading-none">{stat.value}</span>
-                <span className="text-[14px] font-bold text-[#0062AD] font-en font-num">{stat.unit}</span>
+        {/* Statistics Grid - Six-color dynamic matrix for CCIC */}
+        <div className="w-full lg:col-span-2 grid grid-cols-3 lg:grid-cols-2 gap-[20px] md:gap-[30px] lg:pl-8 lg:border-l border-gray-100 items-center py-1">
+          {[
+            { label: '服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5" />, color: '#165DFF' }, 
+            { label: '分支机构', value: '400', unit: '+', icon: <Building className="w-5 h-5" />, color: '#00B42A' }, 
+            { label: '专业实验室', value: '500', unit: '+', icon: <FlaskConical className="w-5 h-5" />, color: '#722ED1' }, 
+            { label: '专业员工', value: '20000', unit: '+', icon: <Users className="w-5 h-5" />, color: '#FF7D00' }, 
+            { label: '认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5" />, color: '#F53F3F' }, 
+            { label: '国家认可', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5" />, color: '#F77234' }
+          ].map((stat, i) => (
+            <div key={i} className="flex flex-col items-center lg:items-start">
+              <div className="mb-2" style={{ color: stat.color }}>
+                {React.cloneElement(stat.icon as React.ReactElement, { color: 'currentColor' })}
               </div>
-              <span className="text-[12px] font-bold text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis w-full">{stat.label}</span>
+              <div className="flex items-baseline mb-1" style={{ color: stat.color }}>
+                <span className="text-[14px] font-bold font-num leading-none">{stat.value}</span>
+                <span className="text-[12px] font-bold ml-0.5 leading-none font-en">{stat.unit}</span>
+              </div>
+              <span className="text-[12px] font-normal whitespace-nowrap overflow-hidden text-ellipsis w-full" style={{ color: stat.color, opacity: 0.6 }}>{stat.label}</span>
             </div>
           ))}
         </div>
@@ -585,66 +610,95 @@ const AgencyProfile = () => {
       
       <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
       
-      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-x-12 items-start text-center lg:text-left">
-        <div className="flex flex-col gap-y-4 w-full">
-          <div className="mb-2">
-            <div className="flex items-center justify-center lg:justify-start gap-3 border-l-0 lg:border-l-4 border-[#0062AD] lg:pl-4 mb-3">
-              <h4 className="text-[21px] font-bold text-[#304166]">中国质量认证中心 <span className="font-en">(CQC)</span></h4>
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-x-12 items-stretch text-center lg:text-left">
+        {/* LEFT COLUMN: CQC */}
+        <div className="flex flex-col h-full w-full">
+          <div className="mb-4 text-left">
+            <div className="flex items-center justify-start gap-3 border-l-4 border-[#0062AD] pl-4 mb-3">
+              <h4 className="text-[20px] font-bold text-[#005691]">中国质量认证中心 <span className="font-en">(CQC)</span></h4>
             </div>
-            <p className={introClass}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团.同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p>
+            <p className={introClass + " !px-0"}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团.同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p>
           </div>
           
-          {/* CQC Card 1: Authority Status */}
-          <div className="bg-[#F0F7FF] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#D1E4FF] transition-all hover:bg-[#E0EFFF]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#D1E4FF] flex items-center justify-center text-[#0062AD] shrink-0"><Award className="w-5 h-5" /></div>
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">权威地位</span><span className="px-2 py-0.5 bg-[#0062AD] text-white rounded-md text-[10px] font-black font-num tracking-wider">No. 001</span></div>
-              <p className="text-[13px] text-gray-500 siding-relaxed">国家认监委批准设立的专业认证机构，机构批准号：001。</p>
+          <div className="flex flex-col justify-between flex-1 mt-4 gap-4">
+            <div className="bg-[#0062AD08] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#0062AD1a] transition-all hover:bg-[#0062AD0D]">
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#005691] shrink-0 self-start mt-0.5"><Award className="w-6 h-6" /></div>
+              <div className="space-y-1.5 flex-1 text-left pt-0.5">
+                <div className="flex items-baseline justify-start gap-3"><span className="text-[14px] font-bold text-[#005691]">权威地位</span><span className="px-2 py-0.5 bg-[#0062AD] text-white rounded-md text-[10px] font-black font-num tracking-wider transform translate-y-[1px]">No. 001</span></div>
+                <p className="text-[13px] leading-relaxed font-normal" style={{ color: '#4E89B2' }}>国家认监委批准设立的专业认证机构，机构批准号：001。</p>
+              </div>
             </div>
-          </div>
-          
-          {/* CQC Card 2: International Cooperation */}
-          <div className="bg-[#F2FCF5] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#D3F2DB] transition-all hover:bg-[#E8F8EE]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#D3F2DB] flex items-center justify-center text-[#34A853] shrink-0"><Globe className="w-5 h-5" /></div>
-            <div className="space-y-1 flex-1">
-              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">国际合作</span><span className="px-2 py-0.5 bg-[#34A853] text-white rounded-md text-[10px] font-black font-num tracking-wider">IQNet 中国成员</span></div>
-              <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
+            
+            <div className="bg-[#34A85308] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#34A8531a] transition-all hover:bg-[#34A8530D]">
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#166534] shrink-0 self-start mt-0.5"><Globe className="w-6 h-6" /></div>
+              <div className="space-y-1 flex-1 text-left pt-0.5">
+                <div className="flex items-baseline justify-start gap-3"><span className="text-[14px] font-bold text-[#166534]">国际合作</span><span className="px-2 py-0.5 bg-[#34A853] text-white rounded-md text-[10px] font-black font-num tracking-wider transform translate-y-[1px]">IQNet 中国成员</span></div>
+                <p className="text-[12.5px] leading-snug line-clamp-2 font-normal" style={{ color: '#529E66' }}>代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
+              </div>
             </div>
-          </div>
-          
-          {/* CQC Card 3: Business Scope */}
-          <div className="bg-[#FFF9F0] rounded-[12px] p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-[#FFE8C8] transition-all hover:bg-[#FFF4E5]">
-            <div className="w-10 h-10 rounded-[8px] bg-white border border-[#FFE8C8] flex items-center justify-center text-[#FBBC05] shrink-0"><Grid className="w-5 h-5" /></div>
-            <div className="space-y-1 flex-1">
-              <div className="flex items-center justify-center sm:justify-start gap-3"><span className="text-[14px] font-bold text-[#304166]">业务覆盖</span><span className="px-2 py-0.5 bg-[#FBBC05] text-white rounded-md text-[10px] font-black font-num tracking-wider">全产业链覆盖</span></div>
-              <p className="text-[12.5px] text-gray-500 siding-snug line-clamp-2">提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
+            
+            <div className="bg-[#FBBC0508] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#FBBC051a] transition-all hover:bg-[#FBBC050D]">
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#B45309] shrink-0 self-start mt-0.5"><Grid className="w-6 h-6" /></div>
+              <div className="space-y-1 flex-1 text-left pt-0.5">
+                <div className="flex items-baseline justify-start gap-3"><span className="text-[14px] font-bold text-[#B45309]">业务覆盖</span><span className="px-2 py-0.5 bg-[#FBBC05] text-white rounded-md text-[10px] font-black font-num tracking-wider transform translate-y-[1px]">全产业链覆盖</span></div>
+                <p className="text-[12.5px] leading-snug line-clamp-2 font-normal" style={{ color: '#B27A4E' }}>提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="flex flex-col gap-y-4 w-full mt-10 lg:mt-0">
-          <div className="mb-2">
-            <div className="flex items-center justify-center lg:justify-start gap-3 border-l-0 lg:border-l-4 border-[#EE4932] lg:pl-4 mb-3">
-              <h4 className="text-[21px] font-bold text-[#304166]">中国中检广东公司 <span className="font-en">(CCIC GD)</span></h4>
+        {/* RIGHT COLUMN: CCIC GD */}
+        <div className="flex flex-col w-full mt-10 lg:mt-0 text-left">
+          <div className="mb-4">
+            <div className="flex items-center justify-start gap-3 border-l-4 border-[#EE4932] pl-4 mb-3">
+              <h4 className="text-[20px] font-bold text-[#005691]">中国中检广东公司 <span className="font-en">(CCIC GD)</span></h4>
             </div>
-            <p className={introClass}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p>
+            <p className={introClass + " !px-0"}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            {[{ label: '分支机构辐射全省', value: '19', unit: '个', icon: <MapPin className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }, { label: '专业技术实验室', value: '14', unit: '个', icon: <FlaskConical className="w-4 h-4 text-[#EE4932]" />, bg: 'bg-red-50/50' }].map((stat, i) => (
-              <div key={i} className={`${stat.bg} border border-[#E5E7EB] rounded-[12px] px-5 py-4 flex flex-col items-center lg:items-start justify-center gap-1 shadow-none`}>
-                <div className="w-8 h-8 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center shrink-0">{stat.icon}</div>
-                <div className="flex items-baseline gap-1 mt-0.5"><span className="text-[22px] font-bold text-[#304166] font-num siding-none">{stat.value}</span><span className="text-[12px] font-bold text-[#304166]">{stat.unit}</span></div>
-                <span className="text-[10px] font-bold text-gray-400 whitespace-nowrap">{stat.label}</span>
+          
+          {/* CCIC GD Statistics Area - Optimized Label Styles */}
+          <div className="grid grid-cols-3 gap-x-6 mt-6 mb-4 w-full">
+            {[
+              { label: '分公司', value: '19', unit: '家', icon: <MapPin className="w-5 h-5" />, color: '#005691', labelColor: '#4E89B2' }, 
+              { label: '子公司', value: '3', unit: '家', icon: <GitBranch className="w-5 h-5" />, color: '#006B19', labelColor: '#529E66' },
+              { label: '实验室', value: '14', unit: '个', icon: <FlaskConical className="w-5 h-5" />, color: '#D4622A', labelColor: '#B27A4E' }
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="mb-1" style={{ color: stat.color }}>{stat.icon}</div>
+                <div className="flex items-baseline" style={{ color: stat.color }}>
+                  <span className="text-[14px] font-bold font-num leading-none">{stat.value}</span>
+                  <span className="text-[12px] font-bold ml-0.5 leading-none">{stat.unit}</span>
+                </div>
+                <span className="text-[12px] font-normal mt-[4px] leading-none" style={{ color: stat.labelColor }}>{stat.label}</span>
               </div>
             ))}
           </div>
-          <div className="mt-1 space-y-4">
-            <div className="flex items-center justify-center lg:justify-start gap-2"><Grid className="w-4 h-4 text-[#EE4932]" /><span className="text-[14px] font-bold text-[#304166]">服务范围 <span className="text-gray-300 font-en">/ Service Scope</span></span></div>
-            <div className="grid grid-cols-3 gap-y-8 gap-x-4 pr-0 lg:pr-2">
-              {[{ label: '农产品食品', icon: <Leaf className="w-4 h-4" />, color: 'text-green-500', bg: 'bg-green-50' }, { label: '石油化工', icon: <Droplets className="w-4 h-4" />, color: 'text-amber-500', bg: 'bg-amber-50' }, { label: '工业品检测', icon: <Factory className="w-4 h-4" />, color: 'text-blue-500', bg: 'bg-blue-50' }, { label: '消费品安全', icon: <ShoppingBag className="w-4 h-4" />, color: 'text-pink-500', bg: 'bg-pink-50' }, { label: '体系认证', icon: <Award className="w-4 h-4" />, color: 'text-[#0062AD]', bg: 'bg-blue-50' }, { label: '技术服务', icon: <Settings className="w-4 h-4" />, color: 'text-purple-500', bg: 'bg-purple-50' }].map((serv, i) => (
+          
+          {/* Service Scope with Grid - 9-color scheme and 28px icons */}
+          <div className="mt-[20px] space-y-4">
+            <div className="grid grid-cols-3 gap-x-4">
+              <div className="col-start-2 flex items-center justify-center gap-2 whitespace-nowrap">
+                <Scaling className="w-4 h-4 text-[#EE4932]" />
+                <span className="text-[14px] font-bold text-[#304166]">服务范围</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-y-6 gap-x-4">
+              {[
+                { label: '农产品食品', icon: <Leaf className="w-7 h-7" />, iconColor: '#00B42A', textColor: '#3CB371' }, 
+                { label: '石油化工', icon: <Droplets className="w-7 h-7" />, iconColor: '#FF7D00', textColor: '#DAA520' }, 
+                { label: '矿产品检测', icon: <Box className="w-7 h-7" />, iconColor: '#4E5969', textColor: '#708090' },
+                { label: '工业品检测', icon: <Factory className="w-7 h-7" />, iconColor: '#0075CB', textColor: '#4682B4' }, 
+                { label: '消费品安全', icon: <ShoppingBag className="w-7 h-7" />, iconColor: '#F53F3F', textColor: '#CD5C5C' }, 
+                { label: '有害生物防控', icon: <Bug className="w-7 h-7" />, iconColor: '#14C9C9', textColor: '#20B2AA' },
+                { label: '体系认证', icon: <Award className="w-7 h-7" />, iconColor: '#722ED1', textColor: '#9370DB' }, 
+                { label: '计量校准', icon: <Target className="w-7 h-7" />, iconColor: '#F77234', textColor: '#E9967A' },
+                { label: '技术服务', icon: <Settings className="w-7 h-7" />, iconColor: '#165DFF', textColor: '#6495ED' }
+              ].map((serv, i) => (
                 <div key={i} className="flex flex-col items-center gap-2 transition-transform hover:-translate-y-1">
-                  <div className={`w-11 h-11 border border-[#E5E7EB] rounded-[8px] ${serv.bg} flex items-center justify-center ${serv.color}`}>{serv.icon}</div>
-                  <span className="text-[11px] font-bold text-gray-600 whitespace-nowrap">{serv.label}</span>
+                  <div className={`w-11 h-11 flex items-center justify-center bg-transparent`} style={{ color: serv.iconColor }}>
+                    {serv.icon}
+                  </div>
+                  <span className="text-[12px] font-semibold whitespace-nowrap text-center" style={{ color: serv.textColor }}>{serv.label}</span>
                 </div>
               ))}
             </div>
@@ -656,12 +710,67 @@ const AgencyProfile = () => {
 };
 
 const Qualifications = () => {
-  const headerClass = "bg-[#304166] text-white py-2 px-4 text-center font-bold text-[15px] rounded-t-[16px] tracking-widest";
-  const imgContainerClass = "border border-[#E5E7EB] rounded-b-[12px] overflow-hidden bg-white flex items-center justify-center p-6"; 
+  const headerWrapperClass = "relative inline-block mb-6 mx-auto";
+  const headerTextClass = "text-[#304166] font-bold text-[16px] uppercase tracking-widest relative z-10 px-1 text-center";
+  const headerLineClass = "absolute -bottom-1.5 left-0 w-full h-[1px] bg-[#E5E6EB]";
+  
+  const imgWrapperClass = "bg-[#F8FAFC] border border-transparent rounded-[20px] p-8 flex items-center justify-center transition-all";
+  const certImgClass = "w-full h-auto block rounded-sm shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-[#E5E6EB] transition-transform hover:scale-[1.01]";
+
   return (
-    <div className="space-y-10">
-      <div className="max-w-[800px] mx-auto space-y-3"><div className={headerClass}>营业执照</div><div className={`${imgContainerClass} bg-slate-50/50`}><div className="relative group/license"><div className="absolute inset-0 ring-1 ring-black/5 rounded-sm pointer-events-none z-10"></div><img src="https://img.meituan.net/content/f9409b4072b52fcca451773db527b477176762.jpg" alt="营业执照" loading="lazy" className="w-full h-auto block rounded-sm shadow-sm" /></div></div></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch"><div className="space-y-3 flex flex-col"><div className={headerClass}>认证机构批准书</div><div className={`${imgContainerClass} flex-1`}><img src="https://img.meituan.net/content/fc461674b29c66fc272087ea4df91b81344956.png" alt="认证机构批准书" loading="lazy" className="w-full h-auto block" /></div></div><div className="space-y-3 flex flex-col"><div className={headerClass}>管理体系认证机构认可证书</div><div className={`${imgContainerClass} flex-1`}><img src="https://img.meituan.net/content/6db09cf3cf38fb658b6874ad1d161b90193660.jpg" alt="管理体系认证机构认可证书" loading="lazy" className="w-full h-auto block" /></div></div></div>
+    <div className="space-y-14 px-4 sm:px-10 text-center">
+      <div className="max-w-[720px] mx-auto">
+        <div className={headerWrapperClass}>
+          <h5 className={headerTextClass}>营业执照</h5>
+          <div className={headerLineClass}></div>
+        </div>
+        <div className={imgWrapperClass}>
+          <div className="w-full max-w-[580px]">
+            <img 
+              src="https://img.meituan.net/content/f9409b4072b52fcca451773db527b477176762.jpg" 
+              alt="营业执照" 
+              loading="lazy" 
+              className={certImgClass} 
+            />
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex flex-row gap-[24px] items-stretch w-full">
+        <div className="flex-1 flex flex-col">
+          <div className={headerWrapperClass}>
+            <h5 className={headerTextClass}>认证机构批准书</h5>
+            <div className={headerLineClass}></div>
+          </div>
+          <div className={`${imgWrapperClass} flex-1`}>
+            <div className="w-full">
+              <img 
+                src="https://img.meituan.net/content/fc461674b29c66fc272087ea4df91b81344956.png" 
+                alt="认证机构批准书" 
+                loading="lazy" 
+                className={certImgClass} 
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex-1 flex flex-col">
+          <div className={headerWrapperClass}>
+            <h5 className={headerTextClass}>认可证书</h5>
+            <div className={headerLineClass}></div>
+          </div>
+          <div className={`${imgWrapperClass} flex-1`}>
+            <div className="w-full">
+              <img 
+                src="https://img.meituan.net/content/6db09cf3cf38fb658b6874ad1d161b90193660.jpg" 
+                alt="认可证书" 
+                loading="lazy" 
+                className={certImgClass} 
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -684,7 +793,6 @@ const App: React.FC = () => {
   const [isDraggingOverWebsites, setIsDraggingOverWebsites] = useState(false);
   const [isDraggingOverCertTemplates, setIsDraggingOverCertTemplates] = useState(false);
   const [isDraggingOverSidebarTemplates, setIsDraggingOverSidebarTemplates] = useState(false);
-  const [isDraggingOverCaseBlock, setIsDraggingOverCaseBlock] = useState<string | null>(null);
   const [isDraggingExcelOverCase, setIsDraggingExcelOverCase] = useState(false);
   const [draggingExcelTargetId, setDraggingExcelTargetId] = useState<string | null>(null);
   const [dragOverModuleId, setDragOverModuleId] = useState<string | null>(null);
@@ -834,15 +942,23 @@ const App: React.FC = () => {
   const addCertItemToModule = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => { if (m.id === moduleId && m.type === 'cert') { const nextYear = 2026 + m.items.length; const newItem: CertItem = { id: Date.now().toString(), type: `${nextYear}年监督审核费`, project: '审核费+管理年金', amount: 0 }; return { ...m, items: [...m.items, newItem] }; } return m; }) })); };
   const removeCertItemFromModule = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'cert' && m.items.length > 0 ? { ...m, items: m.items.slice(0, -1) } : m) })); };
   const resetCertModuleItems = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'cert' ? { ...m, items: [...DEFAULT_CERT_ITEMS].map(i => ({ ...i, id: Math.random().toString() })) } : m) })); };
+  
   const updateTechService = (moduleId: string, serviceId: string, field: keyof TechnicalService, value: any) => {
     setData(prev => {
       const normalizedId = serviceId.padStart(2, '0');
+      const iIdx = prev.techServiceSteps.findIndex(s => s.id === normalizedId);
       const newModules = prev.modules.map(m => m.id === moduleId && m.type === 'tech' ? { ...m, services: m.services.map(s => s.id === serviceId ? { ...s, [field]: value } : s) } : m);
-      const newSteps = prev.techServiceSteps.map(step => { if (step.id === normalizedId) { if (field === 'name') return { ...step, title: value }; if (field === 'description') return { ...step, tags: value.split(/[、,，\s]+/).filter(Boolean) }; } return step; });
+      const newSteps = [...prev.techServiceSteps];
+      if (iIdx !== -1) {
+        if (field === 'name') newSteps[iIdx] = { ...newSteps[iIdx], title: value };
+        if (field === 'description') newSteps[iIdx] = { ...newSteps[iIdx], tags: value.split(/[、,，\s]+/).filter(Boolean) };
+      }
       return { ...prev, modules: newModules, techServiceSteps: newSteps };
     });
   };
+
   const toggleTechService = (moduleId: string, serviceId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'tech' ? { ...m, services: m.services.map(s => s.id === serviceId ? { ...s, checked: !s.checked } : s) } : m) })); };
+  
   const handleRemoveTechService = (moduleId: string, serviceIdx: number) => {
     setData(prev => {
       const newModules = prev.modules.map(m => { if (m.id === moduleId && m.type === 'tech') { const newServices = [...m.services]; newServices.splice(serviceIdx, 1); return { ...m, services: newServices }; } return m; });
@@ -851,6 +967,14 @@ const App: React.FC = () => {
       return { ...prev, modules: newModules, techServiceSteps: reindexedSteps };
     });
   };
+
+  const removeTechServiceFromModule = (moduleId: string) => {
+    const module = data.modules.find(m => m.id === moduleId && m.type === 'tech') as TechModule;
+    if (module && module.services.length > 0) {
+      handleRemoveTechService(moduleId, module.services.length - 1);
+    }
+  };
+
   const handleReorderTechServices = (moduleId: string, sourceIdx: number, targetIdx: number) => {
     setData(prev => {
       const newModules = prev.modules.map(m => { if (m.id === moduleId && m.type === 'tech') { const newServices = [...m.services]; const [removed] = newServices.splice(sourceIdx, 1); newServices.splice(targetIdx, 0, removed); return { ...m, services: newServices }; } return m; });
@@ -859,6 +983,7 @@ const App: React.FC = () => {
       return { ...prev, techServiceSteps: reindexedSteps, modules: newModules };
     });
   };
+
   const addTechServiceToModule = (moduleId: string) => {
     setData(prev => {
       const newIdx = prev.techServiceSteps.length + 1; const newId = newIdx.toString();
@@ -868,21 +993,17 @@ const App: React.FC = () => {
       return { ...prev, modules: newModules, techServiceSteps: [...prev.techServiceSteps, newStep] };
     });
   };
-  const removeTechServiceFromModule = (moduleId: string) => {
-    setData(prev => {
-      const module = prev.modules.find(m => m.id === moduleId && m.type === 'tech') as TechModule;
-      if (module && module.services.length > 0) return handleRemoveTechService(moduleId, module.services.length - 1);
-      return prev;
-    });
-  };
+
   const resetTechModuleServices = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'tech' ? { ...m, services: [...DEFAULT_TECH_SERVICES].map(s => ({ ...s, id: Math.random().toString() })) } : m), techServiceSteps: [...DEFAULT_TECH_STEP_CONTENT] })); };
   const updateTechModuleFee = (moduleId: string, fee: number) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'tech' ? { ...m, fee } : m) })); };
   const updateTechModuleDetails = (moduleId: string, field: 'minDays' | 'auditCerts', value: number) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'tech' ? { ...m, details: { ...m.details, [field]: value } } : m) })); };
+  
   const addRemark = () => setData(prev => ({ ...prev, additionalRemarks: [...prev.additionalRemarks, ''] }));
   const removeLastRemark = () => { setData(prev => ({ ...prev, additionalRemarks: prev.additionalRemarks.length > 0 ? prev.additionalRemarks.slice(0, -1) : prev.additionalRemarks })); };
   const removeRemark = (index: number) => setData(prev => ({ ...prev, additionalRemarks: prev.additionalRemarks.filter((_, i) => i !== index) }));
-  const resetRemarks = () => { setData(prev => ({ ...prev, note1Prefix: INITIAL_DATA.note1Prefix, note1Count: INITIAL_DATA.note1Count, note3Text: INITIAL_DATA.note3Text, additionalRemarks: [], travelExpenseOption: INITIAL_DATA.travelExpenseOption })); setIsNote1Visible(true); setIsNote2Visible(true); setIsNote3Visible(true); };
+  const resetRemarks = () => { setData(prev => ({ ...prev, note1Prefix: INITIAL_DATA.note1Prefix, note1Count: INITIAL_DATA.note1Count, note1Suffix: INITIAL_DATA.note1Suffix, note3Text: INITIAL_DATA.note3Text, additionalRemarks: [], travelExpenseOption: INITIAL_DATA.travelExpenseOption })); setIsNote1Visible(true); setIsNote2Visible(true); setIsNote3Visible(true); };
   const updateAdditionalRemark = (index: number, value: string) => setData(prev => ({ ...prev, additionalRemarks: prev.additionalRemarks.map((r, i) => i === index ? value : r) }));
+  
   const toggleStandard = (std: string) => setData(prev => ({ ...prev, certStandards: prev.certStandards.includes(std) ? prev.certStandards.filter(s => s !== std) : [...prev.certStandards, std] }));
   const handleAddCustomStandard = () => { if (customStandardInput.trim()) { const val = customStandardInput.trim(); if (!data.certStandards.includes(val)) setData(prev => ({ ...prev, certStandards: [...prev.certStandards, val] })); setCustomStandardInput(''); setIsAddingCustom(false); } };
   
@@ -923,7 +1044,17 @@ const App: React.FC = () => {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`报价单_${data.clientName}_${data.quoteDate}.pdf`);
+
+      // 动态生成 PDF 文件名
+      // 1. 提取并精简标准名称 (例如 ISO 9001:2015 提取 ISO 9001)
+      const cleanStandards = data.certStandards
+        .map(s => s.split(/[:（]/)[0].trim())
+        .join('、');
+      
+      // 2. 拼接文件名: [企业名]-[精简标准名][报价单动态标题].pdf
+      const fileName = `${data.clientName || '未命名公司'}-${cleanStandards}${dynamicTitle}.pdf`;
+      
+      pdf.save(fileName);
     } catch (err) {
       console.error("PDF generation failed:", err);
       alert("生成 PDF 失败，可能是内容过多超过浏览器限制。请尝试减少模块或简化内容。");
@@ -932,8 +1063,13 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDownloadPDFNew = async () => {
+     handleDownloadPDF();
+  };
+
   const handleDragStart = (e: React.DragEvent, moduleId: string) => { e.dataTransfer.setData('moduleId', moduleId); e.dataTransfer.effectAllowed = 'move'; };
   const handleDropToMain = (e: React.DragEvent) => { e.preventDefault(); setIsDraggingOverMain(false); };
+  
   const handleModuleReorder = (e: React.DragEvent, targetId: string) => {
     e.stopPropagation(); setDragOverModuleId(null);
     const sourceId = e.dataTransfer.getData('moduleId');
@@ -955,6 +1091,7 @@ const App: React.FC = () => {
     });
     triggerToast();
   };
+
   const handleStepReorder = (sourceIdx: number, targetIdx: number) => {
     setData(prev => {
       const newSteps = [...prev.techServiceSteps]; const [removed] = newSteps.splice(sourceIdx, 1); newSteps.splice(targetIdx, 0, removed);
@@ -963,6 +1100,7 @@ const App: React.FC = () => {
       return { ...prev, techServiceSteps: reindexedSteps, modules: newModules };
     });
   };
+
   const handleUpdateTechStep = (index: number, field: keyof TechServiceStep, value: any) => {
     setData(prev => {
       const step = prev.techServiceSteps[index]; const normalizedServiceId = step.id.replace(/^0+/, '');
@@ -971,6 +1109,7 @@ const App: React.FC = () => {
       return { ...prev, techServiceSteps: newSteps, modules: newModules };
     });
   };
+
   const handleUpdateTechStepTags = (index: number, newTags: string[]) => {
     setData(prev => {
       const step = prev.techServiceSteps[index]; const normalizedServiceId = step.id.replace(/^0+/, '');
@@ -979,6 +1118,7 @@ const App: React.FC = () => {
       return { ...prev, techServiceSteps: newSteps, modules: newModules };
     });
   };
+
   const handleRemoveStep = (index: number) => {
     setData(prev => {
       const newSteps = prev.techServiceSteps.filter((_, i) => i !== index);
@@ -987,12 +1127,15 @@ const App: React.FC = () => {
       return { ...prev, techServiceSteps: reindexedSteps, modules: newModules };
     });
   };
+
   const handleRemoveLastStep = () => { if (data.techServiceSteps.length > 0) handleRemoveStep(data.techServiceSteps.length - 1); };
   const handleSelectManager = (manager: typeof PREDEFINED_MANAGERS[0]) => { setData({ ...data, contact: { ...data.contact, name: manager.name, jobTitle1: manager.jobTitle1, phone: manager.phone, email: manager.email, qrCode: manager.qrCode } }); setIsManagerSelectOpen(false); };
+  
   const handleCertTemplateFiles = (files: FileList | null) => { if (!files) return; const readers = Array.from(files).map(file => { return new Promise<string>((resolve) => { const reader = new FileReader(); reader.onloadend = async () => { const base64 = reader.result as string; const croppedBase64 = await cropWhiteBottom(base64); resolve(croppedBase64); }; reader.readAsDataURL(file); }); }); Promise.all(readers).then(newImages => { setData(prev => ({ ...prev, certTemplates: [...prev.certTemplates, ...newImages] })); }); };
   const handlePaste = (e: React.ClipboardEvent) => { const items = e.clipboardData.items; for (let i = 0; i < items.length; i++) { if (items[i].type.indexOf('image') !== -1) { const blob = items[i].getAsFile(); if (blob) { const reader = new FileReader(); reader.onloadend = async () => { const base64 = reader.result as string; const croppedBase64 = await cropWhiteBottom(base64); setData(prev => ({ ...prev, certTemplates: [...prev.certTemplates, croppedBase64] })); }; reader.readAsDataURL(blob); } } } };
   const removeCertTemplate = (index: number) => { setData(prev => ({ ...prev, certTemplates: prev.certTemplates.filter((_, i) => i !== index) })); };
   const addCommonTemplate = async (url: string) => { const croppedUrl = await cropWhiteBottom(url); setData(prev => ({ ...prev, certTemplates: [...prev.certTemplates, croppedUrl] })); };
+  
   const addTechStep = () => {
     const newIdx = data.techServiceSteps.length + 1; const newId = newIdx.toString().padStart(2, '0');
     const newStep: TechServiceStep = { id: newId, title: '新流程阶段', desc: '请描述此流程的具体内容', tags: ['待定义'] };
@@ -1003,8 +1146,8 @@ const App: React.FC = () => {
 
   const addBlockToModule = (moduleId: string | null, type: 'text' | 'table' | 'image') => {
     const newBlock: CaseBlock = 
-      type === 'text' ? { id: Date.now().toString(), type: 'text', content: '点击此处输入描述内容...', fontSize: 14, fontWeight: 'normal', color: '#4b5563', align: 'left' } :
-      type === 'table' ? { id: Date.now().toString(), type: 'table', tableData: [['项目名称', '内容描述'], ['示例项目A', '描述效果A'], ['示例项目B', '描述效果B']], rowSpacing: 12, columnWidths: [50, 50] } :
+      type === 'text' ? { id: Date.now().toString(), type: 'text', content: '点击此处输入描述内容...', fontSize: 14, fontWeight: 'normal', color: '#4b5563', align: 'left', underline: false } :
+      type === 'table' ? { id: Date.now().toString(), type: 'table', tableData: [['项目名称', '内容描述'], ['示例项目A', '描述效果A'], ['示例项目B', '描述效果B']], rowSpacing: 12, columnWidths: [50, 50], fontSize: 13, fontWeight: 'normal', align: 'left', color: '#4b5563', underline: false } :
       { id: Date.now().toString(), type: 'image', images: [] };
     setData(prev => {
       if (moduleId === null) return { ...prev, caseBlocks: [...prev.caseBlocks, newBlock] };
@@ -1066,7 +1209,7 @@ const App: React.FC = () => {
     setData(prev => {
       const updateFn = (blocks: CaseBlock[]) => blocks.map(b => b.id === blockId ? { ...b, images: b.images?.filter((_, i) => i !== imgIdx) } : b);
       if (moduleId === null) return { ...prev, caseBlocks: updateFn(prev.caseBlocks) };
-      return { ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'custom' ? { ...m, blocks: m.blocks.filter(b => b.id !== blockId) ? m.blocks.map(b => b.id === blockId ? { ...b, images: b.images?.filter((_, i) => i !== imgIdx) } : b) : m.blocks } : m) };
+      return { ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'custom' ? { ...m, blocks: m.blocks.filter(b => b.id !== blockId) } : m) };
     });
   };
 
@@ -1089,7 +1232,7 @@ const App: React.FC = () => {
       const sanitizedData = dataArr.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== "")).map(row => row.map(cell => cell === null || cell === undefined ? "" : String(cell)));
       if (sanitizedData.length === 0) return;
       const columnCount = sanitizedData[0].length; const defaultWidth = 100 / columnCount;
-      const newBlock: CaseBlock = { id: Date.now().toString(), type: 'table', tableData: sanitizedData, rowSpacing: 12, columnWidths: Array(columnCount).fill(Math.floor(defaultWidth)) };
+      const newBlock: CaseBlock = { id: Date.now().toString(), type: 'table', tableData: sanitizedData, rowSpacing: 12, columnWidths: Array(columnCount).fill(Math.floor(defaultWidth)), fontSize: 13, fontWeight: 'normal', align: 'left', color: '#4b5563', underline: false };
       setData(prev => {
         if (moduleId === null) return { ...prev, caseBlocks: [...prev.caseBlocks, newBlock] };
         return { ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'custom' ? { ...m, blocks: [...m.blocks, newBlock] } : m) };
@@ -1109,7 +1252,7 @@ const App: React.FC = () => {
     const primaryColor = BRAND_COLORS.primary; const deepColor = BRAND_COLORS.deep; const textColor = '#333333';
     const sizeTitleMain = 22; const sizeTitleModule = 17; const sizeText = 14; const sizeSmall = 13; const currentWidth = '297mm';
     const visibleNotes = [];
-    if (isNote1Visible) visibleNotes.push({ id: 'note1', content: `以上按${data.note1Prefix} ${data.note1Count} 人以内规模的基础上报价，本报价单 60 天有效。` });
+    if (isNote1Visible) visibleNotes.push({ id: 'note1', content: `以上按${data.note1Prefix} ${data.note1Count} ${data.note1Suffix}` });
     if (isNote2Visible) {
       const content = getTravelNote(data.travelExpenseOption);
       visibleNotes.push({ id: 'note2', content });
@@ -1121,28 +1264,28 @@ const App: React.FC = () => {
       const matched = title.match(new RegExp(`^(.*?)${suffix}$`)) || title.match(/^(.*?)报价$/) || title.match(/^(.*?)费$/);
       return matched ? matched[1].trim() : '';
     };
-    const docImgContainerClass = "border border-[#E5E7EB] rounded-[12px] overflow-hidden bg-white shadow-none flex items-center justify-center p-6 transition-transform hover:scale-[1.02] aspect-[1/1.4] w-full h-full";
+    const docImgContainerClass = "border border-[#F2F3F5] rounded-[12px] overflow-hidden bg-white shadow-none flex items-center justify-center p-6 transition-transform hover:scale-[1.02] aspect-[1/1.4] w-full h-full";
     const renderBlocksInDoc = (blocks: CaseBlock[]) => {
       return (
         <div className="space-y-10">
           {blocks.map((block) => (
             <div key={block.id} className="animate-fade-in" style={{ textAlign: block.align || 'left' }}>
               {block.type === 'text' ? (
-                <div style={{ fontSize: `${block.fontSize || 14}px`, fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), color: block.color || '#4b5563', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{block.content}</div>
+                <div style={{ fontSize: `${block.fontSize || 14}px`, fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), color: block.color || '#4b5563', textDecoration: block.underline ? 'underline' : 'none', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{block.content}</div>
               ) : block.type === 'table' ? (
-                <div className="overflow-hidden border border-[#E5E7EB] rounded-[12px]" style={{ textAlign: 'left', backgroundColor: '#f8fafc' }}>
+                <div className="overflow-hidden border border-[#F2F3F5] rounded-[12px]" style={{ textAlign: 'left', backgroundColor: '#f8fafc' }}>
                   <table className="w-full text-sm border-collapse" style={{ tableLayout: 'fixed' }}>
                     <thead className="bg-[#F8FAFF] text-[#0062AD]">
-                      <tr>{block.tableData?.[0].map((cell, i) => (<th key={i} className="px-4 py-5 text-left font-bold border-b border-[#E5E7EB]" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}>{cell}</th>))}</tr>
+                      <tr>{block.tableData?.[0].map((cell, i) => (<th key={i} className="px-4 py-5 text-left font-bold border-b border-[#F2F3F5]" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}>{cell}</th>))}</tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      {block.tableData?.slice(1).map((row, ri) => (<tr key={ri} className="border-b border-[#E5E7EB]">{row.map((cell, ci) => (<td key={ci} className="px-4 text-gray-600 font-quote" style={{ paddingBlock: `${block.rowSpacing || 12}px`, wordBreak: 'break-all', whiteSpace: 'normal', textAlign: 'right' }}>{cell}</td>))}</tr>))}
+                    <tbody className="divide-y divide-[#F2F3F5]">
+                      {block.tableData?.slice(1).map((row, ri) => (<tr key={ri} className="border-b border-[#F2F3F5]">{row.map((cell, ci) => (<td key={ci} className="px-4 font-quote" style={{ paddingBlock: `${block.rowSpacing || 12}px`, wordBreak: 'break-all', whiteSpace: 'normal', textAlign: block.align || 'left', fontSize: `${block.fontSize || 13}px`, color: block.color || '#4b5563', fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), textDecoration: block.underline ? 'underline' : 'none' }}>{cell}</td>))}</tr>))}
                     </tbody>
                   </table>
                 </div>
               ) : (
                 <div className="w-full">
-                  {block.images && block.images.length > 0 && (<div className={`grid ${block.images.length <= 2 ? 'grid-cols-2' : 'grid-cols-3'} gap-[40px] items-start`}>{block.images.map((img, idx) => (<div key={idx} className={block.images && block.images.length <= 2 ? 'border border-[#E5E7EB] rounded-[12px] overflow-hidden bg-white shadow-none flex items-center justify-center p-6 transition-transform hover:scale-[1.02] aspect-[1/1.4]' : docImgContainerClass}><img src={img} alt={`Image ${idx}`} loading="lazy" className="max-w-full max-h-full object-contain" /></div>))}</div>)}
+                  {block.images && block.images.length > 0 && (<div className={`grid ${block.images.length <= 2 ? 'grid-cols-2' : 'grid-cols-3'} gap-[40px] items-start`}>{block.images.map((img, idx) => (<div key={idx} className={block.images && block.images.length <= 2 ? 'border border-[#F2F3F5] rounded-[12px] overflow-hidden bg-white shadow-none flex items-center justify-center p-6 transition-transform hover:scale-[1.02] aspect-[1/1.4]' : docImgContainerClass}><img src={img} alt={`Image ${idx}`} loading="lazy" className="max-w-full max-h-full object-contain" /></div>))}</div>)}
                 </div>
               )}
             </div>
@@ -1151,27 +1294,250 @@ const App: React.FC = () => {
       );
     };
 
+    const ModuleHeader = ({ title }: { title: string }) => (
+      <div className="flex justify-center mb-10">
+        <div className="border-b border-[#E5E6EB] px-8 py-1.5 w-fit">
+          <h4 className="uppercase tracking-[0.12em] font-black" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>{title}</h4>
+        </div>
+      </div>
+    );
+
+    const FinalInfoRow = ({ label, content, isEn = false, isBold = false, isSubject = false }: { label: string, content: string, isEn?: boolean, isBold?: boolean, isSubject?: boolean }) => (
+      <div className="flex items-baseline w-full" style={{ lineHeight: 1.8 }}>
+        <span className="font-medium text-[14px] text-[#4E5969] shrink-0 inline-block" style={{ width: '100px' }}>{label}</span>
+        <div className="flex items-baseline gap-[40px] flex-1 min-w-0">
+          <span className={`${isBold ? 'font-medium text-[15px]' : 'font-normal text-[14px]'} text-[#1D2129] ${isEn ? 'font-en' : ''} break-words`}>{content}</span>
+          {isSubject && (
+            <div className="inline-flex items-baseline bg-[#F2F3F5] px-2 py-0.5 rounded-[4px] shrink-0 ml-4">
+              <span className="text-[13px] font-normal text-[#4E5969] leading-none">有效人数：</span>
+              <span className="text-[14px] font-medium text-[#1D2129] font-num leading-none transform translate-y-[1px]">{data.employeeCount}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+
     return (
       <div ref={containerRef} className={`${isPrint ? '' : 'mx-auto'} bg-white p-[32px] md:p-[48px] transition-all duration-300 origin-top`} style={{ minHeight: isPrint ? 'auto' : '297mm', width: currentWidth, color: textColor, fontFamily: 'var(--font-zh)', ...style }}>
-        <div className="flex justify-between items-center mb-[48px] gap-10 min-h-[90px]"><div className="flex-1 flex justify-start items-center">{leftLogo && <img src={leftLogo} alt="Brand Left" loading="lazy" className="block h-auto w-auto object-contain" style={{ maxHeight: '120px', imageRendering: 'auto' }} />}</div><div className="flex-1 flex justify-end items-center">{rightLogo && <img src={rightLogo} alt="Brand Right" loading="lazy" className="block h-auto w-auto object-contain" style={{ maxHeight: '120px', imageRendering: 'auto' }} />}</div></div>
-        <div className="flex justify-between items-end mb-4"><div className="flex-1"><h2 className="mb-1 leading-tight tracking-tight font-bold" style={{ fontSize: `${sizeTitleMain}px`, color: deepColor }}>{dynamicTitle}</h2><p className="text-[13px] text-gray-400 uppercase tracking-widest font-normal font-en">{dynamicSubtitle}</p></div><div className="text-right pb-1 shrink-0"><p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-0.5 font-en">DATE / 签发日期</p><p className="font-bold text-[16px] tracking-tight font-en" style={{ color: textColor }}>{data.quoteDate}</p></div></div>
-        <div className="h-[2px] w-full mb-[48px]" style={{ backgroundColor: primaryColor }}></div>
-        <div className="mb-[48px]"><div className="grid grid-cols-2 gap-x-12 relative pl-6 border-l-[4px] items-stretch gap-y-4" style={{ borderColor: primaryColor }}><h4 className="uppercase tracking-widest font-semibold" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>客户信息 / CLIENT INFORMATION</h4><h4 className="uppercase tracking-widest font-semibold" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>认证标准与范围 / STANDARD & SCOPE</h4><div className="flex items-center"><p className="font-bold siding-tight" style={{ fontSize: `${sizeText + 4}px`, color: textColor }}>{data.clientName}</p></div><div className="flex items-start gap-3"><span className="font-semibold shrink-0" style={{ fontSize: `${sizeText}px`, color: textColor }}>认证标准:</span><span className="font-normal leading-relaxed font-en" style={{ fontSize: `${sizeText}px`, color: textColor }}>{data.certStandards.join('、')}</span></div><div className="flex items-end gap-3"><span className="font-semibold shrink-0" style={{ fontSize: `${sizeText}px`, color: textColor }}>经营地址:</span><span className="font-normal leading-relaxed" style={{ fontSize: `${sizeText}px`, color: textColor }}>{data.clientAddress}</span></div><div className="flex items-end gap-3"><span className="font-semibold shrink-0" style={{ fontSize: `${sizeText}px`, color: textColor }}>认证范围:</span><span className="font-normal siding-relaxed" style={{ fontSize: `${sizeText}px`, color: textColor }}>{data.certScope}</span></div></div></div>
-        <table className="w-full mb-[48px] border-collapse"><thead><tr className="bg-[#F8FAFF]"><th className="py-5 text-left font-bold uppercase border-b border-[#E5E7EB]" style={{ fontSize: `${sizeTitleModule}px`, color: '#475569' }}>描述 / DESCRIPTION</th><th className="py-5 text-left font-bold uppercase pl-40 border-b border-[#E5E7EB]" style={{ fontSize: `${sizeTitleModule}px`, color: '#475569' }}>具体项目 / PROJECT</th><th className="py-5 text-right font-bold uppercase whitespace-nowrap border-b border-[#E5E7EB]" style={{ fontSize: `${sizeTitleModule}px`, color: '#475569' }}>金额 / AMOUNT</th></tr></thead><tbody className="divide-y divide-[#E5E7EB]">{data.modules.map(module => { if (module.type === 'cert') { const prefix = getBracketLabel(module.title, 'cert'); return module.items.map(item => (<tr key={item.id} className="border-b border-[#E5E7EB]"><td className="py-5 align-top">{prefix ? (<div className="space-y-1"><p className="font-semibold text-gray-400" style={{ fontSize: `${sizeSmall + 1}px` }}>【{prefix}】</p><p className="font-bold text-[#1e293b]" style={{ fontSize: `14px` }}>{item.type}</p></div>) : (<p className="font-bold text-[#1e293b]" style={{ fontSize: `14px` }}>{item.type}</p>)}</td><td className="py-5 pl-40 align-top">{prefix && <p className="font-semibold text-transparent select-none mb-1" style={{ fontSize: `${sizeSmall + 1}px` }}>【{prefix}】</p>}<p className="text-black font-normal siding-relaxed" style={{ fontSize: `14px` }}>{item.project}</p></td><td className="py-5 text-right font-semibold whitespace-nowrap font-quote align-top" style={{ color: '#000000' }}><div className="flex items-baseline justify-end gap-1"><span className="font-bold opacity-40" style={{ fontSize: '12px' }}>¥</span><span style={{ fontSize: '16px' }}>{item.amount.toLocaleString()}</span></div></td></tr>)); } else if (module.type === 'tech') { const prefix = getBracketLabel(module.title, 'tech'); const activeServices = module.services.filter(s => s.checked).map(s => s.name); const serviceChunks = []; for (let i = 0; i < activeServices.length; i += 3) serviceChunks.push(activeServices.slice(i, i + 3).join('、')); const detailsStr = `指导周期：不少于（现场+远程） ${module.details.minDays} 人天，内审员证书：${module.details.auditCerts} 份`; return (<tr key={module.id} className="border-b border-[#E5E7EB]"><td className="py-5 align-top">{prefix ? (<div className="space-y-1"><p className="font-semibold text-gray-400" style={{ fontSize: `${sizeSmall + 1}px` }}>【{prefix}】</p><p className="font-bold text-[#1e293b]" style={{ fontSize: `14px` }}>专业技术服务费</p></div>) : (<p className="font-bold text-[#1e293b]" style={{ fontSize: `14px` }}>专业技术服务费</p>)}</td><td className="py-5 pl-40 align-top"><div className="space-y-2"><div className="space-y-0.5">{serviceChunks.map((chunk, idx) => (<p key={idx} className="text-black font-normal siding-relaxed" style={{ fontSize: `14px` }}>{chunk}</p>))}</div><p className="text-gray-300 font-normal italic" style={{ fontSize: `13px` }}>{detailsStr}</p></div></td><td className="py-5 text-right font-semibold whitespace-nowrap font-quote align-top" style={{ color: '#000000' }}><div className="flex items-baseline justify-end gap-1"><span className="font-bold opacity-40" style={{ fontSize: '12px' }}>¥</span><span style={{ fontSize: '16px' }}>{module.fee.toLocaleString()}</span></div></td></tr>); } return null; })}</tbody><tfoot><tr className="bg-white"><td colSpan={2} className="py-8 pt-10 text-left font-bold uppercase tracking-wide border-t-2 border-dashed border-[#E5E7EB]" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>总计 GRAND TOTAL (含6%增值税)</td><td className="py-8 pt-10 text-right font-bold whitespace-nowrap font-quote flex items-baseline justify-end gap-1 border-t-2 border-dashed border-[#E5E7EB]" style={{ fontSize: `${sizeTitleModule * 1.9 - 4}px`, color: primaryColor }}><span className="text-[0.45em] font-bold opacity-60">¥</span>{grandTotal.toLocaleString()}</td></tr></tfoot></table>
-        <div className="space-y-4 border-t border-[#E5E7EB] pt-8 pb-10 leading-relaxed" style={{ fontSize: `${sizeText}px` }}><p className="font-bold underline mb-4 tracking-widest uppercase" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>报价说明 / Terms:</p><div className="space-y-3 font-normal text-gray-700 overflow-hidden">{visibleNotes.map((note, idx) => (<div key={note.id} className="flex gap-3 items-baseline w-full"><span className="font-semibold shrink-0 font-en font-bold" style={{ color: primaryColor, fontSize: `${sizeSmall}px` }}>{idx + 1}.</span><div dangerouslySetInnerHTML={{ __html: note.content }} className="rich-text-content text-left siding-relaxed font-normal" style={{ fontSize: `${sizeSmall}px`, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }} /></div>))}</div></div>
-        <div className="mt-4 flex justify-between items-end pt-10 border-t-2" style={{ borderColor: `${primaryColor}33` }}><div className="flex-1"><h3 className="mb-3 siding-none font-semibold" style={{ fontSize: `${sizeTitleMain + 4}px`, color: deepColor }}>{data.contact.name}</h3><div className="mb-10"><p className="text-[14px] font-normal text-[#333333] mb-1 tracking-tight">{data.contact.jobTitle1}</p><p className="text-[14px] font-normal text-gray-500 tracking-tight">{data.contact.jobTitle2}</p></div><div className="space-y-5"><div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#00b050] rounded-sm flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-num tracking-tight">{data.contact.phone}</span></div><div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#EE4932] rounded-sm flex items-center justify-center shrink-0"><Mail className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-en tracking-tight">{data.contact.email}</span></div><div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#fbbc04] rounded-sm flex items-center justify-center shrink-0"><MapPin className="w-4 h-4 text-white fill-current" /></div><span className="text-[15px] font-bold text-[#333333] leading-tight tracking-tight">{data.contact.officeAddress}</span></div></div></div><div className="shrink-0 ml-16 relative"><div className="relative w-[220px] bg-transparent flex items-end"><div className="relative w-full"><img src="https://wp-cdn.4ce.cn/v2/bTQ9Tq2.png" alt="Card Decoration" loading="lazy" className="w-full h-auto block" /><div className="absolute top-[26%] left-[11.6%] w-[35.5%] h-[40.5%] bg-white p-0 overflow-hidden flex items-center justify-center">{data.contact.qrCode ? <img src={data.contact.qrCode} alt="Contact QR" loading="lazy" className="max-w-full max-h-full aspect-square object-contain" /> : (<div className="flex items-center justify-center w-full h-full bg-white"><QrCode className="w-14 h-14 text-gray-200" /></div>)}</div></div></div></div></div>
+        <style dangerouslySetInnerHTML={{ __html: `
+          .font-num { line-height: inherit !important; }
+          @media print {
+            img {
+              image-rendering: -webkit-optimize-contrast;
+              -webkit-print-color-adjust: exact;
+            }
+          }
+        `}} />
+        <div className="flex justify-between items-center mb-[48px] gap-10 min-h-[80px]">
+          <div className="flex-1 flex justify-start items-center">
+            {leftLogo && (
+              <img 
+                src={leftLogo} 
+                alt="Brand Left" 
+                loading="lazy" 
+                className="block" 
+                style={{ 
+                  height: '80px', 
+                  width: 'auto',
+                  objectFit: 'contain',
+                  imageRendering: '-webkit-optimize-contrast',
+                  WebkitPrintColorAdjust: 'exact'
+                } as React.CSSProperties} 
+              />
+            )}
+          </div>
+          <div className="flex-1 flex justify-end items-center">
+            {rightLogo && (
+              <img 
+                src={rightLogo} 
+                alt="Brand Right" 
+                loading="lazy" 
+                className="block" 
+                style={{ 
+                  height: '80px', 
+                  width: 'auto',
+                  objectFit: 'contain',
+                  imageRendering: '-webkit-optimize-contrast',
+                  WebkitPrintColorAdjust: 'exact'
+                } as React.CSSProperties} 
+              />
+            )}
+          </div>
+        </div>
+        <div className="flex justify-between items-baseline mb-4">
+          <div className="flex-1">
+            <h2 className="mb-1 leading-tight tracking-tight font-bold" style={{ fontSize: `${sizeTitleMain}px`, color: deepColor }}>{dynamicTitle}</h2>
+            <p className="text-[13px] text-gray-400 uppercase tracking-widest font-normal font-en">{dynamicSubtitle}</p>
+          </div>
+          <div className="text-right pb-1 shrink-0 flex flex-col items-end">
+            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-0.5 font-en">DATE / 签发日期</p>
+            <p className="font-bold text-[16px] tracking-tight font-en self-end" style={{ color: textColor }}>{data.quoteDate}</p>
+          </div>
+        </div>
+        <div className="h-[1px] w-full mb-[48px] bg-[#E5E6EB]"></div>
+        
+        <div className="bg-[#F9FAFB] border-l-[4px] border-[#0062AD] mb-[48px] overflow-hidden rounded-[8px] p-6">
+          <div className="flex items-baseline justify-start mb-5 border-b border-[#E5E6EB] pb-3">
+             <h4 className="text-[14px] font-semibold uppercase tracking-wider" style={{ color: deepColor }}>客户及认证基本信息 / CLIENT & CERTIFICATION INFORMATION</h4>
+          </div>
+          <div className="flex flex-col gap-[14px]">
+            <FinalInfoRow label="客户名称：" content={data.clientName} isBold={true} isSubject={true} />
+            <FinalInfoRow label="经营地址：" content={data.clientAddress} />
+            <FinalInfoRow label="认证标准：" content={data.certStandards.join('、')} isEn={true} />
+            <FinalInfoRow label="认证范围：" content={data.certScope} />
+          </div>
+        </div>
+        
+        <table className="w-full mb-6 border-collapse">
+          <thead>
+            <tr className="bg-white">
+              <th className="py-5 text-left font-bold uppercase border-b border-[#F2F3F5] align-top" style={{ fontSize: `${sizeTitleModule}px`, color: '#475569' }}>描述 / DESCRIPTION</th>
+              <th className="py-5 text-left font-bold uppercase pl-40 border-b border-[#F2F3F5] align-top" style={{ fontSize: `${sizeTitleModule}px`, color: '#475569' }}>具体项目 / PROJECT</th>
+              <th className="py-5 text-right font-bold uppercase whitespace-nowrap border-b border-[#F2F3F5] align-top" style={{ fontSize: `${sizeTitleModule}px`, color: '#475569' }}>金额 / AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F2F3F5]">
+            {data.modules.map(module => { 
+              if (module.type === 'cert') { 
+                const prefix = getBracketLabel(module.title, 'cert'); 
+                return module.items.map(item => (
+                  <tr key={item.id} className="border-b border-[#F2F3F5] bg-white">
+                    <td className="py-5 align-baseline">
+                      {prefix ? (<div className="space-y-1"><p className="font-medium text-gray-400" style={{ fontSize: `${sizeSmall + 1}px` }}>【{prefix}】</p><p className="font-medium text-[#072A4A]" style={{ fontSize: `14px` }}>{item.type}</p></div>) : (<p className="font-medium text-[#072A4A]" style={{ fontSize: `14px` }}>{item.type}</p>)}
+                    </td>
+                    <td className="py-5 pl-40 align-baseline">
+                      {prefix && <p className="font-medium text-transparent select-none mb-1" style={{ fontSize: `${sizeSmall + 1}px` }}>【{prefix}】</p>}
+                      <p className="text-[#4E5969] font-medium leading-relaxed" style={{ fontSize: `14px` }}>{item.project}</p>
+                    </td>
+                    <td className="py-5 text-right font-medium whitespace-nowrap font-quote align-baseline" style={{ color: BRAND_COLORS.primary }}>
+                      <div className="flex items-baseline justify-end gap-1"><span className="font-bold leading-none opacity-40" style={{ fontSize: '12px' }}>¥</span><span className="font-medium leading-none" style={{ fontSize: '16px' }}>{item.amount.toLocaleString()}</span></div>
+                    </td>
+                  </tr>
+                )); 
+              } else if (module.type === 'tech') { 
+                const prefix = getBracketLabel(module.title, 'tech'); 
+                const activeServices = module.services.filter(s => s.checked).map(s => s.name); 
+                const serviceChunks = []; 
+                for (let i = 0; i < activeServices.length; i += 3) serviceChunks.push(activeServices.slice(i, i + 3).join('、')); 
+                return (
+                  <tr key={module.id} className="border-b border-[#F2F3F5] bg-white">
+                    <td className="py-5 align-baseline">
+                      {prefix ? (<div className="space-y-1"><p className="font-medium text-gray-400" style={{ fontSize: `${sizeSmall + 1}px` }}>【{prefix}】</p><p className="font-medium text-[#072A4A]" style={{ fontSize: `14px` }}>专业技术服务费</p></div>) : (<p className="font-medium text-[#072A4A]" style={{ fontSize: `14px` }}>专业技术服务费</p>)}
+                    </td>
+                    <td className="py-5 pl-40 align-baseline">
+                      <div className="space-y-2">
+                        <div className="space-y-0.5">{serviceChunks.map((chunk, idx) => (<p key={idx} className="text-[#072A4A] font-medium leading-relaxed" style={{ fontSize: `14px` }}>{chunk}</p>))}</div>
+                        <div className="flex items-baseline gap-0 text-[#4E5969] font-normal" style={{ fontSize: `13px`, marginTop: '8px' }}>
+                          <span className="leading-none">指导周期：不少于</span>
+                          <span className="font-bold mx-1 font-num leading-none inline-block transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.minDays}</span>
+                          <span className="leading-none">人天</span>
+                          <div className="w-px h-3 bg-[#F2F3F5] mx-4 self-center"></div>
+                          <span className="leading-none">内审员证书：</span>
+                          <span className="font-bold mx-1 font-num leading-none inline-block transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.auditCerts}</span>
+                          <span className="leading-none">份</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-5 text-right font-medium whitespace-nowrap font-quote align-baseline" style={{ color: BRAND_COLORS.primary }}>
+                      <div className="flex items-baseline justify-end gap-1"><span className="font-bold leading-none opacity-40" style={{ fontSize: '12px' }}>¥</span><span className="font-medium leading-none" style={{ fontSize: '16px' }}>{module.fee.toLocaleString()}</span></div>
+                    </td>
+                  </tr>
+                ); 
+              } 
+              return null; 
+            })}
+          </tbody>
+          <tfoot className="before:content-[''] before:block before:h-2">
+            <tr>
+              <td colSpan={2} className="py-4 text-left font-bold uppercase tracking-wide bg-white border-t border-[#F2F3F5]" style={{ fontSize: `14px`, color: '#4E5969' }}>报价总计（含6%增值税）</td>
+              <td className="py-4 text-right font-bold whitespace-nowrap font-quote flex items-baseline justify-end gap-1 bg-white border-t border-[#F2F3F5]" style={{ fontSize: `24px`, color: BRAND_COLORS.primary }}><span className="text-[0.45em] font-bold leading-none opacity-60">¥</span><span className="leading-none">{grandTotal.toLocaleString()}</span></td>
+            </tr>
+          </tfoot>
+        </table>
+        
+        <div className="space-y-4 pt-8 pb-10 leading-relaxed mt-0" style={{ fontSize: `${sizeText}px` }}>
+          <p className="font-bold underline mb-4 tracking-widest uppercase" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>报价说明 / Terms:</p>
+          <div className="space-y-3 font-normal text-gray-700 overflow-hidden">
+            {visibleNotes.map((note, idx) => (
+              <div key={note.id} className="flex gap-3 items-baseline w-full">
+                <span className="font-semibold shrink-0 font-en font-bold leading-none" style={{ color: primaryColor, fontSize: `${sizeSmall}px` }}>{idx + 1}.</span>
+                <div dangerouslySetInnerHTML={{ __html: note.content }} className="rich-text-content text-left leading-relaxed font-normal" style={{ fontSize: `${sizeSmall}px`, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }} />
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="mt-4 flex justify-between items-end pt-10 border-t border-[#F2F3F5]">
+          <div className="flex-1 text-left">
+            <h3 className="mb-3 font-semibold" style={{ fontSize: `${sizeTitleMain + 4}px`, color: deepColor }}>{data.contact.name}</h3>
+            <div className="mb-10"><p className="text-[14px] font-normal text-[#333333] mb-1 tracking-tight">{data.contact.jobTitle1}</p><p className="text-[14px] font-normal text-gray-500 tracking-tight">{data.contact.jobTitle2}</p></div>
+            <div className="space-y-5">
+              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#00b050] rounded-sm flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-num tracking-tight leading-none">{data.contact.phone}</span></div>
+              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#EE4932] rounded-sm flex items-center justify-center shrink-0"><Mail className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-en tracking-tight leading-none">{data.contact.email}</span></div>
+              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#fbbc04] rounded-sm flex items-center justify-center shrink-0"><MapPin className="w-4 h-4 text-white fill-current" /></div><span className="text-[15px] font-bold text-[#333333] leading-tight tracking-tight">{data.contact.officeAddress}</span></div>
+            </div>
+          </div>
+          <div className="shrink-0 ml-16 relative">
+            <div className="relative w-[220px] bg-transparent flex items-end">
+              <div className="relative w-full">
+                <img src="https://wp-cdn.4ce.cn/v2/bTQ9Tq2.png" alt="Card Decoration" loading="lazy" className="w-full h-auto block" />
+                <div className="absolute top-[26%] left-[11.6%] w-[35.5%] h-[40.5%] bg-white p-0 overflow-hidden flex items-center justify-center">
+                  {data.contact.qrCode ? <img src={data.contact.qrCode} alt="Contact QR" loading="lazy" className="max-w-full max-h-full aspect-square object-contain" /> : (<div className="flex items-center justify-center w-full h-full bg-white"><QrCode className="w-14 h-14 text-gray-200" /></div>)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {processOrder.map(moduleId => {
           const isVisible = moduleId === 'cert-process' ? isCertProcessVisible : moduleId === 'tech-process' ? isTechProcessVisible : moduleId === 'customer-case' ? isCustomerCaseVisible : moduleId === 'cert-templates' ? isCertTemplatesVisible : moduleId === 'agency-profile' || moduleId === 'business-qualifications';
           if (!isVisible) return null;
-          if (moduleId === 'cert-process') return (<div key="cert-process" className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>管理体系认证流程 / MANAGEMENT SYSTEM CERTIFICATION PROCESS</h4><CertificationProcess validity={processValidity} /></div>);
-          if (moduleId === 'tech-process') return (<div key="tech-process" className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>专业技术服务流程 / PROFESSIONAL TECHNICAL SERVICE PROCESS</h4><TechnicalServiceProcess steps={data.techServiceSteps} /></div>);
-          if (moduleId === 'agency-profile') return (<div key="agency-profile" className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>机构简介 / AGENCY PROFILE</h4><AgencyProfile /></div>);
-          if (moduleId === 'business-qualifications') return (<div key="business-qualifications" className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>业务资质 / BUSINESS QUALIFICATIONS</h4><Qualifications /></div>);
-          if (moduleId === 'customer-case' && data.caseBlocks.length > 0) return (<div key="customer-case" className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>客户案例 / CUSTOMER CASES</h4>{renderBlocksInDoc(data.caseBlocks)}</div>);
-          if (moduleId === 'cert-templates' && data.certTemplates.length > 0) return (<div key="cert-templates" className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>证书模板 / CERTIFICATE TEMPLATES</h4><div className={`grid ${data.certTemplates.length <= 2 ? 'grid-cols-2' : 'grid-cols-3'} gap-[40px] items-start`}>{data.certTemplates.map((img, idx) => (<div key={idx} className={docImgContainerClass}><img src={img} alt={`Template ${idx}`} loading="lazy" className="max-w-full max-h-full object-contain" /></div>))}</div></div>);
-          return null;
+          
+          let title = "";
+          let content = null;
+
+          if (moduleId === 'cert-process') {
+            title = "管理体系认证流程 / MANAGEMENT SYSTEM CERTIFICATION PROCESS";
+            content = <CertificationProcess validity={processValidity} />;
+          } else if (moduleId === 'tech-process') {
+            title = "专业技术服务流程 / PROFESSIONAL TECHNICAL SERVICE PROCESS";
+            content = <TechnicalServiceProcess steps={data.techServiceSteps} />;
+          } else if (moduleId === 'agency-profile') {
+            title = "机构简介 / AGENCY PROFILE";
+            content = <AgencyProfile />;
+          } else if (moduleId === 'business-qualifications') {
+            title = "业务资质 / BUSINESS QUALIFICATIONS";
+            content = <Qualifications />;
+          } else if (moduleId === 'customer-case' && data.caseBlocks.length > 0) {
+            title = "客户案例 / CUSTOMER CASES";
+            content = renderBlocksInDoc(data.caseBlocks);
+          } else if (moduleId === 'cert-templates' && data.certTemplates.length > 0) {
+            title = "证书模板 / CERTIFICATE TEMPLATES";
+            content = (
+              <div className={`grid ${data.certTemplates.length <= 2 ? 'grid-cols-2' : 'grid-cols-3'} gap-[40px] items-start`}>
+                {data.certTemplates.map((img, idx) => (<div key={idx} className={docImgContainerClass}><img src={img} alt={`Template ${idx}`} loading="lazy" className="max-w-full max-h-full object-contain" /></div>))}
+              </div>
+            );
+          }
+
+          if (!content) return null;
+
+          return (
+            <div key={moduleId} className="mt-[60px]">
+              <ModuleHeader title={title} />
+              {content}
+            </div>
+          );
         })}
-        <div className="space-y-[48px]">{data.modules.filter(m => m.type === 'custom').map(module => (<div key={module.id} className="mt-[48px] pt-[48px] border-t-2 border-dashed border-[#E5E7EB]"><h4 className="uppercase tracking-widest mb-10 font-black text-center" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>{module.title}</h4>{renderBlocksInDoc(module.blocks)}</div>))}</div>
+
+        <div className="space-y-[60px]">
+          {data.modules.filter(m => m.type === 'custom').map(module => (
+            <div key={module.id} className="mt-[60px]">
+              <ModuleHeader title={module.title} />
+              {renderBlocksInDoc(module.blocks)}
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -1182,15 +1548,15 @@ const App: React.FC = () => {
         className={`min-h-[300px] rounded-[12px] p-6 border-2 border-dashed transition-all flex flex-col gap-6 ${draggingExcelTargetId === (moduleId || 'main-case') ? 'bg-[#EFF5FC] border-[#0062AD] scale-[1.01]' : 'bg-slate-50/50 border-slate-200'}`}
         onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (e.dataTransfer.types.includes('Files')) setDraggingExcelTargetId(moduleId || 'main-case'); }}
         onDragLeave={() => setDraggingExcelTargetId(null)}
-        onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setDraggingExcelTargetId(null); const files = e.dataTransfer.files; if (files && files.length > 0) { const ext = files[0].name.split('.').pop()?.toLowerCase(); if (['xlsx', 'xls', 'csv'].includes(ext || '')) parseExcelFileToModule(files[0], moduleId); } }}
+        onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setDraggingExcelTargetId(null); const files = e.target.files; if (files && files.length > 0) { const ext = files[0].name.split('.').pop()?.toLowerCase(); if (['xlsx', 'xls', 'csv'].includes(ext || '')) parseExcelFileToModule(files[0], moduleId); } }}
       >
-        {blocks.length === 0 ? (<div className="flex-1 flex flex-col items-center justify-center text-slate-300 py-12 pointer-events-none"><div className="w-20 h-20 bg-white border border-[#E5E7EB] rounded-[12px] flex items-center justify-center mb-4"><Presentation className="w-10 h-10 opacity-20" /></div><p className="text-sm font-bold opacity-60">空白演示画布</p><p className="text-xs opacity-40 mt-1">点击上方按钮或直接拖入 Excel 文件识别</p></div>) : (
+        {blocks.length === 0 ? (<div className="flex-1 flex flex-col items-center justify-center text-slate-300 py-12 pointer-events-none text-center"><div className="w-20 h-20 bg-white border border-[#E5E6EB] rounded-[12px] flex items-center justify-center mb-4 mx-auto"><Presentation className="w-10 h-10 opacity-20" /></div><p className="text-sm font-bold opacity-60">空白演示画布</p><p className="text-xs opacity-40 mt-1">点击上方按钮 or 直接拖入 Excel 文件识别</p></div>) : (
           <div className="space-y-6">
             {blocks.map((block, idx) => (
-              <div key={block.id} draggable onDragStart={(e) => { e.dataTransfer.setData('sourceBlockIdx', idx.toString()); e.dataTransfer.setData('sourceModuleId', moduleId || ''); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('sourceBlockIdx')); const sModuleId = e.dataTransfer.getData('sourceModuleId'); if (sModuleId === (moduleId || '') && !isNaN(sIdx) && sIdx !== idx) handleReorderBlocksInModule(moduleId, sIdx, idx); }} className="relative group/block bg-white p-6 rounded-[12px] border border-[#E5E7EB] hover:border-[#BDD1FF] transition-all"><div className="absolute -left-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-200 opacity-0 group-hover/block:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeBlockFromModule(moduleId, block.id)} className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover/block:opacity-100 shadow-sm z-20"><X className="w-3 h-3" /></button>
-                {block.type === 'text' ? (<div className="space-y-4"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-[#0062AD] font-bold text-xs uppercase tracking-widest"><Type className="w-3 h-3" /> 文本样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 14)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['normal', 'bold', 'black'] as const).map(w => (<button key={w} onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', w)} className={`px-2 py-0.5 text-[10px] rounded-[4px] transition-all font-bold ${block.fontWeight === w ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{w === 'normal' ? '细' : w === 'bold' ? '粗' : '极'}</button>))}</div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div></div></div><textarea className="w-full bg-slate-50 border-none rounded-[8px] p-4 focus:bg-white transition-all min-h-[120px] outline-none" style={{ fontSize: `${block.fontSize}px`, fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), color: block.color, textAlign: block.align }} value={block.content} onChange={e => updateBlockInModule(moduleId, block.id, 'content', e.target.value)} /></div>
-                ) : block.type === 'table' ? (<div className="space-y-4"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest"><Table2 className="w-3 h-3" /> 表格管理</div><div className="flex gap-2"><button onClick={() => addTableRowInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1"><Plus className="w-3 h-3" /><span className="text-[10px] font-bold">加行</span></button><button onClick={() => addTableColInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1"><Columns className="w-3 h-3" /><span className="text-[10px] font-bold">加列</span></button></div></div><div className="overflow-x-auto border border-slate-100 rounded-[12px]"><table className="w-full border-collapse bg-[#f1f5f9] table-fixed" data-table-block-id={block.id}><thead><tr className="bg-[#304166]">{block.tableData?.[0].map((cell, i) => (<th key={i} className="p-0 border-r border-white/10 last:border-0 relative group/th" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}><input className="w-full bg-transparent border-none text-white text-xs font-bold px-3 py-2 focus:ring-0 text-left outline-none" value={cell} onChange={e => updateTableCellInModule(moduleId, block.id, 0, i, e.target.value)} />{i < (block.tableData?.[0].length || 0) - 1 && (<div className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#0062AD] z-10 transition-colors" onMouseDown={(e) => { resizingInfo.current = { blockId: block.id, colIdx: i, startX: e.clientX, startWidths: [...(block.columnWidths || [])] }; document.body.style.cursor = 'col-resize'; }} />)}</th>))}</tr></thead><tbody className="divide-y divide-slate-200">{block.tableData?.slice(1).map((row, ri) => (<tr key={ri}>{row.map((cell, ci) => (<td key={ci} className="p-0 border-r border-slate-200 last:border-0"><textarea className="w-full bg-transparent border-none text-slate-600 text-xs px-3 focus:ring-0 resize-none font-quote outline-none" style={{ paddingBlock: `${block.rowSpacing}px`, textAlign: 'right' }} value={cell} rows={cell.split('\n').length || 1} onChange={e => updateTableCellInModule(moduleId, block.id, ri + 1, ci, e.target.value)} /></td>))}</tr>))}</tbody></table></div></div>
-                ) : (<div className="space-y-4"><div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest border-b border-gray-50 pb-4 mb-4"><ImageIcon className="w-3 h-3" /> 图片管理</div><div className="w-full flex wrap gap-4">{block.images?.map((img, iIdx) => (<div key={iIdx} className="w-[calc(33.333%-12px)] relative group/caseimg border border-[#E5E7EB] rounded-[8px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02]"><img src={img} className="w-full h-auto block" loading="lazy" /><button onClick={() => removeImageFromBlock(moduleId, block.id, iIdx)} className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/caseimg:opacity-100 transition-opacity"><Trash2 className="w-3 h-3" /></button></div>))}<div onClick={() => { activeCaseBlockIdRef.current = block.id; caseImageInputRef.current?.click(); }} className="w-[calc(33.333%-12px)] aspect-square border border-dashed border-[#E5E7EB] rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] transition-all text-gray-400"><Plus className="w-5 h-5 mb-1" /><span className="text-[9px] font-bold">继续添加</span></div></div></div>)}
+              <div key={block.id} draggable onDragStart={(e) => { e.dataTransfer.setData('sourceBlockIdx', idx.toString()); e.dataTransfer.setData('sourceModuleId', moduleId || ''); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('sourceBlockIdx')); const sModuleId = e.dataTransfer.getData('sourceModuleId'); if (sModuleId === (moduleId || '') && !isNaN(sIdx) && sIdx !== idx) handleReorderBlocksInModule(moduleId, sIdx, idx); }} className="relative group/block bg-white p-6 rounded-[12px] border border-[#E5E6EB] hover:border-[#BDD1FF] transition-all"><div className="absolute -left-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-200 opacity-0 group-hover/block:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeBlockFromModule(moduleId, block.id)} className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover/block:opacity-100 shadow-sm z-20"><X className="w-3 h-3" /></button>
+                {block.type === 'text' ? (<div className="space-y-4"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-[#0062AD] font-bold text-xs uppercase tracking-widest"><Type className="w-3 h-3" /> 文本样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 14)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><button onClick={() => updateBlockInModule(moduleId, block.id, 'underline', !block.underline)} className={`p-1 rounded-[4px] transition-all ${block.underline ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}><Underline className="w-3 h-3" /></button></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['normal', 'bold', 'black'] as const).map(w => (<button key={w} onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', w)} className={`px-2 py-0.5 text-[10px] rounded-[4px] transition-all font-bold ${block.fontWeight === w ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{w === 'normal' ? '细' : w === 'bold' ? '粗' : '极'}</button>))}</div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div></div></div><textarea className="w-full bg-slate-50 border-none rounded-[8px] p-4 focus:bg-white transition-all min-h-[120px] outline-none" style={{ fontSize: `${block.fontSize}px`, fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), color: block.color, textAlign: block.align, textDecoration: block.underline ? 'underline' : 'none' }} value={block.content} onChange={e => updateBlockInModule(moduleId, block.id, 'content', e.target.value)} /></div>
+                ) : block.type === 'table' ? (<div className="space-y-4 text-left"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest"><Table2 className="w-3 h-3" /> 表格管理与样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 13)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><input type="color" className="w-6 h-6 p-0 border-0 bg-transparent cursor-pointer" value={block.color || '#4b5563'} onChange={e => updateBlockInModule(moduleId, block.id, 'color', e.target.value)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><button onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', block.fontWeight === 'bold' ? 'normal' : 'bold')} className={`p-1 rounded-[4px] transition-all ${block.fontWeight === 'bold' ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}><Bold className="w-3 h-3" /></button><button onClick={() => updateBlockInModule(moduleId, block.id, 'underline', !block.underline)} className={`p-1 rounded-[4px] transition-all ${block.underline ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}><Underline className="w-3 h-3" /></button></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div><div className="w-px h-4 bg-gray-200 mx-1"></div><button onClick={() => addTableRowInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1 hover:bg-emerald-100 transition-colors"><Plus className="w-3 h-3" /><span className="text-[10px] font-bold">加行</span></button><button onClick={() => addTableColInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1 hover:bg-emerald-100 transition-colors"><Columns className="w-3 h-3" /><span className="text-[10px] font-bold">加列</span></button></div></div><div className="overflow-x-auto border border-slate-100 rounded-[12px]"><table className="w-full border-collapse bg-[#f1f5f9] table-fixed" data-table-block-id={block.id}><thead><tr className="bg-[#304166]">{block.tableData?.[0].map((cell, i) => (<th key={i} className="p-0 border-r border-white/10 last:border-0 relative group/th" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}><input className="w-full bg-transparent border-none text-white text-xs font-bold px-3 py-2 focus:ring-0 text-left outline-none" value={cell} onChange={e => updateTableCellInModule(moduleId, block.id, 0, i, e.target.value)} />{i < (block.tableData?.[0].length || 0) - 1 && (<div className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#0062AD] z-10 transition-colors" onMouseDown={(e) => { resizingInfo.current = { blockId: block.id, colIdx: i, startX: e.clientX, startWidths: [...(block.columnWidths || [])] }; document.body.style.cursor = 'col-resize'; }} />)}</th>))}</tr></thead><tbody className="divide-y divide-slate-200">{block.tableData?.slice(1).map((row, ri) => (<tr key={ri} className="bg-white hover:bg-slate-50 transition-colors">{row.map((cell, ci) => (<td key={ci} className="p-0 border-r border-slate-200 last:border-0"><textarea className="w-full bg-transparent border-none text-xs px-3 focus:ring-0 resize-none font-quote outline-none" style={{ paddingBlock: `${block.rowSpacing}px`, textAlign: block.align || 'left', fontSize: `${block.fontSize}px`, color: block.color || '#4b5563', fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), textDecoration: block.underline ? 'underline' : 'none' }} value={cell} rows={cell.split('\n').length || 1} onChange={e => updateTableCellInModule(moduleId, block.id, ri + 1, ci, e.target.value)} /></td>))}</tr>))}</tbody></table></div></div>
+                ) : (<div className="space-y-4"><div className="flex items-center gap-2 text-charcoal font-bold text-xs uppercase tracking-widest border-b border-gray-50 pb-4 mb-4"><ImageIcon className="w-3 h-3" /> 图片管理</div><div className="w-full flex wrap gap-4">{block.images?.map((img, iIdx) => (<div key={iIdx} className="w-[calc(33.333%-12px)] relative group/caseimg border border-[#E5E6EB] rounded-[8px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02]"><img src={img} className="w-full h-auto block" loading="lazy" /><button onClick={() => removeImageFromBlock(moduleId, block.id, iIdx)} className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/caseimg:opacity-100 transition-opacity"><Trash2 className="w-3.5 h-3.5" /></button></div>))}<div onClick={() => { activeCaseBlockIdRef.current = block.id; caseImageInputRef.current?.click(); }} className="w-[calc(33.333%-12px)] aspect-square border border-dashed border-[#E5E6EB] rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] transition-all text-gray-400"><Plus className="w-5 h-5 mb-1" /><span className="text-[9px] font-bold">继续添加</span></div></div></div>)}
               </div>
             ))}
           </div>
@@ -1214,24 +1580,24 @@ const App: React.FC = () => {
     return { label: '其他', icon: FileText, color: 'border-gray-400', bar: 'bg-gray-400' };
   };
 
-  const SidebarTitle = ({ icon: Icon, title, isSub = false }: { icon: any, title: string, isSub?: boolean }) => ( <div className={`flex items-center gap-2 font-semibold text-[#475569] ${isSub ? 'mb-4 mt-6' : 'mb-4 pb-3 border-b border-[#EFF5FC]'}`}><Icon className="w-4 h-4 text-[#0062AD]" /><span className="text-[15px]">{title}</span></div> );
+  const SidebarTitle = ({ icon: Icon, title, isSub = false }: { icon: any, title: string, isSub?: boolean }) => ( <div className={`flex items-center gap-2 font-semibold text-[#072A4A] ${isSub ? 'mb-4 mt-6' : 'mb-4 pb-3 border-b border-[#EFF5FC]'}`}><Icon className="w-4 h-4 text-[#0062AD]" /><span className="text-[15px]">{title}</span></div> );
 
   const extraModulesMap = {
-    'cert-process': isCertProcessVisible ? ( <section key="cert-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-8"><div className="section-header !mb-0"><LayoutGrid className="w-5 h-5" /><span>管理体系认证流程</span></div><div className="flex items-center bg-[#EFF5FC] p-1 rounded-[12px] border border-[#BDD1FF] shadow-none transition-all duration-300"><button onClick={() => setProcessValidity('1year')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 ${processValidity === '1year' ? 'bg-[#0062AD] text-white' : 'text-gray-500 hover:text-[#0062AD]'}`}><Clock className="w-3.5 h-3.5" /> 一年有效期</button><button onClick={() => setProcessValidity('3years')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 ${processValidity === '3years' ? 'bg-[#0062AD] text-white' : 'text-gray-500 hover:text-[#0062AD]'}`}><Clock className="w-3.5 h-3.5" /> 三年有效期</button></div></div><CertificationProcess validity={processValidity} /></section> ) : null,
-    'tech-process': isTechProcessVisible ? ( <section key="tech-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('tech-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'tech-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'tech-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0"><Zap className="w-5 h-5" /><span>专业技术服务流程</span></div><div className="flex gap-2"><button onClick={resetTechSteps} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 重置</button><button onClick={addTechStep} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Plus className="w-3 h-3" /> 添加流程</button><button onClick={handleRemoveLastStep} className="flex items-center gap-1.5 text-[13px] font-bold border border-red-100 text-red-500 px-3 py-1.5 rounded-[12px] hover:bg-red-50 transition-all"><Minus className="w-3 h-3" /> 移除流程</button></div></div><TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={true} /></section> ) : null,
-    'agency-profile': ( <section key="agency-profile" className="card overflow-hidden transition-all duration-300 border border-[#E5E7EB]"><div className="section-header"><Building className="w-5 h-5" /><span>机构简介</span></div><AgencyProfile /></section> ),
-    'business-qualifications': ( <section key="business-qualifications" className="card overflow-hidden transition-all duration-300 border border-[#E5E7EB]"><div className="section-header"><FileCheck className="w-5 h-5" /><span>业务资质</span></div><Qualifications /></section> ),
+    'cert-process': isCertProcessVisible ? ( <section key="cert-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-8"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><LayoutGrid className="w-5 h-5" /><span>管理体系认证流程</span></div><div className="flex items-center bg-[#F2F3F5] p-1 rounded-[12px] shadow-none transition-all duration-300"><button onClick={() => setProcessValidity('1year')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 active:scale-95 ${processValidity === '1year' ? 'bg-white text-[#0062AD] shadow-sm' : 'text-[#595959] hover:bg-white/50'}`}><Clock className="w-3.5 h-3.5" /> 一年有效期</button><button onClick={() => setProcessValidity('3years')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 active:scale-95 ${processValidity === '3years' ? 'bg-white text-[#0062AD] shadow-sm' : 'text-[#595959] hover:bg-white/50'}`}><Clock className="w-3.5 h-3.5" /> 三年有效期</button></div></div><CertificationProcess validity={processValidity} /></section> ) : null,
+    'tech-process': isTechProcessVisible ? ( <section key="tech-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'tech-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('tech-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'tech-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'tech-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsTechProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Zap className="w-5 h-5" /><span>专业技术服务流程</span></div><div className="flex gap-[12px]"><button onClick={resetTechSteps} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={addTechStep} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加流程</button><button onClick={handleRemoveLastStep} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除流程</button></div></div><TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={true} /></section> ) : null,
+    'agency-profile': ( <section key="agency-profile" className="card overflow-hidden transition-all duration-300 border border-[#E5E6EB]"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><Building className="w-5 h-5" /><span>机构简介</span></div><AgencyProfile /></section> ),
+    'business-qualifications': ( <section key="business-qualifications" className="card overflow-hidden transition-all duration-300 border border-[#E5E6EB]"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><FileCheck className="w-5 h-5" /><span>业务资质</span></div><Qualifications /></section> ),
     'customer-case': isCustomerCaseVisible ? (
-      <section key="customer-case" draggable="true" onDragStart={(e) => handleDragStart(e, 'customer-case')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('customer-case'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'customer-case')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'customer-case' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCustomerCaseVisible(false)} title="隐藏模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0"><Presentation className="w-5 h-5" /><span>客户案例展示</span></div><div className="flex gap-2"><button onClick={() => setData(prev => ({ ...prev, caseBlocks: [] }))} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all shadow-none"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => excelInputRef.current?.click()} className="flex items-center gap-1.5 text-[13px] font-bold border border-emerald-100 text-emerald-600 px-3 py-1.5 rounded-[12px] hover:bg-emerald-50 transition-all shadow-none"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button><button onClick={() => addBlockToModule(null, 'image')} className="flex items-center gap-1.5 text-[13px] font-bold border border-amber-100 text-amber-600 px-3 py-1.5 rounded-[12px] hover:bg-amber-50 transition-all shadow-none"><Images className="w-3.5 h-3.5" /> 添加图片</button><button onClick={() => addBlockToModule(null, 'text')} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all shadow-none"><Type className="w-3.5 h-3.5" /> 添加文本</button><button onClick={() => addBlockToModule(null, 'table')} className="flex items-center gap-1.5 text-[13px] font-bold border border-emerald-100 text-emerald-600 px-3 py-1.5 rounded-[12px] hover:bg-emerald-50 transition-all shadow-none"><Table2 className="w-3.5 h-3.5" /> 添加表格</button></div></div><input type="file" ref={excelInputRef} className="hidden" accept=".xlsx, .xls, .csv" onChange={handleExcelUpload} /><RenderModuleBlocksEditor moduleId={null} blocks={data.caseBlocks} excelInputRef={excelInputRef} /></section>
+      <section key="customer-case" draggable="true" onDragStart={(e) => handleDragStart(e, 'customer-case')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('customer-case'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'customer-case')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'customer-case' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCustomerCaseVisible(false)} title="隐藏模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Presentation className="w-5 h-5" /><span>客户案例展示</span></div><div className="flex gap-[12px]"><button onClick={() => setData(prev => ({ ...prev, caseBlocks: [] }))} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => excelInputRef.current?.click()} className="btn-header-func"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button><button onClick={() => addBlockToModule(null, 'image')} className="btn-header-func"><Images className="w-3.5 h-3.5" /> 添加图片</button><button onClick={() => addBlockToModule(null, 'text')} className="btn-header-func"><Type className="w-3.5 h-3.5" /> 添加文本</button><button onClick={() => addBlockToModule(null, 'table')} className="btn-header-func"><Table2 className="w-3.5 h-3.5" /> 添加表格</button></div></div><input type="file" ref={excelInputRef} className="hidden" accept=".xlsx, .xls, .csv" onChange={handleExcelUpload} /><RenderModuleBlocksEditor moduleId={null} blocks={data.caseBlocks} excelInputRef={excelInputRef} /></section>
     ) : null,
     'cert-templates': isCertTemplatesVisible ? (
-      <section key="cert-templates" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-templates')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-templates'); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-templates')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-templates' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertTemplatesVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0"><Award className="w-5 h-5" /><span>证书模板</span></div><div className="flex gap-2"><button onClick={() => setData(prev => ({ ...prev, certTemplates: [] }))} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 清空</button><button onClick={() => certTemplateInputRef.current?.click()} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Upload className="w-3 h-3" /> 上传模板</button></div></div><div className={`min-h-[200px] border-2 border-dashed rounded-[12px] transition-all duration-300 flex flex-col items-center justify-center p-6 ${isDraggingOverCertTemplates ? 'border-[#0062AD] bg-[#EFF5FC]' : 'border-gray-200 hover:border-[#BDD1FF]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(true); }} onDragLeave={() => setIsDraggingOverCertTemplates(false)} onDrop={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(false); const templateUrl = e.dataTransfer.getData('templateUrl'); if (templateUrl) addCommonTemplate(templateUrl); else { const internalTmplIdx = e.dataTransfer.getData('certTemplateIdx'); if (internalTmplIdx === "") handleCertTemplateFiles(e.dataTransfer.files); } }} onPaste={handlePaste} onClick={() => data.certTemplates.length === 0 && certTemplateInputRef.current?.click()}><input type="file" ref={certTemplateInputRef} className="hidden" accept="image/*" multiple onChange={(e) => handleCertTemplateFiles(e.target.files)} />{data.certTemplates.length > 0 ? (<div className="w-full flex wrap justify-center gap-[40px]">{data.certTemplates.map((img, tIdx) => (<div key={tIdx} draggable onDragStart={(e) => { e.dataTransfer.setData('certTemplateIdx', tIdx.toString()); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('certTemplateIdx')); if (!isNaN(sIdx) && sIdx !== tIdx) handleReorderCertTemplates(sIdx, tIdx); }} className="w-[calc(33.333%-27px)] relative group/img border border-[#E5E7EB] rounded-[12px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02] cursor-grab active:cursor-grabbing"><img src={img} alt={`Template ${tIdx}`} loading="lazy" className="w-full h-auto block object-contain" /><button onClick={(e) => { e.stopPropagation(); removeCertTemplate(tIdx); }} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/img:opacity-100 transition-opacity z-10"><Trash2 className="w-3.5 h-3.5" /></button></div>))}<div onClick={() => certTemplateInputRef.current?.click()} className="w-[calc(33.333%-27px)] aspect-square border-2 border-dashed border-gray-200 rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] hover:bg-gray-50 transition-all text-gray-400 group"><Plus className="w-6 h-6 mb-2 group-hover:scale-110 transition-transform" /><span className="text-[11px] font-bold">继续添加</span></div></div>) : (<div className="flex flex-col items-center text-gray-300 pointer-events-none"><div className="w-16 h-16 rounded-[12px] bg-gray-50 border border-[#E5E7EB] flex items-center justify-center mb-4"><Copy className="w-8 h-8 text-gray-200" /></div><p className="text-[14px] font-bold text-gray-400">支持上传、拖放图片或粘贴截图</p><p className="text-[12px] text-gray-300 mt-1">系统将自动分析并裁剪底部多余白边</p></div>)}</div></section>
+      <section key="cert-templates" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-templates')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-templates'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-templates')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-templates' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertTemplatesVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Award className="w-5 h-5" /><span>证书模板</span></div><div className="flex gap-[12px]"><button onClick={() => setData(prev => ({ ...prev, certTemplates: [] }))} className="btn-header-dest"><RotateCcw className="w-3.5 h-3.5" /> 清空</button><button onClick={() => certTemplateInputRef.current?.click()} className="btn-header-func"><Upload className="w-3.5 h-3.5" /> 上传模板</button></div></div><div className={`min-h-[200px] border-2 border-dashed rounded-[12px] transition-all duration-300 flex flex-col items-center justify-center p-6 ${isDraggingOverCertTemplates ? 'border-[#0062AD] bg-[#EFF5FC]' : 'border-gray-200 hover:border-[#BDD1FF]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(true); }} onDragLeave={() => setIsDraggingOverCertTemplates(false)} onDrop={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(false); const templateUrl = e.dataTransfer.getData('templateUrl'); if (templateUrl) addCommonTemplate(templateUrl); else { const internalTmplIdx = e.dataTransfer.getData('certTemplateIdx'); if (internalTmplIdx === "") handleCertTemplateFiles(e.dataTransfer.files); } }} onPaste={handlePaste} onClick={() => data.certTemplates.length === 0 && certTemplateInputRef.current?.click()}><input type="file" ref={certTemplateInputRef} className="hidden" accept="image/*" multiple onChange={(e) => handleCertTemplateFiles(e.target.files)} />{data.certTemplates.length > 0 ? (<div className="w-full flex wrap justify-center gap-[40px]">{data.certTemplates.map((img, tIdx) => (<div key={tIdx} draggable onDragStart={(e) => { e.dataTransfer.setData('certTemplateIdx', tIdx.toString()); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('certTemplateIdx')); if (!isNaN(sIdx) && sIdx !== tIdx) handleReorderCertTemplates(sIdx, tIdx); }} className="w-[calc(33.333%-27px)] relative group/img border border-[#E5E6EB] rounded-[12px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02] cursor-grab active:cursor-grabbing"><img src={img} alt={`Template ${tIdx}`} loading="lazy" className="w-full h-auto block object-contain" /><button onClick={(e) => { e.stopPropagation(); removeCertTemplate(tIdx); }} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/img:opacity-100 transition-opacity z-10"><Trash2 className="w-3.5 h-3.5" /></button></div>))}<div onClick={() => certTemplateInputRef.current?.click()} className="w-[calc(33.333%-27px)] aspect-square border-2 border-dashed border-gray-200 rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] hover:bg-gray-50 transition-all text-gray-400 group"><Plus className="w-6 h-6 mb-2 group-hover:scale-110 transition-transform" /><span className="text-[11px] font-bold">继续添加</span></div></div>) : (<div className="flex flex-col items-center text-gray-300 pointer-events-none"><div className="w-16 h-16 rounded-[12px] bg-gray-50 border border-[#E5E6EB] flex items-center justify-center mb-4"><Copy className="w-8 h-8 text-gray-200" /></div><p className="text-[14px] font-bold text-gray-400">支持上传、拖放图片或粘贴截图</p><p className="text-[12px] text-gray-300 mt-1">系统将自动分析并裁剪底部多余白边</p></div>)}</div></section>
     ) : null
   };
 
-  const sortingItemClass = (isActive: boolean) => `relative bg-white border border-[#F1F5F9] min-h-[52px] px-3 rounded-[8px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${isActive ? 'bg-[#F0F7FF] border-[#0062AD] ring-1 ring-[#0062AD]/10' : 'hover:bg-[#F0F7FF] hover:border-[#BDD1FF]'}`;
-  const iconBoxClass = "w-6 h-6 flex items-center justify-center bg-[#F0F7FF] border border-[#E5E7EB] rounded-[4px] text-[#0062AD] shrink-0";
-  const dragLineClass = (isActive: boolean) => `absolute left-0 top-2 bottom-2 w-[2px] rounded-r-full transition-colors ${isActive ? 'bg-[#0062AD]' : 'bg-[#E2E8F0] group-hover:bg-[#BDD1FF]'}`;
+  const sortingItemClass = (isActive: boolean) => `relative bg-[#F8FAFC] border border-[#E5E6EB] min-h-[52px] px-3 rounded-[8px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${isActive ? 'bg-[#F0F8FF] border-[#0062AD] ring-1 ring-[#0062AD]/10' : 'hover:bg-[#F0F8FF] hover:border-[#BDD1FF]'}`;
+  const iconBoxClass = "w-6 h-6 flex items-center justify-center bg-white border border-[#E5E6EB] rounded-[4px] text-[#0075CB] shrink-0";
+  const dragLineClass = (isActive: boolean) => `absolute left-0 top-2 bottom-2 ${isActive ? 'w-[4px]' : 'w-[2px]'} bg-[#0075CB] rounded-r-full transition-all duration-200`;
 
   const InputWrapperStyle = "border border-gray-200 rounded-[12px] p-2 bg-white cursor-text hover:border-[#0062AD] hover:shadow-[0_0_0_3px_rgba(0,98,173,0.08)] focus-within:border-[#0062AD] focus-within:shadow-[0_0_0_3px_rgba(0,98,173,0.08)] transition-all min-h-[42px] flex items-center outline-none ring-0";
 
@@ -1245,14 +1611,11 @@ const App: React.FC = () => {
     <div className="max-w-[1550px] mx-auto px-6 py-10 flex flex-col lg:flex-row gap-8">
       <div id="pdf-export-target" className="absolute -left-[9999px] top-0"><QuoteDocument containerRef={pdfSourceRef} isPrint={true} /></div>
       
-      {/* LEFT COLUMN: Main Editor Area */}
       <div className={`flex-1 max-w-[900px] transition-colors duration-300 space-y-4 ${isDraggingOverMain ? 'bg-[#EFF5FC]' : ''}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverMain(true); }} onDragLeave={() => setIsDraggingOverMain(false)} onDrop={handleDropToMain}>
         
-        {/* Module 1: Header */}
-        <header className="flex flex-col mb-10"><div className="relative flex justify-between items-center w-full mb-12 gap-10 transition-all min-h-[120px]"><EditableBrandLogo src={leftLogo} label="左侧 Logo" onUpload={setLeftLogo} align="left" className="flex-1" /><EditableBrandLogo src={rightLogo} label="右侧 Logo" onUpload={setLeftLogoRight} align="right" className="flex-1" /></div><div className="text-center relative"><div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent -z-10"></div><h1 className="text-[22px] md:text-[28px] font-bold text-[#304166] mb-2 bg-[#f4f7fa] inline-block px-10 transition-all duration-300">{dynamicTitle}</h1><p className="text-gray-500 text-[13px] tracking-[0.2em] uppercase font-normal opacity-80">{dynamicSubtitle}</p></div></header>
+        <header className="flex flex-col mb-10 text-center"><div className="relative flex justify-between items-center w-full mb-12 gap-10 transition-all min-h-[120px]"><EditableBrandLogo src={leftLogo} label="左侧 Logo" onUpload={setLeftLogo} align="left" className="flex-1" /><EditableBrandLogo src={rightLogo} label="右侧 Logo" onUpload={setLeftLogoRight} align="right" className="flex-1" /></div><div className="text-center relative"><div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent -z-10"></div><h1 className="text-[22px] md:text-[28px] font-bold text-[#304166] mb-2 bg-[#F8FAFC] inline-block px-10 transition-all duration-300">{dynamicTitle}</h1><p className="text-gray-500 text-[13px] tracking-[0.2em] uppercase leading-tight font-normal opacity-80">{dynamicSubtitle}</p></div></header>
         
-        {/* Module 2: Client Basic Info */}
-        <section className="card"><div className="section-header"><Building2 className="w-5 h-5" /><span>客户及认证基本信息</span></div><div className="grid grid-cols-12 gap-x-4 gap-y-3">
+        <section className="card text-left"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><Building2 className="w-5 h-5" /><span>客户及认证基本信息</span></div><div className="grid grid-cols-12 gap-x-4 gap-y-3">
           <div className="col-span-12 md:col-span-9">
             <label className="field-label">客户名称</label>
             <div className={InputWrapperStyle}>
@@ -1294,17 +1657,14 @@ const App: React.FC = () => {
           </div>
           <div className="col-span-12 relative" ref={standardDropdownRef}>
             <label className="field-label">认证标准</label>
-            <div 
-              onClick={() => setIsStandardOpen(!isStandardOpen)} 
-              className={`${InputWrapperStyle} !items-start hover:shadow-[0_0_0_3px_rgba(0,98,173,0.08)] cursor-pointer min-h-[46px] flex-col !p-2.5`}
-            >
+            <div onClick={() => setIsStandardOpen(!isStandardOpen)} className={`${InputWrapperStyle} !items-start cursor-pointer min-h-[46px] flex-col !p-2.5`}>
               <div className="flex flex-wrap gap-2 text-[13px] font-normal text-gray-500 w-full">
                 {data.certStandards.length > 0 ? (
                   <div className="flex wrap gap-2 w-full">
                     {data.certStandards.map(s => (
-                      <span key={s} className="bg-[#0062AD1a] text-[#0062AD] text-[11px] px-2.5 py-1 rounded-[6px] border border-[#0062AD33] font-en font-bold flex items-center gap-1.5 group/standard w-fit">
+                      <span key={s} className="bg-[#F2F3F5] text-[#1D2129] text-[12px] px-3 py-1.5 rounded-[6px] border border-slate-200 font-semibold flex items-center gap-2 group/standard w-fit">
                         <span className="whitespace-normal leading-tight">{s}</span>
-                        <X className="w-3 h-3 ml-0.5 opacity-0 group-hover/standard:opacity-100 cursor-pointer shrink-0 hover:text-red-500 transition-colors" onClick={(e) => { e.stopPropagation(); toggleStandard(s); }} />
+                        <X className="w-3.5 h-3.5 ml-0.5 opacity-0 group-hover/standard:opacity-100 cursor-pointer shrink-0 hover:text-[#F53F3F]" onClick={(e) => { e.stopPropagation(); toggleStandard(s); }} />
                       </span>
                     ))}
                   </div>
@@ -1316,7 +1676,7 @@ const App: React.FC = () => {
                 <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${isStandardOpen ? 'rotate-180' : ''}`} />
               </div>
             </div>
-            {isStandardOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-[12px] shadow-2xl overflow-hidden animate-fade-in flex flex-col min-w-[320px] sm:min-w-[700px] w-full"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">认证标准快速检索与选择</span></div><div className="p-3 flex flex-col gap-2"><div className="relative"><Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" /><input autoFocus type="text" placeholder="搜索标准..." className="pl-8 pr-3 py-1.5 border-gray-200 text-xs font-en !rounded-[8px] outline-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div><div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 max-h-[400px] overflow-y-auto pr-1">{filteredStandards.map(std => (<div key={std} onClick={() => toggleStandard(std)} className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded-[8px] cursor-pointer group transition-colors"><div className={`w-3.5 h-3.5 rounded-[4px] border transition-colors flex items-center justify-center flex-shrink-0 ${data.certStandards.includes(std) ? 'bg-[#0062AD] border-[#0062AD]' : 'border-gray-300 group-hover:border-[#0062AD]'}`}>{data.certStandards.includes(std) && <Check className="w-2.5 h-2.5 text-white" />}</div><span className="text-[12px] text-gray-700 truncate select-none siding-tight">{std}</span></div>))}<div className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded-[8px] cursor-pointer group transition-colors">{isAddingCustom ? (<div className="flex items-center gap-1.5 w-full" onClick={e => e.stopPropagation()}><input autoFocus placeholder="输入标准名称" className="flex-1 !py-1 !px-2 text-[11px] border-[#BDD1FF] focus:border-[#0062AD] !rounded-[8px] outline-none" value={customStandardInput} onChange={e => setCustomStandardInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddCustomStandard()} /><button onClick={handleAddCustomStandard} className="p-1 text-[#0062AD] hover:bg-[#EFF5FC] rounded-[8px] transition-colors"><Check className="w-3 h-3" /></button><button onClick={() => { setIsAddingCustom(false); setCustomStandardInput(''); }} className="p-1 text-[#EE4932] hover:bg-red-50 rounded-[8px] transition-colors"><X className="w-3 h-3" /></button></div>) : (<div onClick={(e) => { e.stopPropagation(); setIsAddingCustom(true); }} className="flex items-center gap-2 w-full"><div className="w-3.5 h-3.5 rounded-[4px] border border-dashed border-gray-300 group-hover:border-[#0062AD] flex items-center justify-center flex-shrink-0"><Plus className="w-2.5 h-2.5 text-gray-400 group-hover:text-[#0062AD]" /></div><span className="text-[12px] text-gray-400 font-semibold group-hover:text-[#0062AD] transition-colors">其他</span></div>)}</div></div></div></div>)}
+            {isStandardOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E6EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in flex flex-col min-w-[320px] sm:min-w-[700px] w-full"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">认证标准快速检索与选择</span></div><div className="p-3 flex flex-col gap-2"><div className="relative"><Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" /><input autoFocus type="text" placeholder="搜索标准..." className="pl-8 pr-3 py-1.5 border-gray-200 text-xs !rounded-[8px] outline-none w-full" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div><div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 max-h-[400px] overflow-y-auto pr-1">{filteredStandards.map(std => (<div key={std} onClick={() => toggleStandard(std)} className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded-[8px] cursor-pointer group transition-colors"><div className={`w-3.5 h-3.5 rounded-[4px] border transition-colors flex items-center justify-center flex-shrink-0 ${data.certStandards.includes(std) ? 'bg-[#0062AD] border-[#0062AD]' : 'border-gray-300 group-hover:border-[#0062AD]'}`}>{data.certStandards.includes(std) && <Check className="w-2.5 h-2.5 text-white" />}</div><span className="text-[12px] text-gray-700 truncate select-none leading-tight">{std}</span></div>))}<div className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded-[8px] cursor-pointer group transition-colors">{isAddingCustom ? (<div className="flex items-center gap-1.5 w-full" onClick={e => e.stopPropagation()}><input autoFocus placeholder="输入标准名称" className="flex-1 !py-1 !px-2 text-[11px] border-[#BDD1FF] focus:border-[#0062AD] !rounded-[8px] outline-none" value={customStandardInput} onChange={e => setCustomStandardInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddCustomStandard()} /><button onClick={handleAddCustomStandard} className="p-1 text-[#0062AD] hover:bg-[#EFF5FC] rounded-[8px] transition-colors"><Check className="w-3 h-3" /></button><button onClick={() => { setIsAddingCustom(false); setCustomStandardInput(''); }} className="p-1 text-[#EE4932] hover:bg-red-50 rounded-[8px] transition-colors"><X className="w-3 h-3" /></button></div>) : (<div onClick={(e) => { e.stopPropagation(); setIsAddingCustom(true); }} className="flex items-center gap-2 w-full"><div className="w-3.5 h-3.5 rounded-[4px] border border-dashed border-gray-300 group-hover:border-[#0062AD] flex items-center justify-center flex-shrink-0"><Plus className="w-2.5 h-2.5 text-gray-400 group-hover:text-[#0062AD]" /></div><span className="text-[12px] text-gray-400 font-semibold group-hover:text-[#0062AD] transition-colors">其他</span></div>)}</div></div></div></div>)}
           </div>
           <div className="col-span-12">
             <label className="field-label">认证范围</label>
@@ -1334,122 +1694,106 @@ const App: React.FC = () => {
           </div>
         </div></section>
         
-        {/* Dynamic Quote Modules (Direct children for space-y-4) */}
         {data.modules.filter(m => m.type !== 'custom').map((module) => (
-          <section key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
-            <div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeModule(module.id)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-none z-10"><Trash2 className="w-4 h-4" /></button>
+          <section key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF] text-left'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
+            <div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeModule(module.id)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 z-10"><Trash2 className="w-4 h-4" /></button>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <div className="section-header !mb-0 flex-1">{module.type === 'cert' ? <Layout className="w-5 h-5 shrink-0" /> : <Settings className="w-5 h-5 shrink-0" />}<input className="!border-0 !p-0 font-bold bg-transparent focus:ring-0 text-[17px] text-[#304166] w-full outline-none" value={module.title} onChange={e => updateModuleTitle(module.id, e.target.value)} /></div>
-              <div className="flex gap-2">
-                {module.type === 'cert' ? (<><button onClick={() => resetCertModuleItems(module.id)} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 重置</button><button onClick={() => addCertItemToModule(module.id)} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Plus className="w-3 h-3" /> 添加阶段</button><button onClick={() => removeCertItemFromModule(module.id)} className="flex items-center gap-1.5 text-[13px] font-bold border border-red-100 text-red-500 px-3 py-1.5 rounded-[12px] hover:bg-red-50 transition-all"><Minus className="w-3 h-3" /> 移除阶段</button></>) : (<><button onClick={() => resetTechModuleServices(module.id)} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 重置</button><button onClick={() => addTechServiceToModule(module.id)} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Plus className="w-3 h-3" /> 添加服务</button><button onClick={() => removeTechServiceFromModule(module.id)} className="flex items-center gap-1.5 text-[13px] font-bold border border-red-100 text-red-500 px-3 py-1.5 rounded-[12px] hover:bg-red-50 transition-all"><Minus className="w-3 h-3" /> 移除服务</button></>)}
+              <div className="section-header !mb-0 flex-1" style={{ borderLeftColor: '#0062AD' }}>{module.type === 'cert' ? <Layout className="w-5 h-5 shrink-0" /> : <Settings className="w-5 h-5 shrink-0" />}<input className={`!border-0 !p-0 font-semibold bg-transparent focus:ring-0 text-[17px] w-full outline-none ${module.type === 'tech' ? 'text-[#055087] font-semibold' : 'text-[#304166]'}`} value={module.title} onChange={e => updateModuleTitle(module.id, e.target.value)} /></div>
+              <div className="flex gap-[12px]">
+                {module.type === 'cert' ? (<><button onClick={() => resetCertModuleItems(module.id)} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => addCertItemToModule(module.id)} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加阶段</button><button onClick={() => removeCertItemFromModule(module.id)} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除阶段</button></>) : (<><button onClick={() => resetTechModuleServices(module.id)} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => addTechServiceToModule(module.id)} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加服务</button><button onClick={() => removeTechServiceFromModule(module.id)} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除服务</button></>)}
               </div>
             </div>
             {module.type === 'cert' ? (
-              <div className="border border-[#E5E7EB] rounded-[12px] overflow-hidden shadow-none">
+              <div className="border border-[#E5E6EB] rounded-[12px] overflow-hidden shadow-none">
                 <table className="w-full text-[14px] border-separate border-spacing-0">
-                  <thead className="bg-[#F8FAFF]">
+                  <thead className="bg-white">
                     <tr>
-                      <th className="px-5 py-5 text-left font-bold text-[#475569] border-b border-[#E5E7EB]">认证阶段</th>
-                      <th className="px-5 py-5 text-left font-bold text-[#475569] border-b border-[#E5E7EB]">具体收费项目</th>
-                      <th className="px-5 py-5 text-right font-bold text-[#475569] w-40 border-b border-[#E5E7EB]">金额 (CNY)</th>
+                      <th className="px-5 py-5 text-left font-bold text-[#475569] border-b border-[#F2F3F5]">认证阶段</th>
+                      <th className="px-5 py-5 text-left font-bold text-[#475569] border-b border-[#F2F3F5]">具体收费项目</th>
+                      <th className="px-5 py-5 text-right font-bold text-[#475569] w-40 border-b border-[#F2F3F5]">金额 (CNY)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5E7EB] bg-white">
+                  <tbody className="bg-white">
                     {module.items.map((item) => (
-                      <tr key={item.id} className="hover:bg-[#F8FAFC] transition-colors">
+                      <tr key={item.id} className="bg-white border-b border-[#E5E6EB] last:border-0">
                         <td className="p-0 align-top">
-                          <input className="!border-0 px-5 py-5 focus:ring-0 bg-transparent w-full text-left outline-none text-[14px] font-bold text-[#1e293b]" value={item.type} onChange={e => handleUpdateCertItem(module.id, item.id, 'type', e.target.value)} />
+                          <input className="!border-0 px-5 py-5 focus:ring-0 bg-transparent w-full text-left outline-none text-[14px] font-medium text-[#072A4A]" value={item.type} onChange={e => handleUpdateCertItem(module.id, item.id, 'type', e.target.value)} />
                         </td>
                         <td className="p-0 align-top">
-                          <input className="!border-0 px-5 py-5 focus:ring-0 bg-transparent w-full text-left outline-none text-[14px] text-black" value={item.project} onChange={e => handleUpdateCertItem(module.id, item.id, 'project', e.target.value)} />
+                          <input className="!border-0 px-5 py-5 focus:ring-0 bg-transparent w-full text-left outline-none text-[14px] text-[#4E5969]" value={item.project} onChange={e => handleUpdateCertItem(module.id, item.id, 'project', e.target.value)} />
                         </td>
-                        <td className="p-0 bg-white/50 cursor-text align-top" onClick={() => setEditingCertId({moduleId: module.id, itemId: item.id})}>
-                          <div className="flex items-baseline justify-end px-5 py-5 gap-1 text-black font-semibold font-quote leading-none">
+                        <td className="p-0 bg-white cursor-text align-top" onClick={() => setEditingCertId({moduleId: module.id, itemId: item.id})}>
+                          <div className="flex items-baseline justify-end px-5 py-5 gap-1 text-[#0075CB] font-medium font-quote leading-none">
                             <span className="font-bold opacity-40 text-[12px]">¥</span>
                             {editingCertId?.moduleId === module.id && editingCertId?.itemId === item.id ? (
-                              <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-semibold w-24 font-quote outline-none text-[16px]" type="number" value={item.amount} onBlur={() => setEditingCertId(null)} onChange={e => handleUpdateCertItem(module.id, item.id, 'amount', parseFloat(e.target.value) || 0)} />
+                              <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-medium w-24 font-quote outline-none text-[16px]" type="number" value={item.amount} onBlur={() => setEditingCertId(null)} onChange={e => handleUpdateCertItem(module.id, item.id, 'amount', parseFloat(e.target.value) || 0)} />
                             ) : (
-                              <span className="text-[16px]">{item.amount.toLocaleString()}</span>
+                              <span className="text-[16px] font-normal leading-none">{item.amount.toLocaleString()}</span>
                             )}
                           </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot className="bg-white">
-                    <tr>
-                      <td colSpan={3} className="px-5 pt-0">
-                        <div className="border-t-2 border-dashed border-[#E5E7EB] mt-2"></div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="px-5 py-6 pt-4 text-left font-bold text-[#304166]">认证费用总计（含6%增值税）</td>
-                      <td className=""></td>
-                      <td className="px-5 py-6 pt-4 text-right font-bold text-[#0062AD] text-[18px] whitespace-nowrap font-quote flex items-baseline justify-end gap-1 leading-none">
-                        <span className="text-[12px] font-bold opacity-60 mr-0.5">¥</span>
-                        {module.items.reduce((s, i) => s + (i.amount || 0), 0).toLocaleString()}
-                      </td>
-                    </tr>
-                  </tfoot>
                 </table>
+                <div className="bg-[#F8FAFC] px-5 py-4 flex items-center justify-between rounded-b-[12px] border-t border-[#E5E6EB]">
+                  <span className="text-[14px] text-[#4E5969] font-medium">认证费用总计（含6%增值税）</span>
+                  <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote leading-none">
+                    <span className="text-[12px] font-bold opacity-60 mr-0.5">¥</span>
+                    <span className="leading-none">{module.items.reduce((s, i) => s + (i.amount || 0), 0).toLocaleString()}</span>
+                  </div>
+                </div>
               </div>
             ) : (
-              <><div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 items-stretch">{module.services.map((service, idx) => {
+              <><div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 items-stretch">{module.services.filter(s => s).map((service, idx) => {
                     const color = STEP_COLORS[idx % STEP_COLORS.length]; const displayId = (idx + 1).toString().padStart(2, '0');
+                    const ProcessIcon = STEP_ICONS[idx % STEP_ICONS.length] || Settings;
                     return (
-                      <div key={service.id} draggable="true" onDragStart={(e) => { e.dataTransfer.setData('serviceIdx', idx.toString()); e.dataTransfer.setData('sourceModuleId', module.id); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const sIdx = parseInt(e.dataTransfer.getData('serviceIdx')); const sourceModId = e.dataTransfer.getData('sourceModuleId'); if (sourceModId === module.id && sIdx !== idx) handleReorderTechServices(module.id, sIdx, idx); }} className={`group relative h-full flex flex-col p-4 rounded-[10px] ${service.checked ? color.bg : 'bg-white'} border transition-all duration-300 overflow-hidden ${service.checked ? 'border-[#BDD1FF]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]/50'}`} style={{ }}>
-                        <div className={`absolute -right-1 -top-2 text-[3.5rem] font-black italic select-none ${color.num} font-num z-0`}>{displayId}</div>
+                      <div key={service.id} draggable="true" onDragStart={(e) => { e.dataTransfer.setData('serviceIdx', idx.toString()); e.dataTransfer.setData('sourceModuleId', module.id); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); const sIdx = parseInt(e.dataTransfer.getData('serviceIdx')); const sourceModId = e.dataTransfer.getData('sourceModuleId'); if (sourceModId === module.id && sIdx !== idx) handleReorderTechServices(module.id, sIdx, idx); }} className={`group relative h-full flex flex-col p-5 rounded-[10px] transition-all duration-300 overflow-hidden border ${service.checked ? `${color.bg} border-[#BDD1FF]` : 'bg-[#F2F3F5] border-[#E5E6EB] grayscale-[0.8]'}`} style={{ }}>
+                        <div className={`absolute -right-1 -top-2 text-[3.5rem] font-black italic select-none ${service.checked ? color.num : 'text-[#86909C]/10'} font-num z-0`}>{displayId}</div>
                         <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all z-20">
-                          <div className="p-1 text-gray-300 cursor-move hover:text-[#0062AD]">
-                            <GripVertical className="w-3.5 h-3.5" />
-                          </div>
-                          <button onClick={(e) => { e.stopPropagation(); handleRemoveTechService(module.id, idx); }} title="删除项目" className="p-1 text-gray-300 hover:text-white hover:bg-red-50 rounded-lg transition-all shadow-none">
-                            <Trash2 className="w-3.5 h-3.5" />
+                          <button onClick={(e) => { e.stopPropagation(); toggleTechService(module.id, service.id); }} title={service.checked ? "隐藏项目" : "显示项目"} className={`p-1.5 rounded-full transition-all ${service.checked ? 'bg-white text-[#0062AD] hover:bg-[#0062AD] hover:text-white shadow-sm' : 'bg-[#86909C] text-white shadow-none'}`}>
+                            {service.checked ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                           </button>
                         </div>
-                        <div className="flex items-start gap-3 relative z-10 flex-1">
-                          <div className="mt-0.5 flex-shrink-0">
-                              <input 
-                                  type="checkbox" 
-                                  checked={service.checked} 
-                                  onChange={() => toggleTechService(module.id, service.id)}
-                                  className="ui-checkbox" 
-                              />
+                        <div className="flex flex-col relative z-10 flex-1">
+                          <div className={`mb-3 flex items-center justify-start ${service.checked ? color.text : 'text-[#86909C]'}`}>
+                            <ProcessIcon className="w-5 h-5" />
                           </div>
-                          <div className="flex-1 min-w-0 flex flex-col h-full"><div className="flex items-center gap-2 mb-1.5"><input className={`!p-0 !border-0 bg-transparent focus:ring-0 text-[14px] font-bold block w-full text-left transition-colors outline-none ${service.checked ? 'text-[#304166]' : 'text-[#333333]'}`} value={service.name} onChange={e => updateTechService(module.id, service.id, 'name', e.target.value)} /></div><textarea className="!p-0 !border-0 bg-transparent focus:ring-0 text-[11px] text-gray-500 text-left siding-relaxed siding-snug block w-full font-normal outline-none resize-none flex-1 overflow-hidden" rows={2} style={{ height: 'auto' }} value={service.description} onChange={e => updateTechService(module.id, service.id, 'description', e.target.value)} /></div>
+                          <div className="flex-1 min-w-0 flex flex-col h-full">
+                            <input className={`!p-0 !border-0 bg-transparent focus:ring-0 text-[14px] font-bold block w-full text-left outline-none mb-2 ${service.checked ? color.text : 'text-[#86909C]'}`} value={service.name} onChange={e => updateTechService(module.id, service.id, 'name', e.target.value)} />
+                            <textarea className={`!p-0 !border-0 bg-transparent focus:ring-0 text-[12px] text-left leading-relaxed block w-full font-normal outline-none resize-none overflow-hidden ${service.checked ? 'text-[#4E5969]' : 'text-[#86909C]/70'}`} rows={2} style={{ height: 'auto' }} value={service.description} onChange={e => updateTechService(module.id, service.id, 'description', e.target.value)} />
+                          </div>
                         </div>
                       </div>
                     );
-                  })}</div><div className="border border-[#E5E7EB] rounded-[12px] overflow-hidden shadow-none bg-white">
-                  <div className="flex items-center gap-4 px-5 py-4 text-[13px] font-quote">
+                  })}</div><div className="border border-[#E5E6EB] rounded-[12px] overflow-hidden bg-white shadow-none">
+                  <div className="bg-white flex wrap items-center px-5 pt-5 pb-6 text-[14px] font-quote m-0 rounded-t-[12px] gap-x-0">
                     <div className="flex items-center gap-2 font-normal text-left">
-                      <span className="text-gray-600 font-bold shrink-0">指导周期：</span>
-                      <span className="text-gray-600 shrink-0">不少于（现场+远程）</span>
-                      <div className={InputWrapperStyle + " !min-h-0 !p-1.5 w-16"}>
-                        <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-bold text-[#0062AD] font-quote outline-none" value={module.details.minDays} onChange={e => updateTechModuleDetails(module.id, 'minDays', parseInt(e.target.value) || 0)} />
+                      <span className="text-[#4E5969] font-medium shrink-0">指导周期：</span>
+                      <span className="text-[#4E5969] shrink-0">不少于（现场+远程）</span>
+                      <div className="border border-[#E5E6EB] rounded-[4px] p-1.5 bg-white w-16 ml-2 mr-0">
+                        <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-medium text-[#0075CB] font-quote outline-none" value={module.details.minDays} onChange={e => updateTechModuleDetails(module.id, 'minDays', parseInt(e.target.value) || 0)} />
                       </div>
-                      <span className="text-gray-600">人天</span>
+                      <span className="text-[#4E5969] ml-2">人天</span>
                     </div>
-                    <div className="h-3 w-px bg-[#E5E7EB] mx-1"></div>
+                    <div className="w-px h-3 bg-[#E5E6EB] mx-8 self-center"></div>
                     <div className="flex items-center gap-2 font-normal">
-                      <span className="text-gray-600 font-bold">内审员证书:</span>
-                      <div className={InputWrapperStyle + " !min-h-0 !p-1.5 w-16"}>
-                        <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-bold text-[#0062AD] font-quote outline-none" value={module.details.auditCerts} onChange={e => updateTechModuleDetails(module.id, 'auditCerts', parseInt(e.target.value) || 0)} />
+                      <span className="text-[#4E5969] font-medium">内审员证书：</span>
+                      <div className="border border-[#E5E6EB] rounded-[4px] p-1.5 bg-white w-16 ml-2 mr-0">
+                        <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-medium text-[#0075CB] font-quote outline-none" value={module.details.auditCerts} onChange={e => updateTechModuleDetails(module.id, 'auditCerts', parseInt(e.target.value) || 0)} />
                       </div>
-                      <span className="text-gray-600">份</span>
+                      <span className="text-[#4E5969] ml-2">份</span>
                     </div>
                   </div>
-                  <div className="px-5 pt-0">
-                    <div className="border-t-2 border-dashed border-[#E5E7EB] mt-2"></div>
-                  </div>
-                  <div className="px-5 py-6 pt-4 flex items-center justify-between">
-                    <span className="font-bold text-[#304166] text-[14px]">技术服务费用总计（含6%增值税）</span>
-                    <div className="flex items-baseline justify-end text-[#0062AD] font-bold text-[18px] whitespace-nowrap font-quote transition-all min-w-[120px] leading-none">
+                  <div className="bg-[#F8FAFC] px-5 py-4 flex items-center justify-between m-0 rounded-b-[12px] border-t border-[#E5E6EB]">
+                    <span className="font-medium text-[#4E5969] text-[14px]">技术服务费用总计（含6%增值税）</span>
+                    <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote transition-all min-w-[120px] leading-none">
                       <span className="mr-0.5 font-quote opacity-60 text-sm">¥</span>
                       {editingTechFeeId === module.id ? (
                         <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-bold text-[18px] w-28 placeholder:text-blue-200 font-quote outline-none" type="number" value={module.fee} onBlur={() => setEditingTechFeeId(null)} onChange={e => updateTechModuleFee(module.id, parseFloat(e.target.value) || 0)} />
                       ) : (
-                        <span onClick={() => setEditingTechFeeId(module.id)} className="cursor-text text-right font-bold font-quote">{module.fee.toLocaleString()}</span>
+                        <span onClick={() => setEditingTechFeeId(module.id)} className="cursor-text text-right font-bold font-quote leading-none">{module.fee.toLocaleString()}</span>
                       )}
                     </div>
                   </div>
@@ -1458,31 +1802,30 @@ const App: React.FC = () => {
           </section>
         ))}
 
-        {/* Module 3: Remarks and Notes */}
-        <section className="card">
+        <section className="card text-left">
           <div className="flex justify-between items-center mb-6">
-            <div className="section-header !mb-0">
-              <MessageSquare className="w-5 h-5" />
-              <span>报价说明及备注</span>
+            <div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}>
+              <MessageSquare className="w-5 h-5 text-[#072A4A]" />
+              <span className="text-[#072A4A]">报价说明及备注</span>
             </div>
-            <div className="flex gap-2">
-              <button onClick={resetRemarks} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all"><RotateCcw className="w-3 h-3" /> 重置</button>
-              <button onClick={addRemark} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all"><Plus className="w-3 h-3" /> 添加备注项</button>
-              <button onClick={removeLastRemark} className="flex items-center gap-1.5 text-[13px] font-bold border border-red-100 text-red-500 px-3 py-1.5 rounded-[12px] hover:bg-red-50 transition-all"><Minus className="w-3 h-3" /> 移除备注项</button>
+            <div className="flex gap-[12px]">
+              <button onClick={resetRemarks} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
+              <button onClick={addRemark} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加备注项</button>
+              <button onClick={removeLastRemark} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除备注项</button>
             </div>
           </div>
           
           <div className="space-y-4">
-            <div className={`p-4 border border-[#E5E7EB] rounded-[12px] bg-gray-50/50 group relative transition-all ${!isNote1Visible ? 'opacity-40 grayscale' : ''}`}>
+            <div className={`p-4 border border-[#E5E6EB] rounded-[12px] bg-gray-50/50 group relative transition-all ${!isNote1Visible ? 'opacity-40 grayscale' : ''}`}>
               <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2 text-[#0062AD] font-bold text-xs uppercase tracking-widest"><Info className="w-3.5 h-3.5" /> 备注 1：规模说明</div>
-                <button onClick={() => setIsNote1Visible(!isNote1Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote1Visible ? 'text-[#0062AD] hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote1Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
+                <div className="flex items-center gap-2 text-[#072A4A] font-bold text-xs uppercase tracking-widest"><Info className="w-3.5 h-3.5" /> 备注 1：规模说明</div>
+                <button onClick={() => setIsNote1Visible(!isNote1Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote1Visible ? 'text-[#072A4A] hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote1Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
               </div>
               <div className="flex items-center gap-2 flex-wrap text-left justify-start">
-                <span className="text-[13px] text-gray-500 whitespace-nowrap">以上按</span>
+                <span className="text-[13px] text-[#4E5969] whitespace-nowrap">以上按</span>
                 <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
                   <textarea 
-                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] resize-none h-auto overflow-hidden outline-none" 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden outline-none" 
                     rows={1}
                     style={{ height: 'auto' }}
                     onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
@@ -1491,36 +1834,45 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div className={InputWrapperStyle + " !w-20 !min-h-0 !p-1.5"}>
-                  <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-normal text-[13px] text-[#0062AD] outline-none" type="number" value={data.note1Count} onChange={e => setData({...data, note1Count: parseInt(e.target.value) || 0})} />
+                  <input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-center font-normal text-[13px] text-[#0062AD] outline-none font-num" type="number" value={data.note1Count} onChange={e => setData({...data, note1Count: parseInt(e.target.value) || 0})} />
                 </div>
-                <span className="text-[13px] text-gray-500 whitespace-nowrap">人以内规模的基础上报价，本报价单60天有效。</span>
+                <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
+                  <textarea 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden outline-none" 
+                    rows={1}
+                    style={{ height: 'auto' }}
+                    onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
+                    value={data.note1Suffix} 
+                    onChange={e => setData({...data, note1Suffix: e.target.value})} 
+                  />
+                </div>
               </div>
             </div>
 
-            <div className={`p-4 border border-[#E5E7EB] rounded-[12px] bg-gray-50/50 group relative transition-all ${!isNote2Visible ? 'opacity-40 grayscale' : ''}`}>
+            <div className={`p-4 border border-[#E5E6EB] rounded-[12px] bg-gray-50/50 group relative transition-all ${!isNote2Visible ? 'opacity-40 grayscale' : ''}`}>
               <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2 text-[#0062AD] font-bold text-xs uppercase tracking-widest"><CarTaxiFront className="w-3.5 h-3.5" /> 备注 2：食宿差旅</div>
-                <button onClick={() => setIsNote2Visible(!isNote2Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote2Visible ? 'text-[#0062AD] hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote2Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
+                <div className="flex items-center gap-2 text-[#072A4A] font-bold text-xs uppercase tracking-widest"><CarTaxiFront className="w-3.5 h-3.5" /> 备注 2：食宿差旅</div>
+                <button onClick={() => setIsNote2Visible(!isNote2Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote2Visible ? 'text-[#072A4A] hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote2Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
               </div>
-              <div className="flex items-center gap-4 mb-3">
-                <button onClick={() => setData({...data, travelExpenseOption: 'excluded'})} className={`flex-1 py-2 text-xs font-bold rounded-[8px] border transition-all ${data.travelExpenseOption === 'excluded' ? 'bg-[#0062AD] border-[#0062AD] text-white shadow-none' : 'bg-white border-[#E5E7EB] text-[#64748B] hover:border-[#0062AD]/30'}`}>不包含差旅费</button>
-                <button onClick={() => setData({...data, travelExpenseOption: 'included'})} className={`flex-1 py-2 text-xs font-bold rounded-[8px] border transition-all ${data.travelExpenseOption === 'included' ? 'bg-[#0062AD] border-[#0062AD] text-white shadow-none' : 'bg-white border-[#E5E7EB] text-[#64748B] hover:border-[#0062AD]/30'}`}>已包含差旅费</button>
+              <div className="flex gap-3 mb-3">
+                <button onClick={() => setData({...data, travelExpenseOption: 'excluded'})} className={`flex-1 py-2 text-xs font-bold rounded-[8px] border transition-all ${data.travelExpenseOption === 'excluded' ? 'bg-[#0062AD] border-[#0062AD] text-white shadow-none' : 'bg-white border-[#E5E6EB] text-[#64748B] hover:border-[#0062AD]/30'}`}>不包含差旅费</button>
+                <button onClick={() => setData({...data, travelExpenseOption: 'included'})} className={`flex-1 py-2 text-xs font-bold rounded-[8px] border transition-all ${data.travelExpenseOption === 'included' ? 'bg-[#0062AD] border-[#0062AD] text-white shadow-none' : 'bg-white border-[#E5E6EB] text-[#64748B] hover:border-[#0062AD]/30'}`}>已包含差旅费</button>
               </div>
-              <div className="p-3 bg-white border border-[#E5E7EB] rounded-[8px] text-left">
-                <p className="text-[13px] text-gray-600 leading-relaxed font-normal">
+              <div className="p-3 bg-white border border-[#E5E6EB] rounded-[8px] text-left">
+                <p className="text-[13px] text-[#4E5969] leading-relaxed font-normal">
                   {getTravelNote(data.travelExpenseOption)}
                 </p>
               </div>
             </div>
 
-            <div className={`p-4 border border-[#E5E7EB] rounded-[12px] bg-gray-50/50 group relative transition-all ${!isNote3Visible ? 'opacity-40 grayscale' : ''}`}>
+            <div className={`p-4 border border-[#E5E6EB] rounded-[12px] bg-gray-50/50 group relative transition-all ${!isNote3Visible ? 'opacity-40 grayscale' : ''}`}>
               <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest"><ReceiptText className="w-3.5 h-3.5" /> 备注 3：发票及缴纳</div>
-                <button onClick={() => setIsNote3Visible(!isNote3Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote3Visible ? 'text-amber-600 hover:bg-amber-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote3Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
+                <div className="flex items-center gap-2 text-[#072A4A] font-bold text-xs uppercase tracking-widest"><ReceiptText className="w-3.5 h-3.5" /> 备注 3：发票及缴纳</div>
+                <button onClick={() => setIsNote3Visible(!isNote3Visible)} className={`p-1 rounded-[8px] transition-colors ${isNote3Visible ? 'text-[#072A4A] hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-200'}`}>{isNote3Visible ? <Eye className="w-4 h-4" /> : <Eye className="w-4 h-4 opacity-50 line-through" />}</button>
               </div>
               <div className={InputWrapperStyle + " !p-1.5"}>
                 <textarea 
-                  className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-[13px] font-normal leading-relaxed min-h-[40px] h-auto text-left outline-none" 
+                  className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-[13px] font-normal text-[#4E5969] border-none outline-none resize-none leading-relaxed min-h-[40px] h-auto text-left" 
                   value={data.note3Text} 
                   onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
                   onChange={e => setData({...data, note3Text: e.target.value})} 
@@ -1530,13 +1882,13 @@ const App: React.FC = () => {
             </div>
 
             {data.additionalRemarks.map((remark, index) => (
-              <div key={index} className="p-4 border border-[#E5E7EB] rounded-[12px] bg-white group relative shadow-none animate-fade-in text-left">
-                <button onClick={() => removeRemark(index)} className="absolute top-2 right-2 p-1 text-gray-300 hover:text-[#EE4932] opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-4 h-4" /></button>
+              <div key={index} className="p-4 border border-[#E5E6EB] rounded-[12px] bg-white group relative text-left">
+                <button onClick={() => removeRemark(index)} className="absolute top-2 right-2 p-1 text-[#4E5969] hover:text-[#EE4932] opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
                 <div className="flex flex-col gap-2 w-full">
-                  <div className="field-label !mb-0 text-[#0062AD] text-left">追加备注 {index + 1}</div>
+                  <div className="field-label !mb-0 text-[#072A4A] text-left">备注 {index + 4}</div>
                   <div className={InputWrapperStyle + " !min-h-0 !p-1.5 !rounded-[8px]"}>
                     <textarea 
-                      className="w-full bg-transparent !p-0 !border-0 focus:ring-0 outline-none text-[13px] font-normal text-gray-700 text-left resize-none" 
+                      className="w-full bg-transparent !p-0 !border-0 focus:ring-0 outline-none text-[13px] font-normal text-[#4E5969] text-left resize-none" 
                       value={remark} 
                       rows={1}
                       onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
@@ -1550,23 +1902,21 @@ const App: React.FC = () => {
           </div>
         </section>
         
-        {/* Module 4: Contact Info */}
-        <section className="card"><div className="section-header"><ImageIcon className="w-5 h-5" /><span>名片及联系信息</span></div><div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4"><div className="space-y-3"><div className="relative" ref={managerSelectRef}><label className="field-label">姓名</label><div className="flex items-center gap-1"><div className="relative flex-1"><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left pr-8 outline-none" value={data.contact.name} placeholder="自定义姓名" onChange={e => setData({...data, contact: {...data.contact, name: e.target.value}})} /></div><button onClick={() => setIsManagerSelectOpen(!isManagerSelectOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-[4px] transition-colors"><ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isManagerSelectOpen ? 'rotate-180' : ''}`} /></button></div></div>{isManagerSelectOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E7EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">预设经理人快速选择</span></div>{PREDEFINED_MANAGERS.map((mgr) => (<div key={mgr.name} onClick={() => handleSelectManager(mgr)} className="group flex items-center justify-between px-4 py-3 hover:bg-[#EFF5FC] cursor-pointer transition-colors border-b last:border-0 border-gray-50"><div className="flex items-center gap-3"><div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${data.contact.name === mgr.name ? 'bg-[#0062AD] text-white' : 'bg-gray-100 text-gray-500'}`}>{mgr.name.charAt(0)}</div><div className="flex flex-col"><span className="text-[14px] font-bold text-gray-700">{mgr.name}</span><span className="text-[11px] text-gray-400">{mgr.jobTitle1}</span></div></div>{data.contact.name === mgr.name && <UserCheck className="w-4 h-4 text-[#0062AD]" />}</div>))}</div>)}</div><div><label className="field-label">职位 1</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle1}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle1} onChange={e => setData({...data, contact: {...data.contact, jobTitle1: e.target.value}})} /></div></div><div><label className="field-label">职位 2</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle2}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle2} onChange={e => setData({...data, contact: {...data.contact, jobTitle2: e.target.value}})} /></div></div></div><div className="space-y-3"><div><label className="field-label">电话</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-quote text-left outline-none" value={data.contact.phone} onChange={e => setData({...data, contact: {...data.contact, phone: e.target.value}})} /></div></div><div><label className="field-label">邮箱</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-en text-left outline-none" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} /></div></div><div><label className="field-label">地址</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.officeAddress}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.officeAddress} onChange={e => setData({...data, contact: {...data.contact, officeAddress: e.target.value}})} /></div></div></div><div className="flex flex-col items-center pl-6 border-l border-gray-100"><label className="field-label self-center mb-2">联系二维码</label><EditableBrandLogo src={data.contact.qrCode} label="" onUpload={(base64) => setData({...data, contact: {...data.contact, qrCode: base64}})} className="w-full" align="center" /><div className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> 上传二维码</div></div></div></section>
+        <section className="card text-left"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><ImageIcon className="w-5 h-5" /><span>名片及联系信息</span></div><div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4"><div className="space-y-3"><div className="relative" ref={managerSelectRef}><label className="field-label">姓名</label><div className="flex items-center gap-1"><div className="relative flex-1"><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left pr-8 outline-none" value={data.contact.name} placeholder="自定义姓名" onChange={e => setData({...data, contact: {...data.contact, name: e.target.value}})} /></div><button onClick={() => setIsManagerSelectOpen(!isManagerSelectOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-[4px]"><ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isManagerSelectOpen ? 'rotate-180' : ''}`} /></button></div></div>{isManagerSelectOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E6EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">预设经理人快速选择</span></div>{PREDEFINED_MANAGERS.map((mgr) => (<div key={mgr.name} onClick={() => handleSelectManager(mgr)} className="group flex items-center justify-between px-4 py-3 hover:bg-[#EFF5FC] cursor-pointer border-b last:border-0 border-gray-50 transition-colors"><div className="flex items-center gap-3"><div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${data.contact.name === mgr.name ? 'bg-[#0062AD] text-white' : 'bg-gray-100 text-gray-500'}`}>{mgr.name.charAt(0)}</div><div className="flex flex-col"><span className="text-[14px] font-bold text-gray-700">{mgr.name}</span><span className="text-[11px] text-gray-400">{mgr.jobTitle1}</span></div></div>{data.contact.name === mgr.name && <UserCheck className="w-4 h-4 text-[#0062AD]" />}</div>))}</div>)}</div><div><label className="field-label">职位 1</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle1}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle1} onChange={e => setData({...data, contact: {...data.contact, jobTitle1: e.target.value}})} /></div></div><div><label className="field-label">地址缩写/职位2</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle2}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle2} onChange={e => setData({...data, contact: {...data.contact, jobTitle2: e.target.value}})} /></div></div></div><div className="space-y-3"><div><label className="field-label">电话</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-quote text-left outline-none" value={data.contact.phone} onChange={e => setData({...data, contact: {...data.contact, phone: e.target.value}})} /></div></div><div><label className="field-label">邮箱</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-en text-left outline-none" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} /></div></div><div><label className="field-label">办公详细地址</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.officeAddress}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.officeAddress} onChange={e => setData({...data, contact: {...data.contact, officeAddress: e.target.value}})} /></div></div></div><div className="flex flex-col items-center pl-6 border-l border-gray-100"><label className="field-label self-center mb-2">联系二维码</label><EditableBrandLogo src={data.contact.qrCode} label="" onUpload={(base64) => setData({...data, contact: {...data.contact, qrCode: base64}})} className="w-full" align="center" /><div className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> 上传二维码</div></div></div></section>
 
-        {/* Level 5+: Process and Custom Modules */}
         {processOrder.map(moduleId => extraModulesMap[moduleId as keyof typeof extraModulesMap])}
 
         {data.modules.filter(m => m.type === 'custom').map((module) => (
-          <section key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E7EB] hover:border-[#BDD1FF]'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
+          <section key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF] text-left'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
             <div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeModule(module.id)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-none z-10"><Trash2 className="w-4 h-4" /></button>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <div className="section-header !mb-0 flex-1"><Layers className="w-5 h-5 shrink-0" /><input className="!border-0 !p-0 font-bold bg-transparent focus:ring-0 text-[17px] text-[#304166] w-full outline-none" value={module.title} onChange={e => updateModuleTitle(module.id, e.target.value)} /></div>
-              <div className="flex gap-2">
-                <button onClick={() => setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === module.id && m.type === 'custom' ? { ...m, blocks: [] } : m) }))} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#E5E7EB] text-gray-600 px-3 py-1.5 rounded-[12px] hover:bg-gray-50 transition-all shadow-none"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
-                <button onClick={() => { activeCaseBlockIdRef.current = module.id; customModuleExcelInputRef.current?.click(); }} className="flex items-center gap-1.5 text-[13px] font-bold border border-emerald-100 text-emerald-600 px-3 py-1.5 rounded-[12px] hover:bg-emerald-50 transition-all shadow-none"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button>
-                <button onClick={() => addBlockToModule(module.id, 'image')} className="flex items-center gap-1.5 text-[13px] font-bold border border-amber-100 text-amber-600 px-3 py-1.5 rounded-[12px] hover:bg-amber-50 transition-all shadow-none"><Images className="w-3.5 h-3.5" /> 添加图片</button>
-                <button onClick={() => addBlockToModule(module.id, 'text')} className="flex items-center gap-1.5 text-[13px] font-bold border border-[#BDD1FF] text-[#0062AD] px-3 py-1.5 rounded-[12px] hover:bg-[#EFF5FC] transition-all shadow-none"><Type className="w-3.5 h-3.5" /> 添加文本</button>
-                <button onClick={() => addBlockToModule(module.id, 'table')} className="flex items-center gap-1.5 text-[13px] font-bold border border-emerald-100 text-emerald-600 px-3 py-1.5 rounded-[12px] hover:bg-emerald-50 transition-all shadow-none"><Table2 className="w-3.5 h-3.5" /> 添加表格</button>
+              <div className="section-header !mb-0 flex-1" style={{ borderLeftColor: '#0062AD' }}><Layers className="w-5 h-5 shrink-0" /><input className="!border-0 !p-0 font-bold bg-transparent focus:ring-0 text-[#304166] w-full outline-none" value={module.title} onChange={e => updateModuleTitle(module.id, e.target.value)} /></div>
+              <div className="flex gap-[12px]">
+                <button onClick={() => setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === module.id && m.type === 'custom' ? { ...m, blocks: [] } : m) }))} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
+                <button onClick={() => { activeCaseBlockIdRef.current = module.id; customModuleExcelInputRef.current?.click(); }} className="btn-header-func"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button>
+                <button onClick={() => addBlockToModule(module.id, 'image')} className="btn-header-func"><Images className="w-3.5 h-3.5" /> 添加图片</button>
+                <button onClick={() => addBlockToModule(module.id, 'text')} className="btn-header-func"><Type className="w-3.5 h-3.5" /> 添加文本</button>
+                <button onClick={() => addBlockToModule(module.id, 'table')} className="btn-header-func"><Table2 className="w-3.5 h-3.5" /> 添加表格</button>
               </div>
             </div>
             <input type="file" ref={customModuleExcelInputRef} className="hidden" accept=".xlsx, .xls, .csv" onChange={(e) => handleExcelUploadToModule(e, module.id)} />
@@ -1579,38 +1929,32 @@ const App: React.FC = () => {
         <div className="sticky top-8 flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4 items-start">
             <div className="flex flex-col gap-4">
-              <div className="card !p-5 bg-white flex flex-col mb-0 rounded-[16px] border border-[#E5E7EB] shadow-none">
+              <div className="card !p-5 bg-white flex flex-col mb-0 rounded-[16px] border border-[#E5E6EB] shadow-none">
                 <SidebarTitle icon={FileText} title="主要操作" />
-                <div className="grid grid-cols-1 gap-2 mb-4">
-                  <button onClick={() => setShowPreview(true)} className="flex items-center justify-center gap-2 py-2.5 text-[14px] font-bold border border-[#0062AD] text-[#0062AD] bg-white rounded-[8px] hover:bg-[#F0F7FF] transition-all shadow-none"><Eye className="w-4 h-4" /> 预览报价单</button>
-                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDF} className="flex items-center justify-center gap-2 py-2.5 text-[14px] font-bold border border-green-100 text-[#00b050] rounded-[8px] hover:bg-green-50 transition-all disabled:opacity-50 shadow-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '下载 PDF'}</button>
+                <div className="grid grid-cols-1 gap-3 mb-4">
+                  <button onClick={() => setShowPreview(true)} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#005691] text-white rounded-[8px] hover:bg-[#004a7c] transition-all shadow-[0_4px_10px_rgba(0,86,145,0.1)] border-none outline-none"><Eye className="w-4 h-4" /> 预览报价单</button>
+                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#F0F8FF] text-[#005691] rounded-[8px] hover:bg-[#E0F2FF] transition-all border-none outline-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '下载 PDF'}</button>
                 </div>
-                <div className="grid grid-cols-1 gap-2 mb-4 pt-4 border-t border-[#E5E7EB]">
-                  <button onClick={addCertModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F0F7FF] border border-[#E5E7EB] text-[#0062AD] rounded-[8px] hover:bg-[#E0EFFF] hover:-translate-y-0.5 transition-all shadow-none group"><Layout className="w-4 h-4 group-hover:scale-110 transition-transform shrink-0" /><span className="text-[13px] font-bold text-center">添加管理体系认证报价</span></button>
-                  <button onClick={addTechModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F0F7FF] border border-[#E5E7EB] text-[#0062AD] rounded-[8px] hover:bg-[#E0EFFF] hover:-translate-y-0.5 transition-all shadow-none group"><Settings className="w-4 h-4 group-hover:scale-110 transition-transform shrink-0" /><span className="text-[13px] font-bold text-center">添加专业技术服务报价</span></button>
-                  <button onClick={addCustomModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F0F7FF] border border-[#E5E7EB] text-[#0062AD] rounded-[8px] hover:bg-[#E0EFFF] hover:-translate-y-0.5 transition-all shadow-none group"><Layers className="w-4 h-4 group-hover:scale-110 transition-transform shrink-0" /><span className="text-[13px] font-bold text-center">添加自定义模块</span></button>
+                <div className="grid grid-cols-1 gap-2 mb-4 pt-4 border-t border-[#E5E6EB]">
+                  <button onClick={addCertModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F8FAFC] text-[#055087] font-medium rounded-[10px] border border-dashed border-[#E5E6EB] hover:bg-[#F0F8FF] hover:border-[#BDD1FF] transition-all group"><Layout className="w-4 h-4 text-[#0062AD] group-hover:scale-110 shrink-0" /><span className="text-[13px] text-center">添加认证报价</span></button>
+                  <button onClick={addTechModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F8FAFC] text-[#055087] font-medium rounded-[10px] border border-dashed border-[#E5E6EB] hover:bg-[#F0F8FF] hover:border-[#BDD1FF] transition-all group"><Settings className="w-4 h-4 text-[#0062AD] group-hover:scale-110 shrink-0" /><span className="text-[13px] text-center">添加技术报价</span></button>
+                  <button onClick={addCustomModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F8FAFC] text-[#055087] font-medium rounded-[10px] border border-dashed border-[#E5E6EB] hover:bg-[#F0F8FF] hover:border-[#BDD1FF] transition-all group"><Layers className="w-4 h-4 text-[#0062AD] group-hover:scale-110 shrink-0" /><span className="text-[13px] text-center">添加自定义模块</span></button>
                 </div>
-                <div className="pt-4 border-t border-[#E5E7EB]">
-                  <div className="flex items-center gap-2 text-[#475569] font-bold mb-3">
-                    <LayoutGrid className="w-4 h-4 text-[#0062AD]" />
-                    <span className="text-[15px]">模块排序管理</span>
-                  </div>
+                <div className="pt-4 border-t border-[#E5E6EB]">
+                  <div className="flex items-center gap-2 text-[#072A4A] font-semibold mb-3 text-left"><LayoutGrid className="w-4 h-4 text-[#0075CB] fill-current" /><span className="text-[15px]">模块排序管理</span></div>
                   <div className="space-y-2">
                     {data.modules.filter(m => m.type !== 'custom').map((module, index) => {
                       const info = getModuleSortingInfo(module, index);
                       const Icon = info.icon;
                       const isActive = dragOverModuleId === module.id;
                       return (
-                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
+                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
                           <div className={dragLineClass(isActive)}></div>
                           <div className="flex items-center gap-3 ml-2">
                             <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
-                            <span className="text-[13px] font-semibold text-[#334155] truncate max-w-[140px]">{info.label}</span>
+                            <span className="text-[13px] font-medium text-[#4E5969] truncate max-w-[140px] group-hover:text-[#0062AD]">{info.label}</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <GripVertical className="w-4 h-4 text-[#94A3B8] group-hover:text-[#64748B] transition-colors" />
-                            <button onClick={() => removeModule(module.id)} title="删除此模块" className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button>
-                          </div>
+                          <div className="flex items-center gap-1.5"><GripVertical className="w-4 h-4 text-[#94A3B8] transition-colors" /><button onClick={() => removeModule(module.id)} className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button></div>
                         </div>
                       );
                     })}
@@ -1622,126 +1966,70 @@ const App: React.FC = () => {
                       const Icon = info.icon;
                       const isActive = dragOverModuleId === moduleId;
                       return (
-                        <div key={moduleId} draggable="true" onDragStart={(e) => handleDragStart(e, moduleId)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(moduleId); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, moduleId)} className={sortingItemClass(isActive)}>
+                        <div key={moduleId} draggable="true" onDragStart={(e) => handleDragStart(e, moduleId)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(moduleId); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, moduleId)} className={sortingItemClass(isActive)}>
                           <div className={dragLineClass(isActive)}></div>
                           <div className="flex items-center gap-3 ml-2">
                             <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
-                            <span className="text-[13px] font-semibold text-[#334155]">{info.label}</span>
+                            <span className="text-[13px] font-medium text-[#4E5969] group-hover:text-[#0062AD]">{info.label}</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <GripVertical className="w-4 h-4 text-[#94A3B8] group-hover:text-[#64748B] transition-colors" />
-                            <button onClick={() => { if(moduleId === 'cert-process') setIsCertProcessVisible(false); if(moduleId === 'tech-process') setIsTechProcessVisible(false); if(moduleId === 'customer-case') setIsCustomerCaseVisible(false); if(moduleId === 'cert-templates') setIsCertTemplatesVisible(false); }} title="隐藏此模块" className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {data.modules.filter(m => m.type === 'custom').map((module, index) => {
-                      const info = getModuleSortingInfo(module, index);
-                      const Icon = info.icon;
-                      const isActive = dragOverModuleId === module.id;
-                      return (
-                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
-                          <div className={dragLineClass(isActive)}></div>
-                          <div className="flex items-center gap-3 ml-2">
-                            <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
-                            <span className="text-[13px] font-semibold text-[#334155] truncate max-w-[140px]">{info.label}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <GripVertical className="w-4 h-4 text-[#94A3B8] group-hover:text-[#64748B] transition-colors" />
-                            <button onClick={() => removeModule(module.id)} title="删除此模块" className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button>
-                          </div>
+                          <div className="flex items-center gap-1.5"><GripVertical className="w-4 h-4 text-[#94A3B8]" /><button onClick={() => { if(moduleId === 'cert-process') setIsCertProcessVisible(false); if(moduleId === 'tech-process') setIsTechProcessVisible(false); if(moduleId === 'customer-case') setIsCustomerCaseVisible(false); if(moduleId === 'cert-templates') setIsCertTemplatesVisible(false); }} className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button></div>
                         </div>
                       );
                     })}
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-[16px] border border-[#E5E7EB] shadow-none flex flex-col overflow-hidden">
-                <div className="p-6 pb-2">
-                  <div className="text-[15px] font-bold tracking-wider mb-6 text-[#64748B] font-en border-b border-slate-50 pb-3 text-left">Quotation Summary</div>
-                  <div className="space-y-6 flex-1">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex flex-col text-left">
-                        <span className="text-[14px] font-[600] text-[#333333]">认证费用总计</span>
-                        <span className="text-[12px] text-[#94A3B8] font-en tracking-tight">Certification Fees</span>
-                      </div>
-                      <div className="text-right flex items-baseline justify-end leading-none pt-0.5 min-w-[120px]">
-                        <span className="text-[#0062AD] text-[12px] mr-1 font-en font-bold">¥</span>
-                        <span className="text-[18px] font-bold font-quote whitespace-nowrap text-[#0062AD] leading-none">{certTotal.toLocaleString()}</span>
-                      </div>
+              <div className="bg-white rounded-[16px] border border-[#E5E6EB] p-4 flex flex-col shadow-none overflow-hidden">
+                <div className="px-4 pb-4">
+                  <div className="text-[14px] font-semibold tracking-wider mb-4 text-[#0062AD] font-en border-b border-slate-50 pb-2 text-left">Quotation Summary</div>
+                  <div className="space-y-4 flex-1">
+                    <div className="flex justify-between items-center gap-4">
+                      <div className="flex flex-col text-left"><span className="text-[13px] font-medium text-[#4E5969]">认证费用总计</span><span className="text-[11px] text-[#94A3B8] font-en tracking-tight">Certification Fees</span></div>
+                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD]">{certTotal.toLocaleString()}</span></div>
                     </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex flex-col text-left">
-                        <span className="text-[14px] font-[600] text-[#333333]">技术服务费用总计</span>
-                        <span className="text-[12px] text-[#94A3B8] font-en tracking-tight">Technical Service Fees</span>
-                      </div>
-                      <div className="text-right flex items-baseline justify-end leading-none pt-0.5 min-w-[120px]">
-                        <span className="text-[#0062AD] text-[12px] mr-1 font-en font-bold">¥</span>
-                        <span className="text-[18px] font-bold font-quote whitespace-nowrap text-[#0062AD] leading-none">{techTotal.toLocaleString()}</span>
-                      </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <div className="flex flex-col text-left"><span className="text-[13px] font-medium text-[#4E5969]">技术服务费用总计</span><span className="text-[11px] text-[#94A3B8] font-en tracking-tight">Technical Service Fees</span></div>
+                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD]">{techTotal.toLocaleString()}</span></div>
                     </div>
                   </div>
                 </div>
-                <div className="mx-6 h-px bg-slate-200 mt-4 opacity-50"></div>
-                <div className="bg-white px-[24px] pt-[20px] pb-[24px] flex justify-between items-start gap-4 mt-2 transition-all">
-                  <div className="flex flex-col text-left">
-                    <span className="text-[14px] text-[#0062AD] font-[700]">总计 (含6%增值税)</span>
-                    <span className="text-[12px] text-[#94A3B8] font-en tracking-tight">Grand Total (6% Included)</span>
-                  </div>
-                  <div className="text-right flex items-baseline justify-end leading-none min-w-[120px]">
-                    <span className="text-[#0062AD] text-[16px] mr-1 font-en font-black mt-1">¥</span>
-                    <span className="text-[30px] font-black font-quote whitespace-nowrap text-[#0062AD] leading-none">{grandTotal.toLocaleString()}</span>
-                  </div>
+                <div className="bg-[#F2F5F8] rounded-[12px] px-4 py-3.5 flex justify-between items-center w-full">
+                  <div className="flex flex-col text-left"><span className="text-[13px] text-[#0062AD] font-[700]">总计 (含6%增值税)</span><span className="text-[11px] text-[#86909C] font-medium font-en tracking-tight whitespace-nowrap">Grand Total (6% Included)</span></div>
+                  <div className="text-right flex items-baseline justify-end leading-none"><span className="text-[#0062AD] text-[14px] mr-1 font-en font-black">¥</span><span className="text-[24px] font-bold font-quote whitespace-nowrap text-[#0062AD]">{grandTotal.toLocaleString()}</span></div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-4">
-              <div className={`card !p-6 border transition-all duration-300 bg-white shadow-none mb-0 rounded-[16px] ${isDraggingOverLogos ? 'border-[#0062AD] bg-[#EFF5FC] scale-[1.02]' : 'border-[#E5E7EB]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverLogos(true); }} onDragLeave={() => setIsDraggingOverLogos(false)} onDrop={() => setIsDraggingOverLogos(false)}>
+              <div className={`card !p-6 bg-white border border-[#E5E6EB] shadow-none mb-0 rounded-[16px] ${isDraggingOverLogos ? 'bg-[#0052D90a] scale-[1.02]' : ''}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverLogos(true); }} onDragLeave={() => setIsDraggingOverLogos(false)} onDrop={() => setIsDraggingOverLogos(false)}>
                 <SidebarTitle icon={ImageIcon} title="常用 LOGO" />
                 <div className="grid grid-cols-2 gap-3">
-                  {COMMON_LOGOS.map(logo => (
-                    <div key={logo.id} draggable onDragStart={(e) => e.dataTransfer.setData('logoUrl', logo.url)} className="p-2 border border-[#E5E7EB] rounded-[12px] bg-white shadow-none cursor-grab active:cursor-grabbing hover:border-[#BDD1FF] transition-all group flex flex-col items-center justify-center text-center overflow-hidden min-h-[85px]">
-                      <div className="h-10 w-full flex items-center justify-center mb-1"><img src={logo.url} alt={logo.name} loading="lazy" className="max-h-full max-w-full object-contain pointer-events-none transition-all" /></div>
-                      <p className="text-[12px] text-[#94A3B8] font-medium font-zh siding-tight group-hover:text-[#0062AD] transition-colors line-clamp-2">{logo.name}</p>
-                    </div>
-                  ))}
+                  {COMMON_LOGOS.map(logo => (<div key={logo.id} draggable onDragStart={(e) => e.dataTransfer.setData('logoUrl', logo.url)} className="p-3 border-none rounded-[12px] hover:bg-[#0052D90a] transition-all flex flex-col items-center justify-center text-center overflow-hidden min-h-[90px] cursor-grab active:cursor-grabbing"><div className="h-10 w-full flex items-center justify-center mb-2"><img src={logo.url} alt={logo.name} loading="lazy" className="max-full max-w-full object-contain pointer-events-none" /></div><p className="text-[12px] text-[#4E5969] font-medium line-clamp-2">{logo.name}</p></div>))}
                 </div>
               </div>
-              <div className={`card !p-6 border transition-all duration-300 bg-white shadow-none mb-0 rounded-[16px] ${isDraggingOverWebsites ? 'border-[#0062AD] bg-[#EFF5FC] scale-[1.02]' : 'border-[#E5E7EB]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverWebsites(true); }} onDragLeave={() => setIsDraggingOverWebsites(false)} onDrop={() => setIsDraggingOverWebsites(false)}>
+              <div className="card !p-6 bg-white border border-[#E5E6EB] shadow-none mb-0 rounded-[16px]">
                 <SidebarTitle icon={Globe} title="常用网站" />
                 <div className="grid grid-cols-2 gap-1">
-                  {COMMON_WEBSITES.map(site => ( 
-                    <a key={site.id} href={site.url} target="_blank" rel="noopener noreferrer" title={site.name} className="p-3 bg-transparent hover:bg-[#EFF6FF] rounded-[8px] transition-all group flex items-center gap-2">
-                      <div className="h-8 w-8 border border-[#E5E7EB] rounded-[4px] flex items-center justify-center shrink-0"><img src={site.logo} alt={site.name} loading="lazy" className="h-full w-full object-contain rounded-[4px] transition-all" /></div>
-                      <p className="text-[12px] text-[#94A3B8] font-medium font-zh truncate w-full group-hover:text-[#0062AD] transition-colors tracking-[0.02em]">{site.name}</p>
-                    </a> 
-                  ))}
+                  {COMMON_WEBSITES.map(site => (<a key={site.id} href={site.url} target="_blank" rel="noopener noreferrer" className="p-3 hover:bg-[#0052D90a] rounded-[8px] transition-all flex items-center gap-2"><div className="h-8 w-8 flex items-center justify-center shrink-0 border-none"><img src={site.logo} alt={site.name} className="h-full w-full object-contain" /></div><p className="text-[12px] text-[#4E5969] font-medium truncate w-full">{site.name}</p></a>))}
                 </div>
               </div>
-              <div className={`card !p-6 border transition-all duration-300 bg-white shadow-none mb-0 rounded-[16px] ${isDraggingOverSidebarTemplates ? 'border-[#0062AD] bg-[#EFF5FC] scale-[1.02]' : 'border-[#E5E7EB]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverSidebarTemplates(true); }} onDragLeave={() => setIsDraggingOverSidebarTemplates(false)} onDrop={() => setIsDraggingOverSidebarTemplates(false)}>
+              <div className="card !p-6 bg-white border border-[#E5E6EB] shadow-none mb-0 rounded-[16px]">
                 <SidebarTitle icon={LayoutTemplate} title="常用证书模板" />
                 <div className="grid grid-cols-4 gap-2">
-                  {COMMON_CERT_TEMPLATES.map(tmpl => { const Icon = tmpl.icon; return (<div key={tmpl.id} draggable onDragStart={(e) => e.dataTransfer.setData('templateUrl', tmpl.url)} onClick={() => addCommonTemplate(tmpl.url)} className={`aspect-square p-2 border border-[#E5E7EB] rounded-[12px] ${tmpl.bg} shadow-none cursor-grab active:cursor-grabbing hover:shadow-sm transition-all group flex flex-col items-center justify-center text-center relative hover:border-[#BDD1FF]`} title={`点击添加 ${tmpl.name} 证书`}><Icon className="w-6 h-6 mb-1 transition-transform group-hover:scale-110" style={{ color: tmpl.color }} /><span className="text-[8px] font-black uppercase tracking-tighter leading-none" style={{ color: tmpl.color }}>{tmpl.name}</span><div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 border border-[#E5E7EB] shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"><Plus className="w-3 h-3 text-[#0062AD]" /></div></div>); })}
+                  {COMMON_CERT_TEMPLATES.map(tmpl => { const Icon = tmpl.icon; return (<div key={tmpl.id} draggable onDragStart={(e) => e.dataTransfer.setData('templateUrl', tmpl.url)} onClick={() => addCommonTemplate(tmpl.url)} className={`aspect-square p-2 border border-[#E5E6EB] rounded-[12px] ${tmpl.bg} cursor-grab active:cursor-grabbing hover:border-[#BDD1FF] transition-all flex flex-col items-center justify-center text-center relative group`} title={`点击添加 ${tmpl.name} 证书`}><Icon className="w-6 h-6 mb-1" style={{ color: tmpl.color }} /><span className="text-[8px] font-semibold uppercase tracking-tighter leading-none" style={{ color: tmpl.color }}>{tmpl.name}</span><div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 border border-[#E5E6EB] shadow-sm opacity-0 group-hover/opacity-100 transition-opacity"><Plus className="w-3 h-3 text-[#0062AD]" /></div></div>); })}
                 </div>
-                <p className="mt-4 text-[10px] text-gray-400 font-bold text-center siding-relaxed">点击添加或拖拽至左侧主区域<br/><span className="opacity-50 text-[9px]">图标仅作标识，添加后显示真实证书</span></p>
+                <p className="mt-4 text-[10px] text-[#4E5969] font-medium text-center">点击添加或拖拽至左侧主区域</p>
               </div>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* Success Toast */}
       {showToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] bg-[#304166] text-white px-8 py-3.5 rounded-full shadow-lg flex items-center gap-3 animate-fade-in border border-white/10 backdrop-blur-md">
-          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-            <Check className="w-4 h-4 text-white" strokeWidth={4} />
-          </div>
-          <span className="text-[14px] font-bold tracking-tight">配置更新成功</span>
-        </div>
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60] bg-[#304166] text-white px-8 py-3.5 rounded-full shadow-lg flex items-center gap-3 animate-fade-in border border-white/10 backdrop-blur-md"><div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center"><Check className="w-4 h-4 text-white" strokeWidth={4} /></div><span className="text-[14px] font-bold tracking-tight">配置更新成功</span></div>
       )}
 
       {showPreview && (
-        <div className="fixed inset-0 z-50 bg-[#304166cc] backdrop-blur-xl flex items-center justify-center p-2 md:p-4"><div className="bg-white rounded-[24px] w-full flex flex-col shadow-2xl overflow-hidden transition-all duration-500 border border-white/20 max-w-[98vw] h-[98vh] overflow-x-hidden"><div className="p-4 md:p-5 bg-white border-b flex justify-between items-center shadow-sm z-10 shrink-0"><div className="flex items-center gap-4 md:gap-6"><h3 className="font-bold text-[#304166] flex items-center gap-3 text-lg tracking-tight"><Eye className="text-[#0062AD] w-5 h-5" /> 预览报价单</h3><div className="hidden sm:flex items-center bg-[#EFF5FC] px-3 py-1.5 rounded-[12px] text-xs font-bold text-[#0062AD]"><MoveHorizontal className="w-3.5 h-3.5 mr-2" /> 全屏智能展开 (297mm)</div></div><button onClick={() => setShowPreview(false)} className="p-2 hover:bg-red-50 hover:text-[#EE4932] rounded-full transition-all group"><X className="w-6 h-6 group-hover:rotate-90 transition-transform" /></button></div><div ref={previewScrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-12 bg-slate-200/40 scroll-smooth flex flex-col items-center"><div className="bg-white shadow-[0_20px_50px_rgba(48,65,102,0.15)] transition-transform duration-300 origin-top" style={{ transform: `scale(${previewScale})`, marginTop: '0' }}><QuoteDocument /></div></div><div className="p-4 md:p-5 bg-white border-t flex flex-col sm:flex-row justify-end items-center gap-4 shrink-0"><p className="flex-1 text-[11px] font-bold text-gray-400 uppercase tracking-widest italic opacity-60 text-center sm:text-left">* 预览已根据您的窗口宽度自动展开，禁止左右滑动以确保最佳阅读体验。</p><div className="flex gap-4 w-full sm:w-auto"><button onClick={() => setShowPreview(false)} className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-[8px]">关闭</button><button disabled={isGeneratingPdf} onClick={handleDownloadPDF} className="flex-1 sm:flex-none px-8 py-2.5 text-sm font-bold bg-[#0062AD] text-white hover:bg-[#304166] rounded-[8px] flex items-center justify-center gap-2 transition-all shadow-lg disabled:opacity-50">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '下载 PDF'}</button></div></div></div></div>
+        <div className="fixed inset-0 z-50 bg-[#304166cc] backdrop-blur-xl flex items-center justify-center p-2 md:p-4"><div className="bg-white rounded-[24px] w-full flex flex-col shadow-2xl overflow-hidden transition-all duration-500 border border-white/20 max-w-[98vw] h-[98vh] overflow-x-hidden"><div className="p-4 md:p-5 bg-white border-b flex justify-between items-center z-10 shrink-0"><div className="flex items-center gap-4 md:gap-6 text-left"><h3 className="font-bold text-[#304166] flex items-center gap-3 text-lg tracking-tight"><Eye className="text-[#0062AD] w-5 h-5" /> 预览报价单</h3></div><button onClick={() => setShowPreview(false)} className="p-2 hover:bg-red-50 hover:text-[#EE4932] rounded-full transition-all group"><X className="w-6 h-6 group-hover:rotate-90 transition-transform" /></button></div><div ref={previewScrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-12 bg-slate-200/40 flex flex-col items-center"><div className="bg-white shadow-[0_20px_50px_rgba(48,65,102,0.15)] origin-top" style={{ transform: `scale(${previewScale})`, marginTop: '0' }}><QuoteDocument /></div></div><div className="p-4 md:p-5 bg-white border-t flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0"><p className="flex-1 text-[11px] font-bold text-gray-400 uppercase tracking-widest italic opacity-60 text-center sm:text-left">* 预览已根据窗口宽度自动调整，确保内容在打印范围内。</p><div className="flex gap-3 w-full sm:w-auto"><button onClick={() => setShowPreview(false)} className="flex-1 sm:flex-none h-[40px] px-6 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-[8px] outline-none">关闭</button><button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex-1 sm:flex-none h-[40px] px-8 text-sm font-bold bg-[#F0F8FF] text-[#005691] hover:bg-[#E0F2FF] rounded-[8px] flex items-center justify-center gap-2 transition-all border-none disabled:opacity-50 outline-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '下载 PDF'}</button></div></div></div></div>
       )}
     </div>
   );
