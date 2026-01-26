@@ -567,7 +567,10 @@ const AgencyProfile = () => {
       <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8 items-center lg:items-stretch">
         <div className="lg:col-span-3 space-y-6 flex flex-col justify-between py-1 items-center lg:items-start">
           <div className="space-y-4 text-left">
-            <h3 className="text-[20px] font-bold text-[#005691] tracking-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3>
+            <div className="flex items-center gap-0 group">
+              <div className="w-[4px] h-[32px] bg-[#013580] rounded-[2px] mr-[12px] shrink-0"></div>
+              <h3 className="text-[20px] font-bold text-[#005691] tracking-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3>
+            </div>
             <p className={introClass}>中国检验认证集团（简称中国中检）是经国务院批准设立、由国务院国资委管理的中央企业。作为以“检验、检测、认证、标准、计量”为主业的综合性质量服务机构，机构在全球范围内提供专业、高效、一站式的质量安全服务。</p>
           </div>
           <div className="pt-4 w-full my-5 lg:my-0">
@@ -578,7 +581,7 @@ const AgencyProfile = () => {
                   <div className="h-14 w-full flex items-center justify-center">
                     <img src={sub.icon} alt={sub.name} loading="lazy" className="max-h-full max-w-full object-contain" />
                   </div>
-                  <span className="text-[13px] font-medium text-[#4E5969] text-center whitespace-nowrap">{sub.name}</span>
+                  <span className="text-[13px] font-semibold text-[#00428D] text-center whitespace-nowrap tracking-wider">{sub.name}</span>
                 </div>
               ))}
             </div>
@@ -594,15 +597,15 @@ const AgencyProfile = () => {
             { label: '认可资质', value: '100', unit: '+', icon: <Award className="w-5 h-5" />, color: '#F53F3F' }, 
             { label: '国家认可', value: '300', unit: '+', icon: <ShieldCheck className="w-5 h-5" />, color: '#F77234' }
           ].map((stat, i) => (
-            <div key={i} className="flex flex-col items-center lg:items-start">
+            <div key={i} className="flex flex-col items-center text-center">
               <div className="mb-2" style={{ color: stat.color }}>
                 {React.cloneElement(stat.icon as React.ReactElement, { color: 'currentColor' })}
               </div>
-              <div className="flex items-baseline mb-1" style={{ color: stat.color }}>
-                <span className="text-[14px] font-bold font-num leading-none">{stat.value}</span>
+              <div className="flex items-baseline mb-1 justify-center align-num" style={{ color: stat.color }}>
+                <span className="text-[16px] font-bold font-num leading-none transform translate-y-[1px]">{stat.value}</span>
                 <span className="text-[12px] font-bold ml-0.5 leading-none font-en">{stat.unit}</span>
               </div>
-              <span className="text-[12px] font-normal whitespace-nowrap overflow-hidden text-ellipsis w-full" style={{ color: stat.color, opacity: 0.6 }}>{stat.label}</span>
+              <span className="text-[12px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full text-[#4B5563]">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -617,30 +620,30 @@ const AgencyProfile = () => {
             <div className="flex items-center justify-start gap-3 border-l-4 border-[#0062AD] pl-4 mb-3">
               <h4 className="text-[20px] font-bold text-[#005691]">中国质量认证中心 <span className="font-en">(CQC)</span></h4>
             </div>
-            <p className={introClass + " !px-0"}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团.同时CQC也是世界最大认证机构联盟——国际认证联盟（IQNet）中国区域的两大成员之一。</p>
+            <p className={introClass + " !px-0"}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团。同时CQC也是世界最大认证机构联盟—国际认证联盟（IQNet）中国区域的两大成员之一。</p>
           </div>
           
           <div className="flex flex-col justify-between flex-1 mt-4 gap-4">
             <div className="bg-[#0062AD08] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#0062AD1a] transition-all hover:bg-[#0062AD0D]">
-              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#005691] shrink-0 self-start mt-0.5"><Award className="w-6 h-6" /></div>
-              <div className="space-y-1.5 flex-1 text-left pt-0.5">
-                <div className="flex items-baseline justify-start gap-3"><span className="text-[14px] font-bold text-[#005691]">权威地位</span><span className="px-2 py-0.5 bg-[#0062AD] text-white rounded-md text-[10px] font-black font-num tracking-wider transform translate-y-[1px]">No. 001</span></div>
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#005691] shrink-0 self-start mt-0"><Award className="w-6 h-6" /></div>
+              <div className="space-y-1.5 flex-1 text-left pt-0">
+                <div className="flex items-center justify-start gap-5"><span className="text-[14px] font-bold text-[#005691]">权威地位</span><span className="px-2 py-0.5 bg-[#0062AD] text-white rounded-md text-[10px] font-black font-num tracking-wider">No. 001</span></div>
                 <p className="text-[13px] leading-relaxed font-normal" style={{ color: '#4E89B2' }}>国家认监委批准设立的专业认证机构，机构批准号：001。</p>
               </div>
             </div>
             
             <div className="bg-[#34A85308] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#34A8531a] transition-all hover:bg-[#34A8530D]">
-              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#166534] shrink-0 self-start mt-0.5"><Globe className="w-6 h-6" /></div>
-              <div className="space-y-1 flex-1 text-left pt-0.5">
-                <div className="flex items-baseline justify-start gap-3"><span className="text-[14px] font-bold text-[#166534]">国际合作</span><span className="px-2 py-0.5 bg-[#34A853] text-white rounded-md text-[10px] font-black font-num tracking-wider transform translate-y-[1px]">IQNet 中国成员</span></div>
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#166534] shrink-0 self-start mt-0"><Globe className="w-6 h-6" /></div>
+              <div className="space-y-1 flex-1 text-left pt-0">
+                <div className="flex items-center justify-start gap-5"><span className="text-[14px] font-bold text-[#166534]">国际合作</span><span className="px-2 py-0.5 bg-[#34A853] text-white rounded-md text-[10px] font-black font-num tracking-wider">IQNet 中国成员</span></div>
                 <p className="text-[12.5px] leading-snug line-clamp-2 font-normal" style={{ color: '#529E66' }}>代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
               </div>
             </div>
             
             <div className="bg-[#FBBC0508] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#FBBC051a] transition-all hover:bg-[#FBBC050D]">
-              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#B45309] shrink-0 self-start mt-0.5"><Grid className="w-6 h-6" /></div>
-              <div className="space-y-1 flex-1 text-left pt-0.5">
-                <div className="flex items-baseline justify-start gap-3"><span className="text-[14px] font-bold text-[#B45309]">业务覆盖</span><span className="px-2 py-0.5 bg-[#FBBC05] text-white rounded-md text-[10px] font-black font-num tracking-wider transform translate-y-[1px]">全产业链覆盖</span></div>
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#B45309] shrink-0 self-start mt-0"><Grid className="w-6 h-6" /></div>
+              <div className="space-y-1 flex-1 text-left pt-0">
+                <div className="flex items-center justify-start gap-5"><span className="text-[14px] font-bold text-[#B45309]">业务覆盖</span><span className="px-2 py-0.5 bg-[#FBBC05] text-white rounded-md text-[10px] font-black font-num tracking-wider">全产业链覆盖</span></div>
                 <p className="text-[12.5px] leading-snug line-clamp-2 font-normal" style={{ color: '#B27A4E' }}>提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
               </div>
             </div>
@@ -656,20 +659,20 @@ const AgencyProfile = () => {
             <p className={introClass + " !px-0"}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p>
           </div>
           
-          {/* CCIC GD Statistics Area - Optimized Label Styles */}
+          {/* CCIC GD Statistics Area - Re-aligned to main stats logic */}
           <div className="grid grid-cols-3 gap-x-6 mt-6 mb-4 w-full">
             {[
-              { label: '分公司', value: '19', unit: '家', icon: <MapPin className="w-5 h-5" />, color: '#005691', labelColor: '#4E89B2' }, 
-              { label: '子公司', value: '3', unit: '家', icon: <GitBranch className="w-5 h-5" />, color: '#006B19', labelColor: '#529E66' },
-              { label: '实验室', value: '14', unit: '个', icon: <FlaskConical className="w-5 h-5" />, color: '#D4622A', labelColor: '#B27A4E' }
+              { label: '分公司', value: '19', unit: '家', icon: <MapPin className="w-5 h-5" />, color: '#165DFF' }, 
+              { label: '子公司', value: '3', unit: '家', icon: <GitBranch className="w-5 h-5" />, color: '#00B42A' },
+              { label: '实验室', value: '14', unit: '个', icon: <FlaskConical className="w-5 h-5" />, color: '#722ED1' }
             ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center">
+              <div key={i} className="flex flex-col items-center text-center">
                 <div className="mb-1" style={{ color: stat.color }}>{stat.icon}</div>
-                <div className="flex items-baseline" style={{ color: stat.color }}>
-                  <span className="text-[14px] font-bold font-num leading-none">{stat.value}</span>
+                <div className="flex items-baseline justify-center align-num" style={{ color: stat.color }}>
+                  <span className="text-[16px] font-bold font-num leading-none transform translate-y-[1px]">{stat.value}</span>
                   <span className="text-[12px] font-bold ml-0.5 leading-none">{stat.unit}</span>
                 </div>
-                <span className="text-[12px] font-normal mt-[4px] leading-none" style={{ color: stat.labelColor }}>{stat.label}</span>
+                <span className="text-[12px] font-medium mt-[4px] leading-none text-[#4B5563]">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -1045,13 +1048,10 @@ const App: React.FC = () => {
       
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
-      // 动态生成 PDF 文件名
-      // 1. 提取并精简标准名称 (例如 ISO 9001:2015 提取 ISO 9001)
       const cleanStandards = data.certStandards
         .map(s => s.split(/[:（]/)[0].trim())
         .join('、');
       
-      // 2. 拼接文件名: [企业名]-[精简标准名][报价单动态标题].pdf
       const fileName = `${data.clientName || '未命名公司'}-${cleanStandards}${dynamicTitle}.pdf`;
       
       pdf.save(fileName);
@@ -1063,8 +1063,132 @@ const App: React.FC = () => {
     }
   };
 
+  /**
+   * 彻底重写的 handleDownloadPDFNew 函数
+   * 采用“Tailwind CDN + 物理尺寸锁定”技术实现 1:1 导出。
+   */
   const handleDownloadPDFNew = async () => {
-     handleDownloadPDF();
+    if (!pdfSourceRef.current) return;
+    setIsGeneratingPdf(true);
+
+    try {
+      // 1. 获取预览区域的 HTML
+      const content = pdfSourceRef.current.innerHTML;
+
+      // 2. 构造最终的 HTML 文件内容
+      const fullHtml = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>${data.clientName}报价单</title>
+  <!-- 注入 Tailwind CDN 确保样式 1:1 解释 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* 定义 CSS 变量以匹配原始应用 */
+    :root {
+      --font-zh: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+      --font-en: 'Inter', 'SF Pro Text', -apple-system, sans-serif;
+      --font-num: 'DIN Alternate', 'DIN Condensed', 'Arial', sans-serif;
+      --font-quote: 'DIN Alternate', 'SF Pro Text', 'Microsoft YaHei', sans-serif;
+    }
+    
+    body { 
+      margin: 0; 
+      padding: 0; 
+      background: #f0f2f5; 
+      display: flex; 
+      justify-content: center; 
+      font-family: var(--font-zh);
+      /* 核心：确保内容可被选择和复制 */
+      user-select: text !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* 物理画板：锁定 297mm 宽度，防止内容贴边 */
+    #html-export-container { 
+      width: 297mm !important; 
+      background: white !important; 
+      padding: 30mm 25mm !important; /* 增加上下页边距 */
+      box-sizing: border-box !important; 
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* 强制打印样式：解决分页和尺寸过小问题 */
+    @media print {
+      @page { 
+        size: 297mm auto; /* 核心：锁定宽度，高度自动，从而实现一页长图不分页 */
+        margin: 0 !important; 
+      }
+      body { 
+        background: white !important; 
+        padding: 0 !important;
+        width: 297mm !important;
+      }
+      #html-export-container { 
+        box-shadow: none !important; 
+        width: 297mm !important;
+        margin: 0 !important;
+      }
+      /* 禁止浏览器打印时将元素截断 */
+      * { 
+        page-break-inside: avoid !important; 
+        break-inside: avoid !important; 
+      }
+    }
+
+    /* 修复对齐精度（防止导出时 Tailwind 类丢失解释权） */
+    .pl-40 { padding-left: 10rem !important; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .font-num { font-family: var(--font-num) !important; }
+    .font-en { font-family: var(--font-en) !important; }
+    .font-quote { font-family: var(--font-quote) !important; }
+    
+    /* 强制表格显示逻辑 */
+    table { width: 100% !important; border-collapse: collapse !important; table-layout: fixed !important; }
+    th, td { border-bottom: 1px solid #F2F3F5; }
+    
+    /* 确保金额列图标对齐 */
+    .align-num { 
+      display: inline-flex !important; 
+      align-items: baseline !important; 
+      gap: 2px !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="html-export-container">
+    ${content}
+  </div>
+</body>
+</html>
+`;
+
+      // 3. 执行文件下载
+      const blob = new Blob([fullHtml], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const cleanStandards = data.certStandards
+        .map(s => s.split(/[:（]/)[0].trim())
+        .join('、');
+      link.href = url;
+      link.download = `${data.clientName || '未命名公司'}-${cleanStandards}${dynamicTitle}.html`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert("HTML 导出成功！\n请用浏览器打开导出的 HTML 文件后执行：\n1. 按 Ctrl+P (打印)；\n2. 打印预览此时应为一整张长图，且左右边距正常；\n3. 目标打印机选 '另存为 PDF'；\n4. 注意勾选 '背景图形'。");
+    } catch (err) {
+      console.error("HTML export failed:", err);
+      alert("导出 HTML 失败。");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const handleDragStart = (e: React.DragEvent, moduleId: string) => { e.dataTransfer.setData('moduleId', moduleId); e.dataTransfer.effectAllowed = 'move'; };
@@ -1308,8 +1432,8 @@ const App: React.FC = () => {
         <div className="flex items-baseline gap-[40px] flex-1 min-w-0">
           <span className={`${isBold ? 'font-medium text-[15px]' : 'font-normal text-[14px]'} text-[#1D2129] ${isEn ? 'font-en' : ''} break-words`}>{content}</span>
           {isSubject && (
-            <div className="inline-flex items-baseline bg-[#F2F3F5] px-2 py-0.5 rounded-[4px] shrink-0 ml-4">
-              <span className="text-[13px] font-normal text-[#4E5969] leading-none">有效人数：</span>
+            <div className="inline-flex items-baseline bg-[#F2F3F5] px-2 py-0.5 rounded-[4px] shrink-0 ml-4 align-num">
+              <span className="text-[13px] font-normal text-[#4E5969] text-[13px] leading-none">有效人数：</span>
               <span className="text-[14px] font-medium text-[#1D2129] font-num leading-none transform translate-y-[1px]">{data.employeeCount}</span>
             </div>
           )}
@@ -1318,7 +1442,7 @@ const App: React.FC = () => {
     );
 
     return (
-      <div ref={containerRef} className={`${isPrint ? '' : 'mx-auto'} bg-white p-[32px] md:p-[48px] transition-all duration-300 origin-top`} style={{ minHeight: isPrint ? 'auto' : '297mm', width: currentWidth, color: textColor, fontFamily: 'var(--font-zh)', ...style }}>
+      <div ref={containerRef} id="quotation-preview" className={`${isPrint ? '' : 'mx-auto'} bg-white p-[32px] md:p-[48px] transition-all duration-300 origin-top`} style={{ minHeight: isPrint ? 'auto' : '297mm', width: currentWidth, color: textColor, fontFamily: 'var(--font-zh)', ...style }}>
         <style dangerouslySetInnerHTML={{ __html: `
           .font-num { line-height: inherit !important; }
           @media print {
@@ -1410,7 +1534,10 @@ const App: React.FC = () => {
                       <p className="text-[#4E5969] font-medium leading-relaxed" style={{ fontSize: `14px` }}>{item.project}</p>
                     </td>
                     <td className="py-5 text-right font-medium whitespace-nowrap font-quote align-baseline" style={{ color: BRAND_COLORS.primary }}>
-                      <div className="flex items-baseline justify-end gap-1"><span className="font-bold leading-none opacity-40" style={{ fontSize: '12px' }}>¥</span><span className="font-medium leading-none" style={{ fontSize: '16px' }}>{item.amount.toLocaleString()}</span></div>
+                      <span className="align-num">
+                        <span className="font-bold opacity-40" style={{ fontSize: '12px' }}>¥</span>
+                        <span className="font-medium leading-none transform translate-y-[1px]" style={{ fontSize: '16px' }}>{item.amount.toLocaleString()}</span>
+                      </span>
                     </td>
                   </tr>
                 )); 
@@ -1429,17 +1556,24 @@ const App: React.FC = () => {
                         <div className="space-y-0.5">{serviceChunks.map((chunk, idx) => (<p key={idx} className="text-[#072A4A] font-medium leading-relaxed" style={{ fontSize: `14px` }}>{chunk}</p>))}</div>
                         <div className="flex items-baseline gap-0 text-[#4E5969] font-normal" style={{ fontSize: `13px`, marginTop: '8px' }}>
                           <span className="leading-none">指导周期：不少于</span>
-                          <span className="font-bold mx-1 font-num leading-none inline-block transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.minDays}</span>
-                          <span className="leading-none">人天</span>
+                          <span className="inline-flex items-baseline align-num">
+                            <span className="font-bold mx-1 font-num leading-none transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.minDays}</span>
+                            <span className="leading-none">人天</span>
+                          </span>
                           <div className="w-px h-3 bg-[#F2F3F5] mx-4 self-center"></div>
                           <span className="leading-none">内审员证书：</span>
-                          <span className="font-bold mx-1 font-num leading-none inline-block transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.auditCerts}</span>
-                          <span className="leading-none">份</span>
+                          <span className="inline-flex items-baseline align-num">
+                            <span className="font-bold mx-1 font-num leading-none transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.auditCerts}</span>
+                            <span className="leading-none">份</span>
+                          </span>
                         </div>
                       </div>
                     </td>
                     <td className="py-5 text-right font-medium whitespace-nowrap font-quote align-baseline" style={{ color: BRAND_COLORS.primary }}>
-                      <div className="flex items-baseline justify-end gap-1"><span className="font-bold leading-none opacity-40" style={{ fontSize: '12px' }}>¥</span><span className="font-medium leading-none" style={{ fontSize: '16px' }}>{module.fee.toLocaleString()}</span></div>
+                      <span className="align-num">
+                        <span className="font-bold opacity-40" style={{ fontSize: '12px' }}>¥</span>
+                        <span className="font-medium leading-none transform translate-y-[1px]" style={{ fontSize: '16px' }}>{module.fee.toLocaleString()}</span>
+                      </span>
                     </td>
                   </tr>
                 ); 
@@ -1450,7 +1584,12 @@ const App: React.FC = () => {
           <tfoot className="before:content-[''] before:block before:h-2">
             <tr>
               <td colSpan={2} className="py-4 text-left font-bold uppercase tracking-wide bg-white border-t border-[#F2F3F5]" style={{ fontSize: `14px`, color: '#4E5969' }}>报价总计（含6%增值税）</td>
-              <td className="py-4 text-right font-bold whitespace-nowrap font-quote flex items-baseline justify-end gap-1 bg-white border-t border-[#F2F3F5]" style={{ fontSize: `24px`, color: BRAND_COLORS.primary }}><span className="text-[0.45em] font-bold leading-none opacity-60">¥</span><span className="leading-none">{grandTotal.toLocaleString()}</span></td>
+              <td className="py-4 text-right font-bold whitespace-nowrap font-quote bg-white border-t border-[#F2F3F5]" style={{ fontSize: `24px`, color: BRAND_COLORS.primary }}>
+                <span className="align-num">
+                    <span className="text-[0.45em] font-bold leading-none opacity-60">¥</span>
+                    <span className="leading-none transform translate-y-[1px]">{grandTotal.toLocaleString()}</span>
+                </span>
+              </td>
             </tr>
           </tfoot>
         </table>
@@ -1472,8 +1611,8 @@ const App: React.FC = () => {
             <h3 className="mb-3 font-semibold" style={{ fontSize: `${sizeTitleMain + 4}px`, color: deepColor }}>{data.contact.name}</h3>
             <div className="mb-10"><p className="text-[14px] font-normal text-[#333333] mb-1 tracking-tight">{data.contact.jobTitle1}</p><p className="text-[14px] font-normal text-gray-500 tracking-tight">{data.contact.jobTitle2}</p></div>
             <div className="space-y-5">
-              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#00b050] rounded-sm flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-num tracking-tight leading-none">{data.contact.phone}</span></div>
-              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#EE4932] rounded-sm flex items-center justify-center shrink-0"><Mail className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-en tracking-tight leading-none">{data.contact.email}</span></div>
+              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#00b050] rounded-sm flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-num tracking-tight leading-none align-num transform translate-y-[1px]">{data.contact.phone}</span></div>
+              <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#EE4932] rounded-sm flex items-center justify-center shrink-0"><Mail className="w-4 h-4 text-white fill-current" /></div><span className="text-[17px] font-bold text-[#333333] font-en tracking-tight leading-none transform translate-y-[1px]">{data.contact.email}</span></div>
               <div className="flex items-center gap-4"><div className="w-7 h-7 bg-[#fbbc04] rounded-sm flex items-center justify-center shrink-0"><MapPin className="w-4 h-4 text-white fill-current" /></div><span className="text-[15px] font-bold text-[#333333] leading-tight tracking-tight">{data.contact.officeAddress}</span></div>
             </div>
           </div>
@@ -1723,12 +1862,12 @@ const App: React.FC = () => {
                           <input className="!border-0 px-5 py-5 focus:ring-0 bg-transparent w-full text-left outline-none text-[14px] text-[#4E5969]" value={item.project} onChange={e => handleUpdateCertItem(module.id, item.id, 'project', e.target.value)} />
                         </td>
                         <td className="p-0 bg-white cursor-text align-top" onClick={() => setEditingCertId({moduleId: module.id, itemId: item.id})}>
-                          <div className="flex items-baseline justify-end px-5 py-5 gap-1 text-[#0075CB] font-medium font-quote leading-none">
+                          <div className="flex items-baseline justify-end px-5 py-5 gap-1 text-[#0075CB] font-medium font-quote leading-none align-num">
                             <span className="font-bold opacity-40 text-[12px]">¥</span>
                             {editingCertId?.moduleId === module.id && editingCertId?.itemId === item.id ? (
                               <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-medium w-24 font-quote outline-none text-[16px]" type="number" value={item.amount} onBlur={() => setEditingCertId(null)} onChange={e => handleUpdateCertItem(module.id, item.id, 'amount', parseFloat(e.target.value) || 0)} />
                             ) : (
-                              <span className="text-[16px] font-normal leading-none">{item.amount.toLocaleString()}</span>
+                              <span className="text-[16px] font-normal leading-none transform translate-y-[1px]">{item.amount.toLocaleString()}</span>
                             )}
                           </div>
                         </td>
@@ -1738,9 +1877,9 @@ const App: React.FC = () => {
                 </table>
                 <div className="bg-[#F8FAFC] px-5 py-4 flex items-center justify-between rounded-b-[12px] border-t border-[#E5E6EB]">
                   <span className="text-[14px] text-[#4E5969] font-medium">认证费用总计（含6%增值税）</span>
-                  <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote leading-none">
+                  <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote leading-none align-num">
                     <span className="text-[12px] font-bold opacity-60 mr-0.5">¥</span>
-                    <span className="leading-none">{module.items.reduce((s, i) => s + (i.amount || 0), 0).toLocaleString()}</span>
+                    <span className="leading-none transform translate-y-[1px]">{module.items.reduce((s, i) => s + (i.amount || 0), 0).toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -1788,12 +1927,12 @@ const App: React.FC = () => {
                   </div>
                   <div className="bg-[#F8FAFC] px-5 py-4 flex items-center justify-between m-0 rounded-b-[12px] border-t border-[#E5E6EB]">
                     <span className="font-medium text-[#4E5969] text-[14px]">技术服务费用总计（含6%增值税）</span>
-                    <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote transition-all min-w-[120px] leading-none">
+                    <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote transition-all min-w-[120px] leading-none align-num">
                       <span className="mr-0.5 font-quote opacity-60 text-sm">¥</span>
                       {editingTechFeeId === module.id ? (
                         <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-bold text-[18px] w-28 placeholder:text-blue-200 font-quote outline-none" type="number" value={module.fee} onBlur={() => setEditingTechFeeId(null)} onChange={e => updateTechModuleFee(module.id, parseFloat(e.target.value) || 0)} />
                       ) : (
-                        <span onClick={() => setEditingTechFeeId(module.id)} className="cursor-text text-right font-bold font-quote leading-none">{module.fee.toLocaleString()}</span>
+                        <span onClick={() => setEditingTechFeeId(module.id)} className="cursor-text text-right font-bold font-quote leading-none transform translate-y-[1px]">{module.fee.toLocaleString()}</span>
                       )}
                     </div>
                   </div>
@@ -1825,7 +1964,7 @@ const App: React.FC = () => {
                 <span className="text-[13px] text-[#4E5969] whitespace-nowrap">以上按</span>
                 <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
                   <textarea 
-                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden outline-none" 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden text-left outline-none" 
                     rows={1}
                     style={{ height: 'auto' }}
                     onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
@@ -1838,7 +1977,7 @@ const App: React.FC = () => {
                 </div>
                 <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
                   <textarea 
-                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden outline-none" 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden text-left outline-none" 
                     rows={1}
                     style={{ height: 'auto' }}
                     onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
@@ -1932,8 +2071,9 @@ const App: React.FC = () => {
               <div className="card !p-5 bg-white flex flex-col mb-0 rounded-[16px] border border-[#E5E6EB] shadow-none">
                 <SidebarTitle icon={FileText} title="主要操作" />
                 <div className="grid grid-cols-1 gap-3 mb-4">
-                  <button onClick={() => setShowPreview(true)} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#005691] text-white rounded-[8px] hover:bg-[#004a7c] transition-all shadow-[0_4px_10px_rgba(0,86,145,0.1)] border-none outline-none"><Eye className="w-4 h-4" /> 预览报价单</button>
-                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#F0F8FF] text-[#005691] rounded-[8px] hover:bg-[#E0F2FF] transition-all border-none outline-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '下载 PDF'}</button>
+                  <button onClick={() => setShowPreview(true)} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#005691] text-white rounded-[8px] hover:bg-[#004a7c] transition-all shadow-[0_4px_10px_rgba(0,86,145,0.1)] border-none outline-none text-center"><Eye className="w-4 h-4" /> 预览报价单</button>
+                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#F0F8FF] text-[#005691] rounded-[8px] hover:bg-[#E0F2FF] transition-all border-none outline-none text-center">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '导出高清 HTML'}</button>
+                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDF} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-gray-50 text-gray-500 rounded-[8px] hover:bg-gray-100 transition-all border-none outline-none text-center"><FileCheck className="w-4 h-4" /> 另存为 PDF</button>
                 </div>
                 <div className="grid grid-cols-1 gap-2 mb-4 pt-4 border-t border-[#E5E6EB]">
                   <button onClick={addCertModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F8FAFC] text-[#055087] font-medium rounded-[10px] border border-dashed border-[#E5E6EB] hover:bg-[#F0F8FF] hover:border-[#BDD1FF] transition-all group"><Layout className="w-4 h-4 text-[#0062AD] group-hover:scale-110 shrink-0" /><span className="text-[13px] text-center">添加认证报价</span></button>
@@ -1985,17 +2125,17 @@ const App: React.FC = () => {
                   <div className="space-y-4 flex-1">
                     <div className="flex justify-between items-center gap-4">
                       <div className="flex flex-col text-left"><span className="text-[13px] font-medium text-[#4E5969]">认证费用总计</span><span className="text-[11px] text-[#94A3B8] font-en tracking-tight">Certification Fees</span></div>
-                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD]">{certTotal.toLocaleString()}</span></div>
+                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none align-num"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD] transform translate-y-[1px]">{certTotal.toLocaleString()}</span></div>
                     </div>
                     <div className="flex justify-between items-center gap-4">
                       <div className="flex flex-col text-left"><span className="text-[13px] font-medium text-[#4E5969]">技术服务费用总计</span><span className="text-[11px] text-[#94A3B8] font-en tracking-tight">Technical Service Fees</span></div>
-                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD]">{techTotal.toLocaleString()}</span></div>
+                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none align-num"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD] transform translate-y-[1px]">{techTotal.toLocaleString()}</span></div>
                     </div>
                   </div>
                 </div>
                 <div className="bg-[#F2F5F8] rounded-[12px] px-4 py-3.5 flex justify-between items-center w-full">
                   <div className="flex flex-col text-left"><span className="text-[13px] text-[#0062AD] font-[700]">总计 (含6%增值税)</span><span className="text-[11px] text-[#86909C] font-medium font-en tracking-tight whitespace-nowrap">Grand Total (6% Included)</span></div>
-                  <div className="text-right flex items-baseline justify-end leading-none"><span className="text-[#0062AD] text-[14px] mr-1 font-en font-black">¥</span><span className="text-[24px] font-bold font-quote whitespace-nowrap text-[#0062AD]">{grandTotal.toLocaleString()}</span></div>
+                  <div className="text-right flex items-baseline justify-end leading-none align-num"><span className="text-[#0062AD] text-[14px] mr-1 font-en font-black">¥</span><span className="text-[24px] font-bold font-quote whitespace-nowrap text-[#0062AD] transform translate-y-[1px]">{grandTotal.toLocaleString()}</span></div>
                 </div>
               </div>
             </div>
@@ -2029,7 +2169,7 @@ const App: React.FC = () => {
       )}
 
       {showPreview && (
-        <div className="fixed inset-0 z-50 bg-[#304166cc] backdrop-blur-xl flex items-center justify-center p-2 md:p-4"><div className="bg-white rounded-[24px] w-full flex flex-col shadow-2xl overflow-hidden transition-all duration-500 border border-white/20 max-w-[98vw] h-[98vh] overflow-x-hidden"><div className="p-4 md:p-5 bg-white border-b flex justify-between items-center z-10 shrink-0"><div className="flex items-center gap-4 md:gap-6 text-left"><h3 className="font-bold text-[#304166] flex items-center gap-3 text-lg tracking-tight"><Eye className="text-[#0062AD] w-5 h-5" /> 预览报价单</h3></div><button onClick={() => setShowPreview(false)} className="p-2 hover:bg-red-50 hover:text-[#EE4932] rounded-full transition-all group"><X className="w-6 h-6 group-hover:rotate-90 transition-transform" /></button></div><div ref={previewScrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-12 bg-slate-200/40 flex flex-col items-center"><div className="bg-white shadow-[0_20px_50px_rgba(48,65,102,0.15)] origin-top" style={{ transform: `scale(${previewScale})`, marginTop: '0' }}><QuoteDocument /></div></div><div className="p-4 md:p-5 bg-white border-t flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0"><p className="flex-1 text-[11px] font-bold text-gray-400 uppercase tracking-widest italic opacity-60 text-center sm:text-left">* 预览已根据窗口宽度自动调整，确保内容在打印范围内。</p><div className="flex gap-3 w-full sm:w-auto"><button onClick={() => setShowPreview(false)} className="flex-1 sm:flex-none h-[40px] px-6 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-[8px] outline-none">关闭</button><button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex-1 sm:flex-none h-[40px] px-8 text-sm font-bold bg-[#F0F8FF] text-[#005691] hover:bg-[#E0F2FF] rounded-[8px] flex items-center justify-center gap-2 transition-all border-none disabled:opacity-50 outline-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '下载 PDF'}</button></div></div></div></div>
+        <div className="fixed inset-0 z-50 bg-[#304166cc] backdrop-blur-xl flex items-center justify-center p-2 md:p-4"><div className="bg-white rounded-[24px] w-full flex flex-col shadow-2xl overflow-hidden transition-all duration-500 border border-white/20 max-w-[98vw] h-[98vh] overflow-x-hidden"><div className="p-4 md:p-5 bg-white border-b flex justify-between items-center z-10 shrink-0"><div className="flex items-center gap-4 md:gap-6 text-left"><h3 className="font-bold text-[#304166] flex items-center gap-3 text-lg tracking-tight"><Eye className="text-[#0062AD] w-5 h-5" /> 预览报价单</h3></div><button onClick={() => setShowPreview(false)} className="p-2 hover:bg-red-50 hover:text-[#EE4932] rounded-full transition-all group"><X className="w-6 h-6 group-hover:rotate-90 transition-transform" /></button></div><div ref={previewScrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-12 bg-slate-200/40 flex flex-col items-center"><div className="bg-white shadow-[0_20px_50px_rgba(48,65,102,0.15)] origin-top" style={{ transform: `scale(${previewScale})`, marginTop: '0' }}><QuoteDocument /></div></div><div className="p-4 md:p-5 bg-white border-t flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0"><p className="flex-1 text-[11px] font-bold text-gray-400 uppercase tracking-widest italic opacity-60 text-center sm:text-left">* 预览已根据窗口宽度自动调整，确保内容在打印范围内。</p><div className="flex gap-3 w-full sm:w-auto"><button onClick={() => setShowPreview(false)} className="flex-1 sm:flex-none h-[40px] px-6 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-[8px] outline-none">关闭</button><button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex-1 sm:flex-none h-[40px] px-8 text-sm font-bold bg-[#F0F8FF] text-[#005691] hover:bg-[#E0F2FF] rounded-[8px] flex items-center justify-center gap-2 transition-all border-none disabled:opacity-50 outline-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '导出高清 HTML'}</button></div></div></div></div>
       )}
     </div>
   );
