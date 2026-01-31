@@ -104,7 +104,7 @@ declare const html2pdf: any;
 
 // Supabase Initialization
 const supabaseUrl = 'https://xpumfcmcyrhczyxxknnu.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdW1mY21jeXJoY3p5eHhrbm51Iiwicm9sZSI6ImFub24iLCJpYXQiOiAxNzY5NjE4MjA3LCJleHAiOiAyMDg1MTk0MjA3fQ.gzB0Pkv1G0gGKabdK3ltIERzHxRyiJnYa9tNGVdqrR4';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdW1mY21jeXJoY3p5eHhrbm51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2MTgyMDcsImV4cCI6MjA4NTE5NDIwN30.gzB0Pkv1G0gGKabdK3ltIERzHxRyiJnYa9tNGVdqrR4';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const AVAILABLE_STANDARDS = [
