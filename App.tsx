@@ -89,10 +89,23 @@ import {
   Scaling,
   Network,
   GitBranch,
-  EyeOff
+  EyeOff,
+  RefreshCw,
+  AlertCircle,
+  History,
+  FileDown
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { createClient } from '@supabase/supabase-js';
 import { QuoteData, CertItem, TechnicalService, QuoteModule, CertModule, TechModule, TechServiceStep, CaseBlock, CustomModule } from './types';
+
+// Declare html2pdf for TypeScript
+declare const html2pdf: any;
+
+// Supabase Initialization
+const supabaseUrl = 'https://xpumfcmcyrhczyxxknnu.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdW1mY21jeXJoY3p5eHhrbm51Iiwicm9sZSI6ImFub24iLCJpYXQiOiAxNzY5NjE4MjA3LCJleHAiOiAyMDg1MTk0MjA3fQ.gzB0Pkv1G0gGKabdK3ltIERzHxRyiJnYa9tNGVdqrR4';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const AVAILABLE_STANDARDS = [
   "ISO 9001:2015（质量）",
@@ -106,11 +119,12 @@ const AVAILABLE_STANDARDS = [
   "ISO 37301:2021（合规）",
   "ISO 41001:2018（设施）",
   "ISO/IEC 27001:2022（信息安全）",
-  "IEC 20000-1:2018（信息技术）",
+  "ISO/IEC 20000-1:2018（信息技术）",
   "ISO 42001:2023（人工智能）",
   "IATF 16949:2016（汽车）",
   "ISO 37001:2016（反贿赂）",
   "ISO 22716:2007（化妆品良好生产规范）",
+  "GB 14881-2013（良好生产规范）",
   "ISO 13485:2016（医疗器械）",
   "GB/T 31950-2015（诚信）",
   "SA 8000:2014（社会责任）",
@@ -136,6 +150,9 @@ const AVAILABLE_STANDARDS = [
   "CXC1-1969（良好卫生通则）",
   "RB/T 071-2021（道地药材）",
   "绿色工厂评价",
+  "GB/T 19220-2003（绿色市场-批发）",
+  "GB/T 19221-2003（绿色市场-零售）",
+  "CQC GF/ST 1001-2021（同线同标同质预包装食品产品认证）",
   "非转基因身份保持（IP）",
   "HSE（健康安全环境管理体系评价）",
   "IQNet SR10（社会责任）",
@@ -312,11 +329,11 @@ const DEFAULT_TECH_SERVICES: TechnicalService[] = [
 ];
 
 const INITIAL_DATA: QuoteData = {
-  clientName: '河南新思维软件科技有限公司',
-  clientAddress: '河南省郑州市高新区',
-  employeeCount: 50,
-  certStandards: ['ISO 9001:2015（质量）'],
-  certScope: '软件开发、销售及相关的管理活动',
+  clientName: '',
+  clientAddress: '',
+  employeeCount: 0,
+  certStandards: [],
+  certScope: '',
   modules: [
     {
       id: 'default-cert',
@@ -329,8 +346,8 @@ const INITIAL_DATA: QuoteData = {
       type: 'tech',
       title: '专业技术服务报价',
       services: [...DEFAULT_TECH_SERVICES],
-      fee: 15000,
-      details: { minDays: 10, auditCerts: 5 }
+      fee: 12000,
+      details: { minDays: 6, auditCerts: 10 }
     }
   ],
   travelExpenseOption: 'excluded',
@@ -462,7 +479,7 @@ const CertificationProcess = ({ validity = '3years' }: { validity?: '1year' | '3
     }
   };
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+    <div className="grid grid-cols-3 gap-6 relative">
       {stages.map((stage, idx) => {
         const cls = getColorClasses(stage.color);
         return (
@@ -479,7 +496,7 @@ const CertificationProcess = ({ validity = '3years' }: { validity?: '1year' | '3
                 </React.Fragment>
               ))}
             </div>
-            {idx < stages.length - 1 && <div className="hidden md:flex absolute -right-[18px] top-1/2 -translate-y-1/2 z-10"><ChevronRight className="w-5 h-5 text-gray-300 opacity-50" /></div>}
+            {idx < stages.length - 1 && <div className="flex absolute -right-[18px] top-1/2 -translate-y-1/2 z-10"><ChevronRight className="w-5 h-5 text-gray-300 opacity-50" /></div>}
           </div>
         );
       })}
@@ -556,19 +573,19 @@ const TechnicalServiceProcess = ({ steps, onUpdateStep, onRemoveStep, onReorderS
     const sourceIdx = parseInt(sourceIdxStr);
     if (sourceIdx !== targetIdx && onReorderSteps) { onReorderSteps(sourceIdx, targetIdx); }
   };
-  return ( <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full items-stretch relative">{steps.map((step, idx) => ( <TechStepCard key={step.id} step={step} index={idx} isEditable={isEditable} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onRemove={onRemoveStep!} onUpdate={onUpdateStep!} onUpdateTags={onUpdateTags!} /> ))}</div> );
+  return ( <div className="grid grid-cols-3 gap-4 w-full items-stretch relative">{steps.map((step, idx) => ( <TechStepCard key={step.id} step={step} index={idx} isEditable={isEditable} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onRemove={onRemoveStep!} onUpdate={onUpdateStep!} onUpdateTags={onUpdateTags!} /> ))}</div> );
 };
 
 const AgencyProfile = () => {
   const introClass = "text-[14px] text-gray-500 leading-relaxed text-justify px-1";
   
   return (
-    <div className="space-y-10 px-5 md:px-10 lg:px-0 text-center lg:text-left">
-      <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8 items-center lg:items-stretch">
-        <div className="lg:col-span-3 space-y-6 flex flex-col justify-between py-1 items-center lg:items-start">
+    <div className="space-y-10 px-5 md:px-10 lg:px-0 text-left">
+      <div className="grid grid-cols-5 gap-8 items-stretch">
+        <div className="col-span-3 space-y-6 flex flex-col justify-between py-1 items-start">
           <div className="space-y-4 text-left">
-            <div className="flex items-center gap-0 group">
-              <div className="w-[4px] h-[32px] bg-[#013580] rounded-[2px] mr-[12px] shrink-0"></div>
+            <div className="flex items-center gap-2.5">
+              <div className="w-[4px] h-[24px] rounded-[2px] bg-[#00428D] shrink-0"></div>
               <h3 className="text-[20px] font-bold text-[#005691] tracking-tight">中国检验认证集团 <span className="text-[#0062AD] font-en">(CCIC)</span></h3>
             </div>
             <p className={introClass}>中国检验认证集团（简称中国中检）是经国务院批准设立、由国务院国资委管理的中央企业。作为以“检验、检测、认证、标准、计量”为主业的综合性质量服务机构，机构在全球范围内提供专业、高效、一站式的质量安全服务。</p>
@@ -581,14 +598,13 @@ const AgencyProfile = () => {
                   <div className="h-14 w-full flex items-center justify-center">
                     <img src={sub.icon} alt={sub.name} loading="lazy" className="max-h-full max-w-full object-contain" />
                   </div>
-                  <span className="text-[13px] font-semibold text-[#00428D] text-center whitespace-nowrap tracking-wider">{sub.name}</span>
+                  <span className="text-[11px] font-semibold text-[#5A6A85] text-center whitespace-nowrap uppercase tracking-wider">{sub.name}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        {/* Statistics Grid - Six-color dynamic matrix for CCIC */}
-        <div className="w-full lg:col-span-2 grid grid-cols-3 lg:grid-cols-2 gap-[20px] md:gap-[30px] lg:pl-8 lg:border-l border-gray-100 items-center py-1">
+        <div className="w-full col-span-2 grid grid-cols-2 gap-[20px] md:gap-[30px] pl-8 border-l border-gray-100 items-stretch py-1 justify-items-center">
           {[
             { label: '服务网络', value: '30', unit: '+', icon: <Globe className="w-5 h-5" />, color: '#165DFF' }, 
             { label: '分支机构', value: '400', unit: '+', icon: <Building className="w-5 h-5" />, color: '#00B42A' }, 
@@ -613,45 +629,44 @@ const AgencyProfile = () => {
       
       <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
       
-      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-x-12 items-stretch text-center lg:text-left">
+      <div className="grid grid-cols-2 gap-x-12 items-stretch text-left">
         {/* LEFT COLUMN: CQC */}
         <div className="flex flex-col h-full w-full">
           <div className="mb-4 text-left">
             <div className="flex items-center justify-start gap-3 border-l-4 border-[#0062AD] pl-4 mb-3">
               <h4 className="text-[20px] font-bold text-[#005691]">中国质量认证中心 <span className="font-en">(CQC)</span></h4>
             </div>
-            <p className={introClass + " !px-0"}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团。同时CQC也是世界最大认证机构联盟—国际认证联盟（IQNet）中国区域的两大成员之一。</p>
+            <p className={introClass + " !px-0"}>中国质量认证中心(CQC)是由中国政府批准设立、认证机构批准书编号为001号的质量服务机构，隶属于中国中检集团. 同时CQC也是世界最大认证机构联盟—国际认证联盟（IQNet）中国区域的两大成员之一。</p>
           </div>
           
           <div className="flex flex-col justify-between flex-1 mt-4 gap-4">
-            <div className="bg-[#0062AD08] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#0062AD1a] transition-all hover:bg-[#0062AD0D]">
-              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#005691] shrink-0 self-start mt-0"><Award className="w-6 h-6" /></div>
-              <div className="space-y-1.5 flex-1 text-left pt-0">
+            <div className="bg-[#0062AD08] rounded-[12px] p-5 flex flex-row items-start gap-4 border border-[#0062AD1a] transition-all hover:bg-[#0062AD0D]">
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#005691] shrink-0 self-start mt-0.5"><Award className="w-6 h-6" /></div>
+              <div className="space-y-1.5 flex-1 text-left pt-0.5">
                 <div className="flex items-center justify-start gap-5"><span className="text-[14px] font-bold text-[#005691]">权威地位</span><span className="px-2 py-0.5 bg-[#0062AD] text-white rounded-md text-[10px] font-black font-num tracking-wider">No. 001</span></div>
                 <p className="text-[13px] leading-relaxed font-normal" style={{ color: '#4E89B2' }}>国家认监委批准设立的专业认证机构，机构批准号：001。</p>
               </div>
             </div>
             
             <div className="bg-[#34A85308] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#34A8531a] transition-all hover:bg-[#34A8530D]">
-              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#166534] shrink-0 self-start mt-0"><Globe className="w-6 h-6" /></div>
-              <div className="space-y-1 flex-1 text-left pt-0">
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#166534] shrink-0 self-start mt-0.5"><Globe className="w-6 h-6" /></div>
+              <div className="space-y-1.5 flex-1 text-left pt-0.5">
                 <div className="flex items-center justify-start gap-5"><span className="text-[14px] font-bold text-[#166534]">国际合作</span><span className="px-2 py-0.5 bg-[#34A853] text-white rounded-md text-[10px] font-black font-num tracking-wider">IQNet 中国成员</span></div>
-                <p className="text-[12.5px] leading-snug line-clamp-2 font-normal" style={{ color: '#529E66' }}>代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
+                <p className="text-[13px] leading-relaxed font-normal" style={{ color: '#529E66' }}>代表中国加入国际认证联盟及国际电工委员会合格评定体系，实现一张证书，全球通行。</p>
               </div>
             </div>
             
             <div className="bg-[#FBBC0508] rounded-[12px] p-5 flex flex-col sm:flex-row items-start gap-4 border border-[#FBBC051a] transition-all hover:bg-[#FBBC050D]">
-              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#B45309] shrink-0 self-start mt-0"><Grid className="w-6 h-6" /></div>
-              <div className="space-y-1 flex-1 text-left pt-0">
+              <div className="w-10 h-10 rounded-[8px] flex items-center justify-center text-[#B45309] shrink-0 self-start mt-0.5"><Grid className="w-6 h-6" /></div>
+              <div className="space-y-1.5 flex-1 text-left pt-0.5">
                 <div className="flex items-center justify-start gap-5"><span className="text-[14px] font-bold text-[#B45309]">业务覆盖</span><span className="px-2 py-0.5 bg-[#FBBC05] text-white rounded-md text-[10px] font-black font-num tracking-wider">全产业链覆盖</span></div>
-                <p className="text-[12.5px] leading-snug line-clamp-2 font-normal" style={{ color: '#B27A4E' }}>提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
+                <p className="text-[13px] leading-relaxed font-normal" style={{ color: '#B27A4E' }}>提供强制性产品认证 (CCC)、自愿性认证、节能环保认证及管理体系认证等全方位服务。</p>
               </div>
             </div>
           </div>
         </div>
         
-        {/* RIGHT COLUMN: CCIC GD */}
-        <div className="flex flex-col w-full mt-10 lg:mt-0 text-left">
+        <div className="flex flex-col w-full text-left">
           <div className="mb-4">
             <div className="flex items-center justify-start gap-3 border-l-4 border-[#EE4932] pl-4 mb-3">
               <h4 className="text-[20px] font-bold text-[#005691]">中国中检广东公司 <span className="font-en">(CCIC GD)</span></h4>
@@ -659,7 +674,6 @@ const AgencyProfile = () => {
             <p className={introClass + " !px-0"}>中国检验认证集团广东有限公司(中国中检广东公司)是中国中检集团核心子公司之一，中国中检集团华南区域总部，也是中国质量认证中心有限公司在当地开展管理体系认证业务的分支机构。</p>
           </div>
           
-          {/* CCIC GD Statistics Area - Re-aligned to main stats logic */}
           <div className="grid grid-cols-3 gap-x-6 mt-6 mb-4 w-full">
             {[
               { label: '分公司', value: '19', unit: '家', icon: <MapPin className="w-5 h-5" />, color: '#165DFF' }, 
@@ -677,7 +691,6 @@ const AgencyProfile = () => {
             ))}
           </div>
           
-          {/* Service Scope with Grid - 9-color scheme and 28px icons */}
           <div className="mt-[20px] space-y-4">
             <div className="grid grid-cols-3 gap-x-4">
               <div className="col-start-2 flex items-center justify-center gap-2 whitespace-nowrap">
@@ -800,6 +813,10 @@ const App: React.FC = () => {
   const [draggingExcelTargetId, setDraggingExcelTargetId] = useState<string | null>(null);
   const [dragOverModuleId, setDragOverModuleId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [syncState, setSyncState] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
+  const [clientSuggestions, setClientSuggestions] = useState<any[]>([]);
+  const [showClientSuggestions, setShowClientSuggestions] = useState(false);
 
   const resizingInfo = useRef<{ blockId: string, colIdx: number, startX: number, startWidths: number[] } | null>(null);
   const excelInputRef = useRef<HTMLInputElement>(null);
@@ -846,6 +863,7 @@ const App: React.FC = () => {
   const [editingCertId, setEditingCertId] = useState<{moduleId: string, itemId: string} | null>(null);
   const [editingTechFeeId, setEditingTechFeeId] = useState<string | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isGeneratingHtml, setIsGeneratingHtml] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
   const [isDraggingOverMain, setIsDraggingOverMain] = useState(false);
   const [isAddingCustom, setIsAddingCustom] = useState(false);
@@ -865,6 +883,106 @@ const App: React.FC = () => {
   const grandTotal = useMemo(() => certTotal + techTotal, [certTotal, techTotal]);
   const allDisplayStandards = useMemo(() => { const base = [...AVAILABLE_STANDARDS]; data.certStandards.forEach(std => { if (!base.includes(std)) base.push(std); }); return base; }, [data.certStandards]);
   const filteredStandards = useMemo(() => allDisplayStandards.filter(std => std.toLowerCase().includes(searchTerm.toLowerCase())), [searchTerm, allDisplayStandards]);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      setActiveSectionId(id);
+    }
+  };
+
+  const handleSyncData = async () => {
+    if (syncState !== 'idle' && syncState !== 'error') return;
+
+    // 校验必填字段
+    if (!data.clientName || !data.clientAddress || !data.employeeCount || data.certStandards.length === 0 || !data.certScope) {
+      alert("请补全所有必填字段（客户名称、地址、人数、认证标准、认证范围）后再同步。");
+      return;
+    }
+
+    setSyncState('syncing');
+
+    try {
+      const payload = {
+        clientName: data.clientName,
+        clientAddress: data.clientAddress,
+        employeeCount: data.employeeCount,
+        certStandards: data.certStandards,
+        certScope: data.certScope
+      };
+
+      // 使用 upsert 规则，冲突约束为 clientName,certStandards
+      const { error } = await supabase
+        .from('customers')
+        .upsert(payload, { onConflict: 'clientName,certStandards' });
+
+      if (error) throw error;
+
+      setSyncState('success');
+      setTimeout(() => setSyncState('idle'), 2000);
+    } catch (error) {
+      console.error('Sync failed:', error);
+      setSyncState('error');
+    }
+  };
+
+  const handleSelectClient = (client: any) => {
+    setData(prev => ({
+      ...prev,
+      clientName: client.clientName,
+      clientAddress: client.clientAddress || prev.clientAddress,
+      employeeCount: client.employeeCount || prev.employeeCount,
+      certScope: client.certScope || prev.certScope,
+      certStandards: client.certStandards || prev.certStandards
+    }));
+    setShowClientSuggestions(false);
+  };
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!data.clientName || data.clientName.length < 1) {
+        setClientSuggestions([]);
+        return;
+      }
+      
+      const { data: results, error } = await supabase
+        .from('customers')
+        .select('*')
+        .ilike('clientName', `%${data.clientName}%`)
+        .limit(20);
+        
+      if (!error && results) {
+        setClientSuggestions(results);
+      }
+    };
+
+    const timer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timer);
+  }, [data.clientName]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActiveSectionId(entry.target.id);
+        }
+      });
+    }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+
+    const observeIds = [
+      ...data.modules.map(m => m.id),
+      'cert-process', 'tech-process', 'agency-profile', 'business-qualifications', 'customer-case', 'cert-templates'
+    ];
+
+    observeIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [data.modules, isCertProcessVisible, isTechProcessVisible, isCustomerCaseVisible, isCertTemplatesVisible, processOrder]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -942,7 +1060,7 @@ const App: React.FC = () => {
     }));
   };
 
-  const addCertItemToModule = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => { if (m.id === moduleId && m.type === 'cert') { const nextYear = 2026 + m.items.length; const newItem: CertItem = { id: Date.now().toString(), type: `${nextYear}年监督审核费`, project: '审核费+管理年金', amount: 0 }; return { ...m, items: [...m.items, newItem] }; } return m; }) })); };
+  const addCertItemToModule = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => { if (m.id === moduleId && m.type === 'cert') { const nextYear = 2026 + m.items.length; const newItem: CertItem = { id: Date.now().toString(), type: `${nextYear}年监督审核费`, project: '审核费+审定和注册费用+管理年金', amount: 0 }; return { ...m, items: [...m.items, newItem] }; } return m; }) })); };
   const removeCertItemFromModule = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'cert' && m.items.length > 0 ? { ...m, items: m.items.slice(0, -1) } : m) })); };
   const resetCertModuleItems = (moduleId: string) => { setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId && m.type === 'cert' ? { ...m, items: [...DEFAULT_CERT_ITEMS].map(i => ({ ...i, id: Math.random().toString() })) } : m) })); };
   
@@ -1013,186 +1131,147 @@ const App: React.FC = () => {
   const triggerToast = () => { setShowToast(true); setTimeout(() => setShowToast(false), 2000); };
 
   const handleDownloadPDF = async () => {
-    if (!pdfSourceRef.current) return;
-    setIsGeneratingPdf(true);
+    // 强制获取专门为导出渲染的打印源容器
+    const element = pdfSourceRef.current;
+    if (!element) {
+      alert("导出失败：无法获取渲染容器。");
+      return;
+    }
     
+    setIsGeneratingPdf(true);
     try {
-      const exportTarget = document.getElementById('pdf-export-target');
-      if (exportTarget) {
-        exportTarget.style.display = 'block'; 
-      }
-
-      const canvas = await (window as any).html2canvas(pdfSourceRef.current, {
-        scale: 2, 
-        useCORS: true, 
-        logging: false, 
-        backgroundColor: '#ffffff',
-        allowTaint: true
-      });
-
-      if (exportTarget) {
-        exportTarget.style.display = 'none'; 
-      }
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      
-      const pdf = new (window as any).jspdf.jsPDF({
-        orientation: 'p',
-        unit: 'mm',
-        format: [297, 297 * (canvas.height / canvas.width)],
-        putOnlyUsedFonts: true
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      // 1 毫米 = 3.7795275591 像素 (标准 96 DPI)
+      // 锁定渲染容器捕获宽度为 1122.5px (即 297mm)
+      // 动态计算总高度以实现不分页
+      const contentHeightPx = element.scrollHeight;
+      const mmHeight = (contentHeightPx * 25.4) / 96;
 
       const cleanStandards = data.certStandards
         .map(s => s.split(/[:（]/)[0].trim())
         .join('、');
-      
-      const fileName = `${data.clientName || '未命名公司'}-${cleanStandards}${dynamicTitle}.pdf`;
-      
-      pdf.save(fileName);
+      const fileName = `${data.clientName || '报价单'}-${cleanStandards || '管理体系'}-报价单.pdf`;
+
+      // 核心配置：锁定捕获区域，消除偏移
+      const opt = {
+        margin: 0,
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          logging: false,
+          letterRendering: true,
+          width: 1122.5, // 强制捕获 297mm 宽度
+          windowWidth: 1122.5, // 锁定捕获视口宽度，解决偏移
+          scrollY: 0,
+          scrollX: 0,
+          x: 0,
+          y: 0
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: [297, mmHeight], // 设置超长页面规格，实现“不分页”
+          orientation: 'portrait' 
+        }
+      };
+
+      // 检查 html2pdf 库是否就绪
+      if (typeof html2pdf !== 'undefined') {
+        await html2pdf().from(element).set(opt).save();
+      } else {
+        throw new Error("html2pdf 库尚未加载完成，请稍后重试。");
+      }
     } catch (err) {
       console.error("PDF generation failed:", err);
-      alert("生成 PDF 失败，可能是内容过多超过浏览器限制。请尝试减少模块或简化内容。");
+      alert("PDF 生成失败，请刷新页面后重试。");
     } finally {
       setIsGeneratingPdf(false);
     }
   };
 
-  /**
-   * 彻底重写的 handleDownloadPDFNew 函数
-   * 采用“Tailwind CDN + 物理尺寸锁定”技术实现 1:1 导出。
-   */
-  const handleDownloadPDFNew = async () => {
+  const handleDownloadHTML = async () => {
     if (!pdfSourceRef.current) return;
-    setIsGeneratingPdf(true);
+    setIsGeneratingHtml(true);
 
     try {
-      // 1. 获取预览区域的 HTML
-      const content = pdfSourceRef.current.innerHTML;
+      const contentHtml = pdfSourceRef.current.innerHTML;
+      const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+        .map(el => el.outerHTML)
+        .join('\n');
 
-      // 2. 构造最终的 HTML 文件内容
+      const cleanStandards = data.certStandards
+        .map(s => s.split(/[:（]/)[0].trim())
+        .join('、');
+      const fileName = `${data.clientName || '报价单'}-${cleanStandards || '管理体系'}-报价单.html`;
+
       const fullHtml = `
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>${data.clientName}报价单</title>
-  <!-- 注入 Tailwind CDN 确保样式 1:1 解释 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  <style>
-    /* 定义 CSS 变量以匹配原始应用 */
-    :root {
-      --font-zh: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
-      --font-en: 'Inter', 'SF Pro Text', -apple-system, sans-serif;
-      --font-num: 'DIN Alternate', 'DIN Condensed', 'Arial', sans-serif;
-      --font-quote: 'DIN Alternate', 'SF Pro Text', 'Microsoft YaHei', sans-serif;
-    }
-    
-    body { 
-      margin: 0; 
-      padding: 0; 
-      background: #f0f2f5; 
-      display: flex; 
-      justify-content: center; 
-      font-family: var(--font-zh);
-      /* 核心：确保内容可被选择和复制 */
-      user-select: text !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${fileName}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --font-zh: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+            --font-en: 'Inter', 'SF Pro Text', -apple-system, sans-serif;
+            --font-num: 'DIN Alternate', 'DIN Condensed', 'Arial', sans-serif;
+            --font-quote: 'DIN Alternate', 'SF Pro Text', 'Microsoft YaHei', sans-serif;
+            --color-primary: #0062AD;
+            --color-deep: #304166;
+        }
 
-    /* 物理画板：锁定 297mm 宽度，防止内容贴边 */
-    #html-export-container { 
-      width: 297mm !important; 
-      background: white !important; 
-      padding: 30mm 25mm !important; /* 增加上下页边距 */
-      box-sizing: border-box !important; 
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      position: relative;
-    }
+        @media print {
+            @page { size: 297mm 2000mm; margin: 0; }
+            body { background: white !important; -webkit-print-color-adjust: exact !important; }
+            #html-export-container { box-shadow: none !important; margin: 0 !important; }
+        }
 
-    /* 强制打印样式：解决分页和尺寸过小问题 */
-    @media print {
-      @page { 
-        size: 297mm auto; /* 核心：锁定宽度，高度自动，从而实现一页长图不分页 */
-        margin: 0 !important; 
-      }
-      body { 
-        background: white !important; 
-        padding: 0 !important;
-        width: 297mm !important;
-      }
-      #html-export-container { 
-        box-shadow: none !important; 
-        width: 297mm !important;
-        margin: 0 !important;
-      }
-      /* 禁止浏览器打印时将元素截断 */
-      * { 
-        page-break-inside: avoid !important; 
-        break-inside: avoid !important; 
-      }
-    }
+        body {
+            background-color: #f0f2f5;
+            margin: 0; padding: 40px 0;
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh;
+            font-family: var(--font-zh);
+        }
 
-    /* 修复对齐精度（防止导出时 Tailwind 类丢失解释权） */
-    .pl-40 { padding-left: 10rem !important; }
-    .text-right { text-align: right !important; }
-    .text-left { text-align: left !important; }
-    .font-num { font-family: var(--font-num) !important; }
-    .font-en { font-family: var(--font-en) !important; }
-    .font-quote { font-family: var(--font-quote) !important; }
-    
-    /* 强制表格显示逻辑 */
-    table { width: 100% !important; border-collapse: collapse !important; table-layout: fixed !important; }
-    th, td { border-bottom: 1px solid #F2F3F5; }
-    
-    /* 确保金额列图标对齐 */
-    .align-num { 
-      display: inline-flex !important; 
-      align-items: baseline !important; 
-      gap: 2px !important;
-    }
-  </style>
+        #html-export-container {
+            width: 297mm !important;
+            padding: 25mm !important;
+            background: white !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+        }
+    </style>
+    ${styles}
 </head>
 <body>
-  <div id="html-export-container">
-    ${content}
-  </div>
+    <div id="html-export-container">
+        ${contentHtml}
+    </div>
 </body>
-</html>
-`;
+</html>`;
 
-      // 3. 执行文件下载
-      const blob = new Blob([fullHtml], { type: 'text/html' });
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      const cleanStandards = data.certStandards
-        .map(s => s.split(/[:（]/)[0].trim())
-        .join('、');
       link.href = url;
-      link.download = `${data.clientName || '未命名公司'}-${cleanStandards}${dynamicTitle}.html`;
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
-      alert("HTML 导出成功！\n请用浏览器打开导出的 HTML 文件后执行：\n1. 按 Ctrl+P (打印)；\n2. 打印预览此时应为一整张长图，且左右边距正常；\n3. 目标打印机选 '另存为 PDF'；\n4. 注意勾选 '背景图形'。");
     } catch (err) {
       console.error("HTML export failed:", err);
-      alert("导出 HTML 失败。");
+      alert("导出文件失败，请稍后重试。");
     } finally {
-      setIsGeneratingPdf(false);
+      setIsGeneratingHtml(false);
     }
   };
 
   const handleDragStart = (e: React.DragEvent, moduleId: string) => { e.dataTransfer.setData('moduleId', moduleId); e.dataTransfer.effectAllowed = 'move'; };
-  const handleDropToMain = (e: React.DragEvent) => { e.preventDefault(); setIsDraggingOverMain(false); };
+  const handleDropToMain = (e: React.DragEvent) => { e.preventDefault(); setIsDraggingOverMain(true); };
   
   const handleModuleReorder = (e: React.DragEvent, targetId: string) => {
     e.stopPropagation(); setDragOverModuleId(null);
@@ -1236,9 +1315,14 @@ const App: React.FC = () => {
 
   const handleUpdateTechStepTags = (index: number, newTags: string[]) => {
     setData(prev => {
-      const step = prev.techServiceSteps[index]; const normalizedServiceId = step.id.replace(/^0+/, '');
+      const step = prev.techServiceSteps[index]; 
+      const normalizedServiceId = step.id.replace(/^0+/, '');
       const newSteps = prev.techServiceSteps.map((s, i) => i === index ? { ...s, tags: newTags } : s);
-      const newModules = prev.modules.map(m => m.type === 'tech' ? { ...m, services: m.services.map(serv => serv.id === normalizedServiceId ? { ...serv, description: newTags.join('、') } : serv) } : m);
+      const newModules = prev.modules.map(m => 
+        m.type === 'tech' 
+          ? { ...m, services: m.services.map(serv => serv.id === normalizedServiceId ? { ...serv, description: newTags.join('、') } : serv) } 
+          : m
+      );
       return { ...prev, techServiceSteps: newSteps, modules: newModules };
     });
   };
@@ -1419,9 +1503,9 @@ const App: React.FC = () => {
     };
 
     const ModuleHeader = ({ title }: { title: string }) => (
-      <div className="flex justify-center mb-10">
-        <div className="border-b border-[#E5E6EB] px-8 py-1.5 w-fit">
-          <h4 className="uppercase tracking-[0.12em] font-black" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>{title}</h4>
+      <div className="flex justify-center mb-10 w-full text-center">
+        <div className="border-b border-[#E5E6EB] px-8 py-1.5 w-fit mx-auto text-center flex justify-center items-center">
+          <h4 className="uppercase tracking-[0.12em] font-black text-center whitespace-nowrap" style={{ fontSize: `${sizeTitleModule}px`, color: deepColor }}>{title}</h4>
         </div>
       </div>
     );
@@ -1432,8 +1516,8 @@ const App: React.FC = () => {
         <div className="flex items-baseline gap-[40px] flex-1 min-w-0">
           <span className={`${isBold ? 'font-medium text-[15px]' : 'font-normal text-[14px]'} text-[#1D2129] ${isEn ? 'font-en' : ''} break-words`}>{content}</span>
           {isSubject && (
-            <div className="inline-flex items-baseline bg-[#F2F3F5] px-2 py-0.5 rounded-[4px] shrink-0 ml-4 align-num">
-              <span className="text-[13px] font-normal text-[#4E5969] text-[13px] leading-none">有效人数：</span>
+            <div className="inline-flex items-baseline bg-[#F2F3F5] px-2 py-0.5 rounded-[4px] shrink-0 ml-4">
+              <span className="text-[13px] font-normal text-[#4E5969] leading-none">有效人数：</span>
               <span className="text-[14px] font-medium text-[#1D2129] font-num leading-none transform translate-y-[1px]">{data.employeeCount}</span>
             </div>
           )}
@@ -1442,7 +1526,7 @@ const App: React.FC = () => {
     );
 
     return (
-      <div ref={containerRef} id="quotation-preview" className={`${isPrint ? '' : 'mx-auto'} bg-white p-[32px] md:p-[48px] transition-all duration-300 origin-top`} style={{ minHeight: isPrint ? 'auto' : '297mm', width: currentWidth, color: textColor, fontFamily: 'var(--font-zh)', ...style }}>
+      <div ref={containerRef} className={`${isPrint ? '' : 'mx-auto'} bg-white p-[32px] md:p-[48px] transition-all duration-300 origin-top`} style={{ minHeight: isPrint ? 'auto' : '297mm', width: currentWidth, color: textColor, fontFamily: 'var(--font-zh)', ...style }}>
         <style dangerouslySetInnerHTML={{ __html: `
           .font-num { line-height: inherit !important; }
           @media print {
@@ -1534,10 +1618,7 @@ const App: React.FC = () => {
                       <p className="text-[#4E5969] font-medium leading-relaxed" style={{ fontSize: `14px` }}>{item.project}</p>
                     </td>
                     <td className="py-5 text-right font-medium whitespace-nowrap font-quote align-baseline" style={{ color: BRAND_COLORS.primary }}>
-                      <span className="align-num">
-                        <span className="font-bold opacity-40" style={{ fontSize: '12px' }}>¥</span>
-                        <span className="font-medium leading-none transform translate-y-[1px]" style={{ fontSize: '16px' }}>{item.amount.toLocaleString()}</span>
-                      </span>
+                      <div className="flex items-baseline justify-end gap-1"><span className="font-bold leading-none opacity-40" style={{ fontSize: '12px' }}>¥</span><span className="font-medium leading-none" style={{ fontSize: '16px' }}>{item.amount.toLocaleString()}</span></div>
                     </td>
                   </tr>
                 )); 
@@ -1556,24 +1637,17 @@ const App: React.FC = () => {
                         <div className="space-y-0.5">{serviceChunks.map((chunk, idx) => (<p key={idx} className="text-[#072A4A] font-medium leading-relaxed" style={{ fontSize: `14px` }}>{chunk}</p>))}</div>
                         <div className="flex items-baseline gap-0 text-[#4E5969] font-normal" style={{ fontSize: `13px`, marginTop: '8px' }}>
                           <span className="leading-none">指导周期：不少于</span>
-                          <span className="inline-flex items-baseline align-num">
-                            <span className="font-bold mx-1 font-num leading-none transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.minDays}</span>
-                            <span className="leading-none">人天</span>
-                          </span>
+                          <span className="font-bold mx-1 font-num leading-none inline-block transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.minDays}</span>
+                          <span className="leading-none">人天</span>
                           <div className="w-px h-3 bg-[#F2F3F5] mx-4 self-center"></div>
                           <span className="leading-none">内审员证书：</span>
-                          <span className="inline-flex items-baseline align-num">
-                            <span className="font-bold mx-1 font-num leading-none transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.auditCerts}</span>
-                            <span className="leading-none">份</span>
-                          </span>
+                          <span className="font-bold mx-1 font-num leading-none inline-block transform translate-y-[1px]" style={{ color: primaryColor, fontSize: '14px' }}>{module.details.auditCerts}</span>
+                          <span className="leading-none">份</span>
                         </div>
                       </div>
                     </td>
                     <td className="py-5 text-right font-medium whitespace-nowrap font-quote align-baseline" style={{ color: BRAND_COLORS.primary }}>
-                      <span className="align-num">
-                        <span className="font-bold opacity-40" style={{ fontSize: '12px' }}>¥</span>
-                        <span className="font-medium leading-none transform translate-y-[1px]" style={{ fontSize: '16px' }}>{module.fee.toLocaleString()}</span>
-                      </span>
+                      <div className="flex items-baseline justify-end gap-1"><span className="font-bold leading-none opacity-40" style={{ fontSize: '12px' }}>¥</span><span className="font-medium leading-none" style={{ fontSize: '16px' }}>{module.fee.toLocaleString()}</span></div>
                     </td>
                   </tr>
                 ); 
@@ -1584,12 +1658,7 @@ const App: React.FC = () => {
           <tfoot className="before:content-[''] before:block before:h-2">
             <tr>
               <td colSpan={2} className="py-4 text-left font-bold uppercase tracking-wide bg-white border-t border-[#F2F3F5]" style={{ fontSize: `14px`, color: '#4E5969' }}>报价总计（含6%增值税）</td>
-              <td className="py-4 text-right font-bold whitespace-nowrap font-quote bg-white border-t border-[#F2F3F5]" style={{ fontSize: `24px`, color: BRAND_COLORS.primary }}>
-                <span className="align-num">
-                    <span className="text-[0.45em] font-bold leading-none opacity-60">¥</span>
-                    <span className="leading-none transform translate-y-[1px]">{grandTotal.toLocaleString()}</span>
-                </span>
-              </td>
+              <td className="py-4 text-right font-bold whitespace-nowrap font-quote flex items-baseline justify-end gap-1 bg-white border-t border-[#F2F3F5]" style={{ fontSize: `24px`, color: BRAND_COLORS.primary }}><span className="text-[0.45em] font-bold leading-none opacity-60">¥</span><span className="leading-none">{grandTotal.toLocaleString()}</span></td>
             </tr>
           </tfoot>
         </table>
@@ -1640,7 +1709,7 @@ const App: React.FC = () => {
             content = <CertificationProcess validity={processValidity} />;
           } else if (moduleId === 'tech-process') {
             title = "专业技术服务流程 / PROFESSIONAL TECHNICAL SERVICE PROCESS";
-            content = <TechnicalServiceProcess steps={data.techServiceSteps} />;
+            content = <TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={false} />;
           } else if (moduleId === 'agency-profile') {
             title = "机构简介 / AGENCY PROFILE";
             content = <AgencyProfile />;
@@ -1662,18 +1731,18 @@ const App: React.FC = () => {
           if (!content) return null;
 
           return (
-            <div key={moduleId} className="mt-[60px]">
+            <div key={moduleId} className="mt-[60px] w-full text-center">
               <ModuleHeader title={title} />
-              {content}
+              <div className="w-full text-left">{content}</div>
             </div>
           );
         })}
 
         <div className="space-y-[60px]">
           {data.modules.filter(m => m.type === 'custom').map(module => (
-            <div key={module.id} className="mt-[60px]">
+            <div key={module.id} className="mt-[60px] w-full text-center">
               <ModuleHeader title={module.title} />
-              {renderBlocksInDoc(module.blocks)}
+              <div className="w-full text-left">{renderBlocksInDoc(module.blocks)}</div>
             </div>
           ))}
         </div>
@@ -1687,14 +1756,14 @@ const App: React.FC = () => {
         className={`min-h-[300px] rounded-[12px] p-6 border-2 border-dashed transition-all flex flex-col gap-6 ${draggingExcelTargetId === (moduleId || 'main-case') ? 'bg-[#EFF5FC] border-[#0062AD] scale-[1.01]' : 'bg-slate-50/50 border-slate-200'}`}
         onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (e.dataTransfer.types.includes('Files')) setDraggingExcelTargetId(moduleId || 'main-case'); }}
         onDragLeave={() => setDraggingExcelTargetId(null)}
-        onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setDraggingExcelTargetId(null); const files = e.target.files; if (files && files.length > 0) { const ext = files[0].name.split('.').pop()?.toLowerCase(); if (['xlsx', 'xls', 'csv'].includes(ext || '')) parseExcelFileToModule(files[0], moduleId); } }}
+        onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setDraggingExcelTargetId(null); const files = (e as any).dataTransfer.files; if (files && files.length > 0) { const ext = files[0].name.split('.').pop()?.toLowerCase(); if (['xlsx', 'xls', 'csv'].includes(ext || '')) parseExcelFileToModule(files[0], moduleId); } }}
       >
         {blocks.length === 0 ? (<div className="flex-1 flex flex-col items-center justify-center text-slate-300 py-12 pointer-events-none text-center"><div className="w-20 h-20 bg-white border border-[#E5E6EB] rounded-[12px] flex items-center justify-center mb-4 mx-auto"><Presentation className="w-10 h-10 opacity-20" /></div><p className="text-sm font-bold opacity-60">空白演示画布</p><p className="text-xs opacity-40 mt-1">点击上方按钮 or 直接拖入 Excel 文件识别</p></div>) : (
           <div className="space-y-6">
             {blocks.map((block, idx) => (
               <div key={block.id} draggable onDragStart={(e) => { e.dataTransfer.setData('sourceBlockIdx', idx.toString()); e.dataTransfer.setData('sourceModuleId', moduleId || ''); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('sourceBlockIdx')); const sModuleId = e.dataTransfer.getData('sourceModuleId'); if (sModuleId === (moduleId || '') && !isNaN(sIdx) && sIdx !== idx) handleReorderBlocksInModule(moduleId, sIdx, idx); }} className="relative group/block bg-white p-6 rounded-[12px] border border-[#E5E6EB] hover:border-[#BDD1FF] transition-all"><div className="absolute -left-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-200 opacity-0 group-hover/block:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeBlockFromModule(moduleId, block.id)} className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover/block:opacity-100 shadow-sm z-20"><X className="w-3 h-3" /></button>
                 {block.type === 'text' ? (<div className="space-y-4"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-[#0062AD] font-bold text-xs uppercase tracking-widest"><Type className="w-3 h-3" /> 文本样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 14)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><button onClick={() => updateBlockInModule(moduleId, block.id, 'underline', !block.underline)} className={`p-1 rounded-[4px] transition-all ${block.underline ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}><Underline className="w-3 h-3" /></button></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['normal', 'bold', 'black'] as const).map(w => (<button key={w} onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', w)} className={`px-2 py-0.5 text-[10px] rounded-[4px] transition-all font-bold ${block.fontWeight === w ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{w === 'normal' ? '细' : w === 'bold' ? '粗' : '极'}</button>))}</div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-[#0062AD] text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div></div></div><textarea className="w-full bg-slate-50 border-none rounded-[8px] p-4 focus:bg-white transition-all min-h-[120px] outline-none" style={{ fontSize: `${block.fontSize}px`, fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), color: block.color, textAlign: block.align, textDecoration: block.underline ? 'underline' : 'none' }} value={block.content} onChange={e => updateBlockInModule(moduleId, block.id, 'content', e.target.value)} /></div>
-                ) : block.type === 'table' ? (<div className="space-y-4 text-left"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest"><Table2 className="w-3 h-3" /> 表格管理与样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 13)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><input type="color" className="w-6 h-6 p-0 border-0 bg-transparent cursor-pointer" value={block.color || '#4b5563'} onChange={e => updateBlockInModule(moduleId, block.id, 'color', e.target.value)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><button onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', block.fontWeight === 'bold' ? 'normal' : 'bold')} className={`p-1 rounded-[4px] transition-all ${block.fontWeight === 'bold' ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}><Bold className="w-3 h-3" /></button><button onClick={() => updateBlockInModule(moduleId, block.id, 'underline', !block.underline)} className={`p-1 rounded-[4px] transition-all ${block.underline ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}><Underline className="w-3 h-3" /></button></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div><div className="w-px h-4 bg-gray-200 mx-1"></div><button onClick={() => addTableRowInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1 hover:bg-emerald-100 transition-colors"><Plus className="w-3 h-3" /><span className="text-[10px] font-bold">加行</span></button><button onClick={() => addTableColInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1 hover:bg-emerald-100 transition-colors"><Columns className="w-3 h-3" /><span className="text-[10px] font-bold">加列</span></button></div></div><div className="overflow-x-auto border border-slate-100 rounded-[12px]"><table className="w-full border-collapse bg-[#f1f5f9] table-fixed" data-table-block-id={block.id}><thead><tr className="bg-[#304166]">{block.tableData?.[0].map((cell, i) => (<th key={i} className="p-0 border-r border-white/10 last:border-0 relative group/th" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}><input className="w-full bg-transparent border-none text-white text-xs font-bold px-3 py-2 focus:ring-0 text-left outline-none" value={cell} onChange={e => updateTableCellInModule(moduleId, block.id, 0, i, e.target.value)} />{i < (block.tableData?.[0].length || 0) - 1 && (<div className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#0062AD] z-10 transition-colors" onMouseDown={(e) => { resizingInfo.current = { blockId: block.id, colIdx: i, startX: e.clientX, startWidths: [...(block.columnWidths || [])] }; document.body.style.cursor = 'col-resize'; }} />)}</th>))}</tr></thead><tbody className="divide-y divide-slate-200">{block.tableData?.slice(1).map((row, ri) => (<tr key={ri} className="bg-white hover:bg-slate-50 transition-colors">{row.map((cell, ci) => (<td key={ci} className="p-0 border-r border-slate-200 last:border-0"><textarea className="w-full bg-transparent border-none text-xs px-3 focus:ring-0 resize-none font-quote outline-none" style={{ paddingBlock: `${block.rowSpacing}px`, textAlign: block.align || 'left', fontSize: `${block.fontSize}px`, color: block.color || '#4b5563', fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), textDecoration: block.underline ? 'underline' : 'none' }} value={cell} rows={cell.split('\n').length || 1} onChange={e => updateTableCellInModule(moduleId, block.id, ri + 1, ci, e.target.value)} /></td>))}</tr>))}</tbody></table></div></div>
+                ) : block.type === 'table' ? (<div className="space-y-4 text-left"><div className="flex wrap items-center justify-between gap-4 border-b border-gray-50 pb-4 mb-4"><div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest"><Table2 className="w-3 h-3" /> 表格管理与样式</div><div className="flex wrap items-center gap-2"><div className="flex items-center gap-1.5 border border-gray-100 rounded-[8px] p-1 bg-gray-50/50"><TypeIcon className="w-3.5 h-3.5 text-gray-400 ml-1" /><input type="number" className="w-12 !p-0.5 !border-0 bg-transparent text-xs font-bold text-center outline-none" value={block.fontSize} onChange={e => updateBlockInModule(moduleId, block.id, 'fontSize', parseInt(e.target.value) || 13)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><input type="color" className="w-6 h-6 p-0 border-0 bg-transparent cursor-pointer" value={block.color || '#4b5563'} onChange={e => updateBlockInModule(moduleId, block.id, 'color', e.target.value)} /></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100"><button onClick={() => updateBlockInModule(moduleId, block.id, 'fontWeight', block.fontWeight === 'bold' ? 'normal' : 'bold')} className={`p-1 rounded-[4px] transition-all ${block.fontWeight === 'bold' ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}><Bold className="w-3 h-3" /></button><button onClick={() => updateBlockInModule(moduleId, block.id, 'underline', !block.underline)} className={`p-1 rounded-[4px] transition-all ${block.underline ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}><Underline className="w-3 h-3" /></button></div><div className="flex items-center bg-gray-50/50 rounded-[8px] p-1 border border-gray-100">{(['left', 'center', 'right'] as const).map(a => (<button key={a} onClick={() => updateBlockInModule(moduleId, block.id, 'align', a)} className={`p-1 rounded-[4px] transition-all ${block.align === a ? 'bg-emerald-600 text-white' : 'text-gray-400'}`}>{a === 'left' ? <AlignLeft className="w-3 h-3" /> : a === 'center' ? <AlignCenter className="w-3 h-3" /> : <AlignRight className="w-3 h-3" />}</button>))}</div><div className="w-px h-4 bg-gray-200 mx-1"></div><button onClick={() => addTableRowInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1 hover:bg-emerald-100 transition-colors"><Plus className="w-3 h-3" /><span className="text-[10px] font-bold">加行</span></button><button onClick={() => addTableColInModule(moduleId, block.id)} className="p-1.5 text-emerald-600 bg-emerald-50 rounded-[4px] flex items-center gap-1 hover:bg-emerald-100 transition-colors"><Columns className="w-3 h-3" /><span className="text-[10px] font-bold">加列</span></button></div></div><div className="overflow-x-auto border border-slate-100 rounded-[12px]"><table className="w-full border-collapse bg-[#f1f5f9] table-fixed" data-table-block-id={block.id}><thead><tr className="bg-[#304166]">{block.tableData?.[0].map((cell, i) => (<th key={i} className="p-0 border-r border-white/10 last:border-0 relative group/th" style={{ width: block.columnWidths ? `${block.columnWidths[i]}%` : 'auto' }}><input className="w-full bg-transparent border-none text-white text-xs font-bold px-3 py-2 focus:ring-0 text-left outline-none" value={cell} onChange={e => updateTableCellInModule(moduleId, block.id, 0, i, e.target.value)} />{i < (block.tableData?.[0].length || 0) - 1 && (<div className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[#0062AD] z-10 transition-colors" onMouseDown={(e) => { resizingInfo.current = { blockId: block.id, colIdx: i, startX: (e as any).clientX, startWidths: [...(block.columnWidths || [])] }; document.body.style.cursor = 'col-resize'; }} />)}</th>))}</tr></thead><tbody className="divide-y divide-slate-200">{block.tableData?.slice(1).map((row, ri) => (<tr key={ri} className="bg-white hover:bg-slate-50 transition-colors">{row.map((cell, ci) => (<td key={ci} className="p-0 border-r border-slate-200 last:border-0"><textarea className="w-full bg-transparent border-none text-xs px-3 focus:ring-0 resize-none font-quote outline-none" style={{ paddingBlock: `${block.rowSpacing}px`, textAlign: block.align || 'left', fontSize: `${block.fontSize}px`, color: block.color || '#4b5563', fontWeight: block.fontWeight === 'bold' ? 700 : (block.fontWeight === 'black' ? 900 : 400), textDecoration: block.underline ? 'underline' : 'none' }} value={cell} rows={cell.split('\n').length || 1} onChange={e => updateTableCellInModule(moduleId, block.id, ri + 1, ci, e.target.value)} /></td>))}</tr>))}</tbody></table></div></div>
                 ) : (<div className="space-y-4"><div className="flex items-center gap-2 text-charcoal font-bold text-xs uppercase tracking-widest border-b border-gray-50 pb-4 mb-4"><ImageIcon className="w-3 h-3" /> 图片管理</div><div className="w-full flex wrap gap-4">{block.images?.map((img, iIdx) => (<div key={iIdx} className="w-[calc(33.333%-12px)] relative group/caseimg border border-[#E5E6EB] rounded-[8px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02]"><img src={img} className="w-full h-auto block" loading="lazy" /><button onClick={() => removeImageFromBlock(moduleId, block.id, iIdx)} className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/caseimg:opacity-100 transition-opacity"><Trash2 className="w-3.5 h-3.5" /></button></div>))}<div onClick={() => { activeCaseBlockIdRef.current = block.id; caseImageInputRef.current?.click(); }} className="w-[calc(33.333%-12px)] aspect-square border border-dashed border-[#E5E6EB] rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] transition-all text-gray-400"><Plus className="w-5 h-5 mb-1" /><span className="text-[9px] font-bold">继续添加</span></div></div></div>)}
               </div>
             ))}
@@ -1722,19 +1791,19 @@ const App: React.FC = () => {
   const SidebarTitle = ({ icon: Icon, title, isSub = false }: { icon: any, title: string, isSub?: boolean }) => ( <div className={`flex items-center gap-2 font-semibold text-[#072A4A] ${isSub ? 'mb-4 mt-6' : 'mb-4 pb-3 border-b border-[#EFF5FC]'}`}><Icon className="w-4 h-4 text-[#0062AD]" /><span className="text-[15px]">{title}</span></div> );
 
   const extraModulesMap = {
-    'cert-process': isCertProcessVisible ? ( <section key="cert-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-8"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><LayoutGrid className="w-5 h-5" /><span>管理体系认证流程</span></div><div className="flex items-center bg-[#F2F3F5] p-1 rounded-[12px] shadow-none transition-all duration-300"><button onClick={() => setProcessValidity('1year')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 active:scale-95 ${processValidity === '1year' ? 'bg-white text-[#0062AD] shadow-sm' : 'text-[#595959] hover:bg-white/50'}`}><Clock className="w-3.5 h-3.5" /> 一年有效期</button><button onClick={() => setProcessValidity('3years')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 active:scale-95 ${processValidity === '3years' ? 'bg-white text-[#0062AD] shadow-sm' : 'text-[#595959] hover:bg-white/50'}`}><Clock className="w-3.5 h-3.5" /> 三年有效期</button></div></div><CertificationProcess validity={processValidity} /></section> ) : null,
-    'tech-process': isTechProcessVisible ? ( <section key="tech-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'tech-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('tech-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'tech-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'tech-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsTechProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Zap className="w-5 h-5" /><span>专业技术服务流程</span></div><div className="flex gap-[12px]"><button onClick={resetTechSteps} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={addTechStep} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加流程</button><button onClick={handleRemoveLastStep} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除流程</button></div></div><TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={true} /></section> ) : null,
-    'agency-profile': ( <section key="agency-profile" className="card overflow-hidden transition-all duration-300 border border-[#E5E6EB]"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><Building className="w-5 h-5" /><span>机构简介</span></div><AgencyProfile /></section> ),
-    'business-qualifications': ( <section key="business-qualifications" className="card overflow-hidden transition-all duration-300 border border-[#E5E6EB]"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><FileCheck className="w-5 h-5" /><span>业务资质</span></div><Qualifications /></section> ),
+    'cert-process': isCertProcessVisible ? ( <section id="cert-process" key="cert-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-8"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><LayoutGrid className="w-5 h-5" /><span>管理体系认证流程</span></div><div className="flex items-center bg-[#F2F3F5] p-1 rounded-[12px] shadow-none transition-all duration-300"><button onClick={() => setProcessValidity('1year')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 active:scale-95 ${processValidity === '1year' ? 'bg-white text-[#0062AD] shadow-sm' : 'text-[#595959] hover:bg-white/50'}`}><Clock className="w-3.5 h-3.5" /> 一年有效期</button><button onClick={() => setProcessValidity('3years')} className={`px-4 py-1.5 text-[12px] font-bold rounded-[8px] transition-all flex items-center gap-1.5 active:scale-95 ${processValidity === '3years' ? 'bg-white text-[#0062AD] shadow-sm' : 'text-[#595959] hover:bg-white/50'}`}><Clock className="w-3.5 h-3.5" /> 三年有效期</button></div></div><CertificationProcess validity={processValidity} /></section> ) : null,
+    'tech-process': isTechProcessVisible ? ( <section id="tech-process" key="tech-process" draggable="true" onDragStart={(e) => handleDragStart(e, 'tech-process')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('tech-process'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'tech-process')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'tech-process' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsTechProcessVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Zap className="w-5 h-5" /><span>专业技术服务流程</span></div><div className="flex gap-[12px]"><button onClick={resetTechSteps} className="btn-header-func hover:!bg-[#FFFBEB] hover:!text-[#D97706]"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={addTechStep} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加流程</button><button onClick={handleRemoveLastStep} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除流程</button></div></div><TechnicalServiceProcess steps={data.techServiceSteps} onUpdateStep={handleUpdateTechStep} onRemoveStep={handleRemoveStep} onReorderSteps={handleStepReorder} onUpdateTags={handleUpdateTechStepTags} isEditable={true} /></section> ) : null,
+    'agency-profile': ( <section id="agency-profile" key="agency-profile" className="card overflow-hidden transition-all duration-300 border border-[#E5E6EB]"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><Building className="w-5 h-5" /><span>机构简介</span></div><AgencyProfile /></section> ),
+    'business-qualifications': ( <section id="business-qualifications" key="business-qualifications" className="card overflow-hidden transition-all duration-300 border border-[#E5E6EB]"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><FileCheck className="w-5 h-5" /><span>业务资质</span></div><Qualifications /></section> ),
     'customer-case': isCustomerCaseVisible ? (
-      <section key="customer-case" draggable="true" onDragStart={(e) => handleDragStart(e, 'customer-case')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('customer-case'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'customer-case')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'customer-case' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCustomerCaseVisible(false)} title="隐藏模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Presentation className="w-5 h-5" /><span>客户案例展示</span></div><div className="flex gap-[12px]"><button onClick={() => setData(prev => ({ ...prev, caseBlocks: [] }))} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => excelInputRef.current?.click()} className="btn-header-func"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button><button onClick={() => addBlockToModule(null, 'image')} className="btn-header-func"><Images className="w-3.5 h-3.5" /> 添加图片</button><button onClick={() => addBlockToModule(null, 'text')} className="btn-header-func"><Type className="w-3.5 h-3.5" /> 添加文本</button><button onClick={() => addBlockToModule(null, 'table')} className="btn-header-func"><Table2 className="w-3.5 h-3.5" /> 添加表格</button></div></div><input type="file" ref={excelInputRef} className="hidden" accept=".xlsx, .xls, .csv" onChange={handleExcelUpload} /><RenderModuleBlocksEditor moduleId={null} blocks={data.caseBlocks} excelInputRef={excelInputRef} /></section>
+      <section id="customer-case" key="customer-case" draggable="true" onDragStart={(e) => handleDragStart(e, 'customer-case')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('customer-case'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'customer-case')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'customer-case' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCustomerCaseVisible(false)} title="隐藏模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Presentation className="w-5 h-5" /><span>客户案例展示</span></div><div className="flex gap-[12px]"><button onClick={() => setData(prev => ({ ...prev, caseBlocks: [] }))} className="btn-header-func hover:!bg-[#FFFBEB] hover:!text-[#D97706]"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => excelInputRef.current?.click()} className="btn-header-func"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button><button onClick={() => addBlockToModule(null, 'image')} className="btn-header-func"><Images className="w-3.5 h-3.5" /> 添加图片</button><button onClick={() => addBlockToModule(null, 'text')} className="btn-header-func"><Type className="w-3.5 h-3.5" /> 添加文本</button><button onClick={() => addBlockToModule(null, 'table')} className="btn-header-func"><Table2 className="w-3.5 h-3.5" /> 添加表格</button></div></div><input type="file" ref={excelInputRef} className="hidden" accept=".xlsx, .xls, .csv" onChange={handleExcelUpload} /><RenderModuleBlocksEditor moduleId={null} blocks={data.caseBlocks} excelInputRef={excelInputRef} /></section>
     ) : null,
     'cert-templates': isCertTemplatesVisible ? (
-      <section key="cert-templates" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-templates')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-templates'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-templates')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-templates' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertTemplatesVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Award className="w-5 h-5" /><span>证书模板</span></div><div className="flex gap-[12px]"><button onClick={() => setData(prev => ({ ...prev, certTemplates: [] }))} className="btn-header-dest"><RotateCcw className="w-3.5 h-3.5" /> 清空</button><button onClick={() => certTemplateInputRef.current?.click()} className="btn-header-func"><Upload className="w-3.5 h-3.5" /> 上传模板</button></div></div><div className={`min-h-[200px] border-2 border-dashed rounded-[12px] transition-all duration-300 flex flex-col items-center justify-center p-6 ${isDraggingOverCertTemplates ? 'border-[#0062AD] bg-[#EFF5FC]' : 'border-gray-200 hover:border-[#BDD1FF]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(true); }} onDragLeave={() => setIsDraggingOverCertTemplates(false)} onDrop={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(false); const templateUrl = e.dataTransfer.getData('templateUrl'); if (templateUrl) addCommonTemplate(templateUrl); else { const internalTmplIdx = e.dataTransfer.getData('certTemplateIdx'); if (internalTmplIdx === "") handleCertTemplateFiles(e.dataTransfer.files); } }} onPaste={handlePaste} onClick={() => data.certTemplates.length === 0 && certTemplateInputRef.current?.click()}><input type="file" ref={certTemplateInputRef} className="hidden" accept="image/*" multiple onChange={(e) => handleCertTemplateFiles(e.target.files)} />{data.certTemplates.length > 0 ? (<div className="w-full flex wrap justify-center gap-[40px]">{data.certTemplates.map((img, tIdx) => (<div key={tIdx} draggable onDragStart={(e) => { e.dataTransfer.setData('certTemplateIdx', tIdx.toString()); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('certTemplateIdx')); if (!isNaN(sIdx) && sIdx !== tIdx) handleReorderCertTemplates(sIdx, tIdx); }} className="w-[calc(33.333%-27px)] relative group/img border border-[#E5E6EB] rounded-[12px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02] cursor-grab active:cursor-grabbing"><img src={img} alt={`Template ${tIdx}`} loading="lazy" className="w-full h-auto block object-contain" /><button onClick={(e) => { e.stopPropagation(); removeCertTemplate(tIdx); }} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/img:opacity-100 transition-opacity z-10"><Trash2 className="w-3.5 h-3.5" /></button></div>))}<div onClick={() => certTemplateInputRef.current?.click()} className="w-[calc(33.333%-27px)] aspect-square border-2 border-dashed border-gray-200 rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] hover:bg-gray-50 transition-all text-gray-400 group"><Plus className="w-6 h-6 mb-2 group-hover:scale-110 transition-transform" /><span className="text-[11px] font-bold">继续添加</span></div></div>) : (<div className="flex flex-col items-center text-gray-300 pointer-events-none"><div className="w-16 h-16 rounded-[12px] bg-gray-50 border border-[#E5E6EB] flex items-center justify-center mb-4"><Copy className="w-8 h-8 text-gray-200" /></div><p className="text-[14px] font-bold text-gray-400">支持上传、拖放图片或粘贴截图</p><p className="text-[12px] text-gray-300 mt-1">系统将自动分析并裁剪底部多余白边</p></div>)}</div></section>
+      <section id="cert-templates" key="cert-templates" draggable="true" onDragStart={(e) => handleDragStart(e, 'cert-templates')} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId('cert-templates'); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, 'cert-templates')} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === 'cert-templates' ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF]'}`}><div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => setIsCertTemplatesVisible(false)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"><Trash2 className="w-4 h-4" /></button><div className="flex justify-between items-center mb-6"><div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}><Award className="w-5 h-5" /><span>证书模板</span></div><div className="flex gap-[12px]"><button onClick={() => setData(prev => ({ ...prev, certTemplates: [] }))} className="btn-header-dest"><RotateCcw className="w-3.5 h-3.5" /> 清空</button><button onClick={() => certTemplateInputRef.current?.click()} className="btn-header-func"><Upload className="w-3.5 h-3.5" /> 上传模板</button></div></div><div className={`min-h-[200px] border-2 border-dashed rounded-[12px] transition-all duration-300 flex flex-col items-center justify-center p-6 ${isDraggingOverCertTemplates ? 'border-[#0062AD] bg-[#EFF5FC]' : 'border-gray-200 hover:border-[#BDD1FF]'}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(true); }} onDragLeave={() => setIsDraggingOverCertTemplates(false)} onDrop={(e) => { e.preventDefault(); setIsDraggingOverCertTemplates(false); const templateUrl = e.dataTransfer.getData('templateUrl'); if (templateUrl) addCommonTemplate(templateUrl); else { const internalTmplIdx = e.dataTransfer.getData('certTemplateIdx'); if (internalTmplIdx === "") handleCertTemplateFiles((e as any).dataTransfer.files); } }} onPaste={handlePaste} onClick={() => data.certTemplates.length === 0 && certTemplateInputRef.current?.click()}><input type="file" ref={certTemplateInputRef} className="hidden" accept="image/*" multiple onChange={(e) => handleCertTemplateFiles(e.target.files)} />{data.certTemplates.length > 0 ? (<div className="w-full flex wrap justify-center gap-[40px]">{data.certTemplates.map((img, tIdx) => (<div key={tIdx} draggable onDragStart={(e) => { e.dataTransfer.setData('certTemplateIdx', tIdx.toString()); e.stopPropagation(); }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const sIdx = parseInt(e.dataTransfer.getData('certTemplateIdx')); if (!isNaN(sIdx) && sIdx !== tIdx) handleReorderCertTemplates(sIdx, tIdx); }} className="w-[calc(33.333%-27px)] relative group/img border border-[#E5E6EB] rounded-[12px] overflow-hidden bg-white shadow-none transition-transform hover:scale-[1.02] cursor-grab active:cursor-grabbing"><img src={img} alt={`Template ${tIdx}`} loading="lazy" className="w-full h-auto block object-contain" /><button onClick={(e) => { e.stopPropagation(); removeCertTemplate(tIdx); }} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full shadow-sm opacity-0 group-hover/img:opacity-100 transition-opacity z-10"><Trash2 className="w-3.5 h-3.5" /></button></div>))}<div onClick={() => certTemplateInputRef.current?.click()} className="w-[calc(33.333%-27px)] aspect-square border-2 border-dashed border-gray-200 rounded-[12px] flex flex-col items-center justify-center cursor-pointer hover:border-[#BDD1FF] hover:bg-gray-50 transition-all text-gray-400 group"><Plus className="w-6 h-6 mb-2 group-hover:scale-110 transition-transform" /><span className="text-[11px] font-bold">继续添加</span></div></div>) : (<div className="flex flex-col items-center text-gray-300 pointer-events-none"><div className="w-16 h-16 rounded-[12px] bg-gray-50 border border-[#E5E6EB] flex items-center justify-center mb-4"><Copy className="w-8 h-8 text-gray-200" /></div><p className="text-[14px] font-bold text-gray-400">支持上传、拖放图片或粘贴截图</p><p className="text-[12px] text-gray-300 mt-1">系统将自动分析并裁剪底部多余白边</p></div>)}</div></section>
     ) : null
   };
 
-  const sortingItemClass = (isActive: boolean) => `relative bg-[#F8FAFC] border border-[#E5E6EB] min-h-[52px] px-3 rounded-[8px] flex items-center justify-between shadow-none cursor-move transition-all duration-300 group ${isActive ? 'bg-[#F0F8FF] border-[#0062AD] ring-1 ring-[#0062AD]/10' : 'hover:bg-[#F0F8FF] hover:border-[#BDD1FF]'}`;
+  const sortingItemClass = (isActive: boolean) => `relative bg-[#F8FAFC] border border-[#E5E6EB] min-h-[52px] px-3 rounded-[8px] flex items-center justify-between shadow-none cursor-pointer transition-all duration-300 group ${isActive ? 'bg-[#F0F8FF] border-[#0062AD] ring-1 ring-[#0062AD]/10' : 'hover:bg-[#F0F8FF] hover:border-[#BDD1FF]'}`;
   const iconBoxClass = "w-6 h-6 flex items-center justify-center bg-white border border-[#E5E6EB] rounded-[4px] text-[#0075CB] shrink-0";
   const dragLineClass = (isActive: boolean) => `absolute left-0 top-2 bottom-2 ${isActive ? 'w-[4px]' : 'w-[2px]'} bg-[#0075CB] rounded-r-full transition-all duration-200`;
 
@@ -1748,14 +1817,63 @@ const App: React.FC = () => {
 
   return (
     <div className="max-w-[1550px] mx-auto px-6 py-10 flex flex-col lg:flex-row gap-8">
-      <div id="pdf-export-target" className="absolute -left-[9999px] top-0"><QuoteDocument containerRef={pdfSourceRef} isPrint={true} /></div>
+      {/* 核心修正：PDF 源容器。设置 absolute 定位并移出视口，保证在 capture 时样式为 top/left 0 且无偏移 */}
+      <div 
+        id="quotation-print-source" 
+        style={{ 
+          position: 'absolute',
+          left: '-5000px',
+          top: '0',
+          width: '297mm',
+          backgroundColor: '#fff',
+          zIndex: -100,
+          margin: 0,
+          padding: 0
+        }}
+      >
+        <QuoteDocument containerRef={pdfSourceRef} isPrint={true} />
+      </div>
       
       <div className={`flex-1 max-w-[900px] transition-colors duration-300 space-y-4 ${isDraggingOverMain ? 'bg-[#EFF5FC]' : ''}`} onDragOver={(e) => { e.preventDefault(); setIsDraggingOverMain(true); }} onDragLeave={() => setIsDraggingOverMain(false)} onDrop={handleDropToMain}>
         
         <header className="flex flex-col mb-10 text-center"><div className="relative flex justify-between items-center w-full mb-12 gap-10 transition-all min-h-[120px]"><EditableBrandLogo src={leftLogo} label="左侧 Logo" onUpload={setLeftLogo} align="left" className="flex-1" /><EditableBrandLogo src={rightLogo} label="右侧 Logo" onUpload={setLeftLogoRight} align="right" className="flex-1" /></div><div className="text-center relative"><div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent -z-10"></div><h1 className="text-[22px] md:text-[28px] font-bold text-[#304166] mb-2 bg-[#F8FAFC] inline-block px-10 transition-all duration-300">{dynamicTitle}</h1><p className="text-gray-500 text-[13px] tracking-[0.2em] uppercase leading-tight font-normal opacity-80">{dynamicSubtitle}</p></div></header>
         
-        <section className="card text-left"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><Building2 className="w-5 h-5" /><span>客户及认证基本信息</span></div><div className="grid grid-cols-12 gap-x-4 gap-y-3">
-          <div className="col-span-12 md:col-span-9">
+        <section className="card text-left">
+          <div className="flex justify-between items-center mb-6">
+            <div className="section-header !mb-0" style={{ borderLeftColor: '#0062AD' }}>
+              <Building2 className="w-5 h-5" /><span>客户及认证基本信息</span>
+            </div>
+            <button 
+              id="sync-client-db"
+              onClick={handleSyncData}
+              disabled={syncState === 'syncing' || syncState === 'success'}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[13px] font-bold transition-all duration-200 ${
+                syncState === 'success' 
+                  ? 'bg-[#F0FDF4] text-[#16A34A] cursor-default' 
+                  : syncState === 'error'
+                  ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                  : 'bg-[#F2F3F5] text-[#4E5969] hover:bg-[#F0FDF4] hover:text-[#16A34A]'
+              }`}
+            >
+              {syncState === 'syncing' ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : syncState === 'success' ? (
+                <Check className="w-3.5 h-3.5" />
+              ) : syncState === 'error' ? (
+                <AlertCircle className="w-3.5 h-3.5" />
+              ) : (
+                <RefreshCw className="w-3.5 h-3.5" />
+              )}
+              <span>
+                {syncState === 'syncing' ? '同步中...' 
+                 : syncState === 'success' ? '已同步' 
+                 : syncState === 'error' ? '同步失败'
+                 : '同步资料'}
+              </span>
+            </button>
+          </div>
+          <div className="grid grid-cols-12 gap-x-4 gap-y-3">
+          <div className="col-span-12 md:col-span-9 relative">
             <label className="field-label">客户名称</label>
             <div className={InputWrapperStyle}>
               <textarea 
@@ -1764,10 +1882,50 @@ const App: React.FC = () => {
                 style={{ height: 'auto' }}
                 onInput={autoResize}
                 value={data.clientName} 
-                onChange={e => setData({...data, clientName: e.target.value})} 
+                onChange={e => {
+                  setData({...data, clientName: e.target.value});
+                  setShowClientSuggestions(true);
+                }} 
+                onFocus={() => setShowClientSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowClientSuggestions(false), 200)}
                 placeholder="输入公司全称" 
               />
             </div>
+            {showClientSuggestions && clientSuggestions.length > 0 && (
+              <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-80 overflow-auto animate-fade-in custom-scrollbar">
+                <div className="text-[10px] font-bold text-gray-400 px-3 py-2 bg-gray-50 uppercase tracking-wider flex items-center gap-1 sticky top-0 z-10 backdrop-blur-sm bg-gray-50/90">
+                  <History className="w-3 h-3" /> 历史客户记录 (点击回填)
+                </div>
+                {clientSuggestions.map((client, idx) => (
+                  <div 
+                    key={idx} 
+                    className="px-3 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors group"
+                    onClick={() => handleSelectClient(client)}
+                  >
+                    <div className="flex justify-between items-start mb-1">
+                      <div className="font-bold text-[#0f172a] text-[13px] group-hover:text-[#0062AD] transition-colors">{client.clientName}</div>
+                      {client.employeeCount && <div className="text-[11px] font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded ml-2 whitespace-nowrap">👥 {client.employeeCount}人</div>}
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {client.certStandards && (Array.isArray(client.certStandards) ? client.certStandards.length > 0 : client.certStandards) && (
+                        <div className="flex items-start gap-1.5 text-[12px] text-slate-600">
+                           <Award className="w-3.5 h-3.5 text-[#0062AD] shrink-0 mt-0.5" />
+                           <span className="leading-tight">{Array.isArray(client.certStandards) ? client.certStandards.join(' + ') : client.certStandards}</span>
+                        </div>
+                      )}
+                      
+                      {client.clientAddress && (
+                        <div className="flex items-start gap-1.5 text-[11px] text-gray-400">
+                          <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                          <span className="leading-tight truncate">{client.clientAddress}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="col-span-12 md:col-span-3">
             <label className="field-label">有效人数</label>
@@ -1775,7 +1933,7 @@ const App: React.FC = () => {
               <input 
                 className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-[14px] text-left font-num outline-none" 
                 type="number" 
-                value={data.employeeCount} 
+                value={data.employeeCount === 0 ? '' : data.employeeCount} 
                 onChange={e => setData({...data, employeeCount: parseInt(e.target.value) || 0})} 
               />
             </div>
@@ -1834,12 +1992,12 @@ const App: React.FC = () => {
         </div></section>
         
         {data.modules.filter(m => m.type !== 'custom').map((module) => (
-          <section key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF] text-left'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
+          <section id={module.id} key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF] text-left'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
             <div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeModule(module.id)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 z-10"><Trash2 className="w-4 h-4" /></button>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div className="section-header !mb-0 flex-1" style={{ borderLeftColor: '#0062AD' }}>{module.type === 'cert' ? <Layout className="w-5 h-5 shrink-0" /> : <Settings className="w-5 h-5 shrink-0" />}<input className={`!border-0 !p-0 font-semibold bg-transparent focus:ring-0 text-[17px] w-full outline-none ${module.type === 'tech' ? 'text-[#055087] font-semibold' : 'text-[#304166]'}`} value={module.title} onChange={e => updateModuleTitle(module.id, e.target.value)} /></div>
               <div className="flex gap-[12px]">
-                {module.type === 'cert' ? (<><button onClick={() => resetCertModuleItems(module.id)} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => addCertItemToModule(module.id)} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加阶段</button><button onClick={() => removeCertItemFromModule(module.id)} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除阶段</button></>) : (<><button onClick={() => resetTechModuleServices(module.id)} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => addTechServiceToModule(module.id)} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加服务</button><button onClick={() => removeTechServiceFromModule(module.id)} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除服务</button></>)}
+                {module.type === 'cert' ? (<><button onClick={() => resetCertModuleItems(module.id)} className="btn-header-func hover:!bg-[#FFFBEB] hover:!text-[#D97706]"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => addCertItemToModule(module.id)} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加阶段</button><button onClick={() => removeCertItemFromModule(module.id)} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除阶段</button></>) : (<><button onClick={() => resetTechModuleServices(module.id)} className="btn-header-func hover:!bg-[#FFFBEB] hover:!text-[#D97706]"><RotateCcw className="w-3.5 h-3.5" /> 重置</button><button onClick={() => addTechServiceToModule(module.id)} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加服务</button><button onClick={() => removeTechServiceFromModule(module.id)} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除服务</button></>)}
               </div>
             </div>
             {module.type === 'cert' ? (
@@ -1862,12 +2020,12 @@ const App: React.FC = () => {
                           <input className="!border-0 px-5 py-5 focus:ring-0 bg-transparent w-full text-left outline-none text-[14px] text-[#4E5969]" value={item.project} onChange={e => handleUpdateCertItem(module.id, item.id, 'project', e.target.value)} />
                         </td>
                         <td className="p-0 bg-white cursor-text align-top" onClick={() => setEditingCertId({moduleId: module.id, itemId: item.id})}>
-                          <div className="flex items-baseline justify-end px-5 py-5 gap-1 text-[#0075CB] font-medium font-quote leading-none align-num">
+                          <div className="flex items-baseline justify-end px-5 py-5 gap-1 text-[#0075CB] font-medium font-quote leading-none">
                             <span className="font-bold opacity-40 text-[12px]">¥</span>
                             {editingCertId?.moduleId === module.id && editingCertId?.itemId === item.id ? (
                               <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-medium w-24 font-quote outline-none text-[16px]" type="number" value={item.amount} onBlur={() => setEditingCertId(null)} onChange={e => handleUpdateCertItem(module.id, item.id, 'amount', parseFloat(e.target.value) || 0)} />
                             ) : (
-                              <span className="text-[16px] font-normal leading-none transform translate-y-[1px]">{item.amount.toLocaleString()}</span>
+                              <span className="text-[16px] font-normal leading-none">{item.amount.toLocaleString()}</span>
                             )}
                           </div>
                         </td>
@@ -1877,14 +2035,14 @@ const App: React.FC = () => {
                 </table>
                 <div className="bg-[#F8FAFC] px-5 py-4 flex items-center justify-between rounded-b-[12px] border-t border-[#E5E6EB]">
                   <span className="text-[14px] text-[#4E5969] font-medium">认证费用总计（含6%增值税）</span>
-                  <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote leading-none align-num">
+                  <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote leading-none">
                     <span className="text-[12px] font-bold opacity-60 mr-0.5">¥</span>
-                    <span className="leading-none transform translate-y-[1px]">{module.items.reduce((s, i) => s + (i.amount || 0), 0).toLocaleString()}</span>
+                    <span className="leading-none">{module.items.reduce((s, i) => s + (i.amount || 0), 0).toLocaleString()}</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <><div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 items-stretch">{module.services.filter(s => s).map((service, idx) => {
+              <><div className="grid grid-cols-2 gap-4 mb-6 items-stretch">{module.services.filter(s => s).map((service, idx) => {
                     const color = STEP_COLORS[idx % STEP_COLORS.length]; const displayId = (idx + 1).toString().padStart(2, '0');
                     const ProcessIcon = STEP_ICONS[idx % STEP_ICONS.length] || Settings;
                     return (
@@ -1927,12 +2085,12 @@ const App: React.FC = () => {
                   </div>
                   <div className="bg-[#F8FAFC] px-5 py-4 flex items-center justify-between m-0 rounded-b-[12px] border-t border-[#E5E6EB]">
                     <span className="font-medium text-[#4E5969] text-[14px]">技术服务费用总计（含6%增值税）</span>
-                    <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote transition-all min-w-[120px] leading-none align-num">
+                    <div className="flex items-baseline justify-end text-[#0075CB] font-bold text-[18px] whitespace-nowrap font-quote transition-all min-w-[120px] leading-none">
                       <span className="mr-0.5 font-quote opacity-60 text-sm">¥</span>
                       {editingTechFeeId === module.id ? (
                         <input autoFocus className="!border-0 !p-0 focus:ring-0 bg-transparent text-right font-bold text-[18px] w-28 placeholder:text-blue-200 font-quote outline-none" type="number" value={module.fee} onBlur={() => setEditingTechFeeId(null)} onChange={e => updateTechModuleFee(module.id, parseFloat(e.target.value) || 0)} />
                       ) : (
-                        <span onClick={() => setEditingTechFeeId(module.id)} className="cursor-text text-right font-bold font-quote leading-none transform translate-y-[1px]">{module.fee.toLocaleString()}</span>
+                        <span onClick={() => setEditingTechFeeId(module.id)} className="cursor-text text-right font-bold font-quote leading-none">{module.fee.toLocaleString()}</span>
                       )}
                     </div>
                   </div>
@@ -1948,7 +2106,7 @@ const App: React.FC = () => {
               <span className="text-[#072A4A]">报价说明及备注</span>
             </div>
             <div className="flex gap-[12px]">
-              <button onClick={resetRemarks} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
+              <button onClick={resetRemarks} className="btn-header-func hover:!bg-[#FFFBEB] hover:!text-[#D97706]"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
               <button onClick={addRemark} className="btn-header-func"><Plus className="w-3.5 h-3.5" /> 添加备注项</button>
               <button onClick={removeLastRemark} className="btn-header-dest"><Minus className="w-3.5 h-3.5" /> 移除备注项</button>
             </div>
@@ -1964,7 +2122,7 @@ const App: React.FC = () => {
                 <span className="text-[13px] text-[#4E5969] whitespace-nowrap">以上按</span>
                 <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
                   <textarea 
-                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden text-left outline-none" 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden outline-none" 
                     rows={1}
                     style={{ height: 'auto' }}
                     onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
@@ -1977,7 +2135,7 @@ const App: React.FC = () => {
                 </div>
                 <div className={InputWrapperStyle + " flex-1 min-w-[200px] !min-h-0 !p-1.5"}>
                   <textarea 
-                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden text-left outline-none" 
+                    className="w-full !p-0 !border-0 bg-transparent focus:ring-0 text-left font-normal text-[13px] text-[#4E5969] resize-none h-auto overflow-hidden outline-none" 
                     rows={1}
                     style={{ height: 'auto' }}
                     onInput={(e) => { e.currentTarget.style.height = 'auto'; e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'; }}
@@ -2041,17 +2199,17 @@ const App: React.FC = () => {
           </div>
         </section>
         
-        <section className="card text-left"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><ImageIcon className="w-5 h-5" /><span>名片及联系信息</span></div><div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4"><div className="space-y-3"><div className="relative" ref={managerSelectRef}><label className="field-label">姓名</label><div className="flex items-center gap-1"><div className="relative flex-1"><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left pr-8 outline-none" value={data.contact.name} placeholder="自定义姓名" onChange={e => setData({...data, contact: {...data.contact, name: e.target.value}})} /></div><button onClick={() => setIsManagerSelectOpen(!isManagerSelectOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-[4px]"><ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isManagerSelectOpen ? 'rotate-180' : ''}`} /></button></div></div>{isManagerSelectOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E6EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">预设经理人快速选择</span></div>{PREDEFINED_MANAGERS.map((mgr) => (<div key={mgr.name} onClick={() => handleSelectManager(mgr)} className="group flex items-center justify-between px-4 py-3 hover:bg-[#EFF5FC] cursor-pointer border-b last:border-0 border-gray-50 transition-colors"><div className="flex items-center gap-3"><div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${data.contact.name === mgr.name ? 'bg-[#0062AD] text-white' : 'bg-gray-100 text-gray-500'}`}>{mgr.name.charAt(0)}</div><div className="flex flex-col"><span className="text-[14px] font-bold text-gray-700">{mgr.name}</span><span className="text-[11px] text-gray-400">{mgr.jobTitle1}</span></div></div>{data.contact.name === mgr.name && <UserCheck className="w-4 h-4 text-[#0062AD]" />}</div>))}</div>)}</div><div><label className="field-label">职位 1</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle1}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle1} onChange={e => setData({...data, contact: {...data.contact, jobTitle1: e.target.value}})} /></div></div><div><label className="field-label">地址缩写/职位2</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle2}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle2} onChange={e => setData({...data, contact: {...data.contact, jobTitle2: e.target.value}})} /></div></div></div><div className="space-y-3"><div><label className="field-label">电话</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-quote text-left outline-none" value={data.contact.phone} onChange={e => setData({...data, contact: {...data.contact, phone: e.target.value}})} /></div></div><div><label className="field-label">邮箱</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-en text-left outline-none" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} /></div></div><div><label className="field-label">办公详细地址</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.officeAddress}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.officeAddress} onChange={e => setData({...data, contact: {...data.contact, officeAddress: e.target.value}})} /></div></div></div><div className="flex flex-col items-center pl-6 border-l border-gray-100"><label className="field-label self-center mb-2">联系二维码</label><EditableBrandLogo src={data.contact.qrCode} label="" onUpload={(base64) => setData({...data, contact: {...data.contact, qrCode: base64}})} className="w-full" align="center" /><div className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> 上传二维码</div></div></div></section>
+        <section className="card text-left"><div className="section-header" style={{ borderLeftColor: '#0062AD' }}><ImageIcon className="w-5 h-5" /><span>名片及联系信息</span></div><div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4"><div className="space-y-3"><div className="relative" ref={managerSelectRef}><label className="field-label">姓名</label><div className="flex items-center gap-1"><div className="relative flex-1"><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left pr-8 outline-none" value={data.contact.name} placeholder="自定义姓名" onChange={e => setData({...data, contact: {...data.contact, name: e.target.value}})} /></div><button onClick={() => setIsManagerSelectOpen(!isManagerSelectOpen)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-[4px]"><ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isManagerSelectOpen ? 'rotate-180' : ''}`} /></button></div></div>{isManagerSelectOpen && (<div className="absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E5E6EB] rounded-[12px] shadow-2xl overflow-hidden animate-fade-in"><div className="p-2 border-b border-gray-50 bg-gray-50/50"><span className="text-[10px] font-black text-[#0062AD] uppercase tracking-widest pl-2">预设经理人快速选择</span></div>{PREDEFINED_MANAGERS.map((mgr) => (<div key={mgr.name} onClick={() => handleSelectManager(mgr)} className="group flex items-center justify-between px-4 py-3 hover:bg-[#EFF5FC] cursor-pointer border-b last:border-0 border-gray-50 transition-colors"><div className="flex items-center gap-3"><div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${data.contact.name === mgr.name ? 'bg-[#0062AD] text-white' : 'bg-gray-100 text-gray-500'}`}>{mgr.name.charAt(0)}</div><div className="flex flex-col"><span className="text-14px font-bold text-gray-700">{mgr.name}</span><span className="text-[11px] text-gray-400">{mgr.jobTitle1}</span></div></div>{data.contact.name === mgr.name && <UserCheck className="w-4 h-4 text-[#0062AD]" />}</div>))}</div>)}</div><div><label className="field-label">职位 1</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle1}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle1} onChange={e => setData({...data, contact: {...data.contact, jobTitle1: e.target.value}})} /></div></div><div><label className="field-label">地址缩写/职位2</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.jobTitle2}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.jobTitle2} onChange={e => setData({...data, contact: {...data.contact, jobTitle2: e.target.value}})} /></div></div></div><div className="space-y-3"><div><label className="field-label">电话</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-quote text-left outline-none" value={data.contact.phone} onChange={e => setData({...data, contact: {...data.contact, phone: e.target.value}})} /></div></div><div><label className="field-label">邮箱</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-en text-left outline-none" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} /></div></div><div><label className="field-label">办公详细地址</label><div className={InputWrapperStyle + " !p-1.5 !min-h-0"} title={data.contact.officeAddress}><input className="w-full !p-0 !border-0 bg-transparent focus:ring-0 font-normal text-left outline-none truncate" value={data.contact.officeAddress} onChange={e => setData({...data, contact: {...data.contact, officeAddress: e.target.value}})} /></div></div></div><div className="flex flex-col items-center pl-6 border-l border-gray-100"><label className="field-label self-center mb-2">联系二维码</label><EditableBrandLogo src={data.contact.qrCode} label="" onUpload={(base64) => setData({...data, contact: {...data.contact, qrCode: base64}})} className="w-full" align="center" /><div className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon className="w-3 h-3" /> 上传二维码</div></div></div></section>
 
         {processOrder.map(moduleId => extraModulesMap[moduleId as keyof typeof extraModulesMap])}
 
         {data.modules.filter(m => m.type === 'custom').map((module) => (
-          <section key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF] text-left'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
+          <section id={module.id} key={module.id} className={`card overflow-hidden relative group cursor-default transition-all duration-300 border ${dragOverModuleId === module.id ? 'border-[#0062AD] scale-[1.01]' : 'border-[#E5E6EB] hover:border-[#BDD1FF] text-left'}`} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)}>
             <div className="absolute top-2 left-2 p-1 text-gray-300 opacity-0 group-hover:opacity-100 cursor-move transition-opacity"><GripVertical className="w-4 h-4" /></div><button onClick={() => removeModule(module.id)} title="删除模块" className="absolute top-2 right-2 p-1 text-gray-300 hover:text-white hover:bg-[#EE4932] rounded-full transition-all opacity-0 group-hover:opacity-100 shadow-none z-10"><Trash2 className="w-4 h-4" /></button>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div className="section-header !mb-0 flex-1" style={{ borderLeftColor: '#0062AD' }}><Layers className="w-5 h-5 shrink-0" /><input className="!border-0 !p-0 font-bold bg-transparent focus:ring-0 text-[#304166] w-full outline-none" value={module.title} onChange={e => updateModuleTitle(module.id, e.target.value)} /></div>
               <div className="flex gap-[12px]">
-                <button onClick={() => setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === module.id && m.type === 'custom' ? { ...m, blocks: [] } : m) }))} className="btn-header-func"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
+                <button onClick={() => setData(prev => ({ ...prev, modules: prev.modules.map(m => m.id === module.id && m.type === 'custom' ? { ...m, blocks: [] } : m) }))} className="btn-header-func hover:!bg-[#FFFBEB] hover:!text-[#D97706]"><RotateCcw className="w-3.5 h-3.5" /> 重置</button>
                 <button onClick={() => { activeCaseBlockIdRef.current = module.id; customModuleExcelInputRef.current?.click(); }} className="btn-header-func"><FileSpreadsheet className="w-3.5 h-3.5" /> 导入 Excel</button>
                 <button onClick={() => addBlockToModule(module.id, 'image')} className="btn-header-func"><Images className="w-3.5 h-3.5" /> 添加图片</button>
                 <button onClick={() => addBlockToModule(module.id, 'text')} className="btn-header-func"><Type className="w-3.5 h-3.5" /> 添加文本</button>
@@ -2071,9 +2229,11 @@ const App: React.FC = () => {
               <div className="card !p-5 bg-white flex flex-col mb-0 rounded-[16px] border border-[#E5E6EB] shadow-none">
                 <SidebarTitle icon={FileText} title="主要操作" />
                 <div className="grid grid-cols-1 gap-3 mb-4">
-                  <button onClick={() => setShowPreview(true)} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#005691] text-white rounded-[8px] hover:bg-[#004a7c] transition-all shadow-[0_4px_10px_rgba(0,86,145,0.1)] border-none outline-none text-center"><Eye className="w-4 h-4" /> 预览报价单</button>
-                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#F0F8FF] text-[#005691] rounded-[8px] hover:bg-[#E0F2FF] transition-all border-none outline-none text-center">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '导出高清 HTML'}</button>
-                  <button disabled={isGeneratingPdf} onClick={handleDownloadPDF} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-gray-50 text-gray-500 rounded-[8px] hover:bg-gray-100 transition-all border-none outline-none text-center"><FileCheck className="w-4 h-4" /> 另存为 PDF</button>
+                  <button onClick={() => setShowPreview(true)} className="flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#005691] text-white rounded-[8px] hover:bg-[#004a7c] transition-all shadow-[0_4px_10px_rgba(0,86,145,0.1)] border-none outline-none"><Eye className="w-4 h-4" /> 预览报价单</button>
+                  <button disabled={isGeneratingHtml} onClick={handleDownloadHTML} className="w-full flex items-center justify-center gap-2 h-[40px] text-[14px] font-semibold bg-[#F0F8FF] text-[#005691] rounded-[8px] hover:bg-[#E0F2FF] transition-all border-none outline-none">
+                    {isGeneratingHtml ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    <span>{isGeneratingHtml ? '导出中' : '导出HTML'}</span>
+                  </button>
                 </div>
                 <div className="grid grid-cols-1 gap-2 mb-4 pt-4 border-t border-[#E5E6EB]">
                   <button onClick={addCertModule} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#F8FAFC] text-[#055087] font-medium rounded-[10px] border border-dashed border-[#E5E6EB] hover:bg-[#F0F8FF] hover:border-[#BDD1FF] transition-all group"><Layout className="w-4 h-4 text-[#0062AD] group-hover:scale-110 shrink-0" /><span className="text-[13px] text-center">添加认证报价</span></button>
@@ -2086,15 +2246,15 @@ const App: React.FC = () => {
                     {data.modules.filter(m => m.type !== 'custom').map((module, index) => {
                       const info = getModuleSortingInfo(module, index);
                       const Icon = info.icon;
-                      const isActive = dragOverModuleId === module.id;
+                      const isActive = dragOverModuleId === module.id || activeSectionId === module.id;
                       return (
-                        <div key={module.id} draggable="true" onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
+                        <div key={module.id} draggable="true" onClick={() => scrollToSection(module.id)} onDragStart={(e) => handleDragStart(e, module.id)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(module.id); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, module.id)} className={sortingItemClass(isActive)}>
                           <div className={dragLineClass(isActive)}></div>
                           <div className="flex items-center gap-3 ml-2">
                             <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
                             <span className="text-[13px] font-medium text-[#4E5969] truncate max-w-[140px] group-hover:text-[#0062AD]">{info.label}</span>
                           </div>
-                          <div className="flex items-center gap-1.5"><GripVertical className="w-4 h-4 text-[#94A3B8] transition-colors" /><button onClick={() => removeModule(module.id)} className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button></div>
+                          <div className="flex items-center gap-1.5"><GripVertical className="w-4 h-4 text-[#94A3B8] transition-colors" /><button onClick={(e) => { e.stopPropagation(); removeModule(module.id); }} className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button></div>
                         </div>
                       );
                     })}
@@ -2104,15 +2264,15 @@ const App: React.FC = () => {
                       if (!isVisible) return null;
                       const info = getProcessSortingInfo(moduleId);
                       const Icon = info.icon;
-                      const isActive = dragOverModuleId === moduleId;
+                      const isActive = dragOverModuleId === moduleId || activeSectionId === moduleId;
                       return (
-                        <div key={moduleId} draggable="true" onDragStart={(e) => handleDragStart(e, moduleId)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(moduleId); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, moduleId)} className={sortingItemClass(isActive)}>
+                        <div key={moduleId} draggable="true" onClick={() => scrollToSection(moduleId)} onDragStart={(e) => handleDragStart(e, moduleId)} onDragOver={(e) => { e.preventDefault(); setDragOverModuleId(moduleId); }} onDragLeave={() => setDragOverModuleId(null)} onDragEnd={() => setDragOverModuleId(null)} onDrop={(e) => handleModuleReorder(e, moduleId)} className={sortingItemClass(isActive)}>
                           <div className={dragLineClass(isActive)}></div>
                           <div className="flex items-center gap-3 ml-2">
                             <div className={iconBoxClass}><Icon className="w-3.5 h-3.5" /></div>
                             <span className="text-[13px] font-medium text-[#4E5969] group-hover:text-[#0062AD]">{info.label}</span>
                           </div>
-                          <div className="flex items-center gap-1.5"><GripVertical className="w-4 h-4 text-[#94A3B8]" /><button onClick={() => { if(moduleId === 'cert-process') setIsCertProcessVisible(false); if(moduleId === 'tech-process') setIsTechProcessVisible(false); if(moduleId === 'customer-case') setIsCustomerCaseVisible(false); if(moduleId === 'cert-templates') setIsCertTemplatesVisible(false); }} className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button></div>
+                          <div className="flex items-center gap-1.5"><GripVertical className="w-4 h-4 text-[#94A3B8]" /><button onClick={(e) => { e.stopPropagation(); if(moduleId === 'cert-process') setIsCertProcessVisible(false); if(moduleId === 'tech-process') setIsTechProcessVisible(false); if(moduleId === 'customer-case') setIsCustomerCaseVisible(false); if(moduleId === 'cert-templates') setIsCertTemplatesVisible(false); }} className="p-1 text-[#CBD5E1] hover:text-[#EF4444] transition-colors"><Trash2 className="w-4 h-4" /></button></div>
                         </div>
                       );
                     })}
@@ -2125,17 +2285,17 @@ const App: React.FC = () => {
                   <div className="space-y-4 flex-1">
                     <div className="flex justify-between items-center gap-4">
                       <div className="flex flex-col text-left"><span className="text-[13px] font-medium text-[#4E5969]">认证费用总计</span><span className="text-[11px] text-[#94A3B8] font-en tracking-tight">Certification Fees</span></div>
-                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none align-num"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD] transform translate-y-[1px]">{certTotal.toLocaleString()}</span></div>
+                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD]">{certTotal.toLocaleString()}</span></div>
                     </div>
                     <div className="flex justify-between items-center gap-4">
                       <div className="flex flex-col text-left"><span className="text-[13px] font-medium text-[#4E5969]">技术服务费用总计</span><span className="text-[11px] text-[#94A3B8] font-en tracking-tight">Technical Service Fees</span></div>
-                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none align-num"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD] transform translate-y-[1px]">{techTotal.toLocaleString()}</span></div>
+                      <div className="text-right flex items-baseline justify-end min-w-[100px] leading-none"><span className="text-[#0062AD] text-[11px] mr-1 font-en font-bold">¥</span><span className="text-[16px] font-semibold font-quote whitespace-nowrap text-[#0062AD]">{techTotal.toLocaleString()}</span></div>
                     </div>
                   </div>
                 </div>
                 <div className="bg-[#F2F5F8] rounded-[12px] px-4 py-3.5 flex justify-between items-center w-full">
                   <div className="flex flex-col text-left"><span className="text-[13px] text-[#0062AD] font-[700]">总计 (含6%增值税)</span><span className="text-[11px] text-[#86909C] font-medium font-en tracking-tight whitespace-nowrap">Grand Total (6% Included)</span></div>
-                  <div className="text-right flex items-baseline justify-end leading-none align-num"><span className="text-[#0062AD] text-[14px] mr-1 font-en font-black">¥</span><span className="text-[24px] font-bold font-quote whitespace-nowrap text-[#0062AD] transform translate-y-[1px]">{grandTotal.toLocaleString()}</span></div>
+                  <div className="text-right flex items-baseline justify-end leading-none"><span className="text-[#0062AD] text-[14px] mr-1 font-en font-black">¥</span><span className="text-[24px] font-bold font-quote whitespace-nowrap text-[#0062AD]">{grandTotal.toLocaleString()}</span></div>
                 </div>
               </div>
             </div>
@@ -2169,7 +2329,43 @@ const App: React.FC = () => {
       )}
 
       {showPreview && (
-        <div className="fixed inset-0 z-50 bg-[#304166cc] backdrop-blur-xl flex items-center justify-center p-2 md:p-4"><div className="bg-white rounded-[24px] w-full flex flex-col shadow-2xl overflow-hidden transition-all duration-500 border border-white/20 max-w-[98vw] h-[98vh] overflow-x-hidden"><div className="p-4 md:p-5 bg-white border-b flex justify-between items-center z-10 shrink-0"><div className="flex items-center gap-4 md:gap-6 text-left"><h3 className="font-bold text-[#304166] flex items-center gap-3 text-lg tracking-tight"><Eye className="text-[#0062AD] w-5 h-5" /> 预览报价单</h3></div><button onClick={() => setShowPreview(false)} className="p-2 hover:bg-red-50 hover:text-[#EE4932] rounded-full transition-all group"><X className="w-6 h-6 group-hover:rotate-90 transition-transform" /></button></div><div ref={previewScrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-12 bg-slate-200/40 flex flex-col items-center"><div className="bg-white shadow-[0_20px_50px_rgba(48,65,102,0.15)] origin-top" style={{ transform: `scale(${previewScale})`, marginTop: '0' }}><QuoteDocument /></div></div><div className="p-4 md:p-5 bg-white border-t flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0"><p className="flex-1 text-[11px] font-bold text-gray-400 uppercase tracking-widest italic opacity-60 text-center sm:text-left">* 预览已根据窗口宽度自动调整，确保内容在打印范围内。</p><div className="flex gap-3 w-full sm:w-auto"><button onClick={() => setShowPreview(false)} className="flex-1 sm:flex-none h-[40px] px-6 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-[8px] outline-none">关闭</button><button disabled={isGeneratingPdf} onClick={handleDownloadPDFNew} className="flex-1 sm:flex-none h-[40px] px-8 text-sm font-bold bg-[#F0F8FF] text-[#005691] hover:bg-[#E0F2FF] rounded-[8px] flex items-center justify-center gap-2 transition-all border-none disabled:opacity-50 outline-none">{isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}{isGeneratingPdf ? '正在导出...' : '导出高清 HTML'}</button></div></div></div></div>
+        <div className="fixed inset-0 z-50 bg-[#304166cc] backdrop-blur-xl flex items-center justify-center p-2 md:p-4">
+          <div className="bg-white rounded-[24px] w-full flex flex-col shadow-2xl overflow-hidden transition-all duration-500 border border-white/20 max-w-[98vw] h-[98vh] overflow-x-hidden">
+            <div className="p-4 md:p-5 bg-white border-b flex justify-between items-center z-10 shrink-0">
+              <div className="flex items-center gap-4 md:gap-6 text-left">
+                <h3 className="font-bold text-[#304166] flex items-center gap-3 text-lg tracking-tight">
+                  <Eye className="text-[#0062AD] w-5 h-5" /> 预览报价单
+                </h3>
+              </div>
+              <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-red-50 hover:text-[#EE4932] rounded-full transition-all group">
+                <X className="w-6 h-6 group-hover:rotate-90 transition-transform" />
+              </button>
+            </div>
+            <div id="preview-content-body" ref={previewScrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-12 bg-slate-200/40 flex flex-col items-center custom-scrollbar">
+              <div className="bg-white origin-top" style={{ transform: `scale(${previewScale})`, marginTop: '0', boxShadow: isGeneratingPdf ? 'none' : '0 20px 50px rgba(48,65,102,0.15)' }}>
+                <QuoteDocument />
+              </div>
+            </div>
+            <div className="p-4 md:p-5 bg-white border-t flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0">
+              <p className="flex-1 text-[11px] font-bold text-gray-400 uppercase tracking-widest italic opacity-60 text-center sm:text-left">
+                * 预览已根据窗口宽度自动调整，确保内容在打印范围内。
+              </p>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button onClick={() => setShowPreview(false)} className="flex-1 sm:flex-none h-[40px] px-6 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-[8px] outline-none">
+                  关闭
+                </button>
+                <button disabled={isGeneratingPdf} onClick={handleDownloadPDF} className="flex-1 sm:flex-none h-[40px] px-8 text-sm font-bold bg-[#F0F8FF] text-[#005691] hover:bg-[#E0F2FF] rounded-[8px] flex items-center justify-center gap-2 transition-all border-none disabled:opacity-50 outline-none">
+                  {isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
+                  <span>{isGeneratingPdf ? '正在生成' : '导出PDF'}</span>
+                </button>
+                <button disabled={isGeneratingHtml} onClick={handleDownloadHTML} className="flex-1 sm:flex-none h-[40px] px-8 text-sm font-bold bg-[#005691] text-white hover:bg-[#004a7c] rounded-[8px] flex items-center justify-center gap-2 transition-all border-none disabled:opacity-50 outline-none shadow-sm">
+                  {isGeneratingHtml ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                  <span>{isGeneratingHtml ? '正在导出' : '导出HTML'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

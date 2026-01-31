@@ -1,93 +1,305 @@
 
-export interface CertItem {
-  id: string;
-  type: string;
-  project: string;
-  amount: number;
-}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理体系认证及技术服务报价单系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- PDF Export Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            /* 核心字体方案 */
+            --font-zh: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+            --font-en: 'Inter', 'SF Pro Text', -apple-system, sans-serif;
+            --font-num: 'DIN Alternate', 'DIN Condensed', 'Arial', sans-serif;
+            --font-quote: 'DIN Alternate', 'SF Pro Text', 'Microsoft YaHei', sans-serif;
+            
+            /* 用户色卡变量 */
+            --color-primary: #0062AD;
+            --color-deep: #304166;
+            --color-red: #EE4932;
+            --color-light-blue: #BDD1FF;
+            --color-bg-soft: #EFF5FC;
 
-export interface TechnicalService {
-  id: string;
-  name: string;
-  description: string;
-  checked: boolean;
-  basePrice: number;
-}
+            /* 按钮色卡 - 物理参数统一 */
+            --color-btn-static-bg: #F2F3F5;
+            
+            /* 类型 A：建设性操作 */
+            --color-btn-func-text: #4E5969;
+            --color-btn-func-hover-bg: #E8F3FF;
+            --color-btn-func-hover-text: #0075CB;
+            
+            /* 类型 B：破坏性操作 */
+            --color-btn-dest-text: #86909C;
+            --color-btn-dest-hover-bg: #FFF1F0;
+            --color-btn-dest-hover-text: #F53F3F;
+        }
 
-export interface CertModule {
-  id: string;
-  type: 'cert';
-  title: string;
-  items: CertItem[];
-}
+        body {
+            font-family: var(--font-zh);
+            background-color: #F8FAFC; 
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+        }
 
-export interface TechModule {
-  id: string;
-  type: 'tech';
-  title: string;
-  services: TechnicalService[];
-  fee: number;
-  details: {
-    minDays: number;
-    auditCerts: number;
-  };
-}
+        .font-num { font-family: var(--font-num), var(--font-en); }
+        .font-en { font-family: var(--font-en); }
+        .font-quote { font-family: var(--font-quote); }
 
-export interface CustomModule {
-  id: string;
-  type: 'custom';
-  title: string;
-  blocks: CaseBlock[];
-}
+        /* 输入框优化 (组件层: 8px) */
+        input, textarea, select {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.625rem 0.875rem;
+            font-size: 14px;
+            font-weight: 400;
+            width: 100%;
+            transition: all 0.2s;
+            background-color: #fff;
+            font-family: var(--font-zh);
+            color: #334155;
+        }
 
-export interface TechServiceStep {
-  id: string;
-  title: string;
-  desc: string;
-  tags: string[];
-}
+        input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 98, 173, 0.08);
+            color: #0f172a;
+        }
 
-export interface CaseBlock {
-  id: string;
-  type: 'text' | 'table' | 'image';
-  content?: string;
-  tableData?: string[][];
-  images?: string[];
-  fontSize?: number;
-  fontWeight?: string;
-  underline?: boolean;
-  color?: string;
-  align?: 'left' | 'center' | 'right';
-  rowSpacing?: number; // 用于表格行高/间距
-  columnWidths?: number[]; // 各列宽度比例
-}
+        /* 容器层 (16px) */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #E5E6EB;
+        }
 
-export type QuoteModule = CertModule | TechModule | CustomModule;
+        @media (max-width: 768px) {
+            .card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+        }
 
-export interface QuoteData {
-  clientName: string;
-  clientAddress: string;
-  employeeCount: number;
-  certStandards: string[];
-  certScope: string;
-  modules: QuoteModule[];
-  travelExpenseOption: 'excluded' | 'included';
-  note1Prefix: string;
-  note1Count: number;
-  note1Suffix: string;
-  note3Text: string;
-  additionalRemarks: string[];
-  certTemplates: string[];
-  techServiceSteps: TechServiceStep[];
-  caseBlocks: CaseBlock[];
-  contact: {
-    name: string;
-    phone: string;
-    email: string;
-    jobTitle1: string;
-    jobTitle2: string;
-    officeAddress: string;
-    qrCode: string | null;
-  };
-  quoteDate: string;
+        /* 模块标题 */
+        .section-header {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            color: var(--color-deep);
+            margin-bottom: 1.25rem;
+            font-size: 17px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-header svg {
+            margin-right: 0.75rem;
+            color: var(--color-primary);
+        }
+        
+        /* 标签 */
+        label.field-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.375rem;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        #pdf-export-target {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 297mm;
+            background: white;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 动画库 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* 规范按钮通用样式 - 类型 A */
+        .btn-header-func {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--color-btn-static-bg);
+            color: var(--color-btn-func-text);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .btn-header-func:hover {
+            color: var(--color-btn-func-hover-text);
+            background-color: var(--color-btn-func-hover-bg);
+        }
+
+        /* 规范按钮通用样式 - 类型 B */
+        .btn-header-dest {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--color-btn-static-bg);
+            color: var(--color-btn-dest-text);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .btn-header-dest:hover {
+            color: var(--color-btn-dest-hover-text);
+            background-color: var(--color-btn-dest-hover-bg);
+        }
+
+        /* checkbox settings 👇 */
+        .ui-checkbox {
+          --primary-color: #0062AD;
+          --secondary-color: #fff;
+          --primary-hover-color: #0062AD;
+          /* checkbox */
+          --checkbox-diameter: 20px;
+          --checkbox-border-radius: 5px;
+          --checkbox-border-color: #d9d9d9;
+          --checkbox-border-width: 1px;
+          --checkbox-border-style: solid;
+          /* checkmark */
+          --checkmark-size: 1.2;
+        }
+
+        .ui-checkbox, 
+        .ui-checkbox *, 
+        .ui-checkbox *::before, 
+        .ui-checkbox *::after {
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+
+        .ui-checkbox {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          width: var(--checkbox-diameter);
+          height: var(--checkbox-diameter);
+          border-radius: var(--checkbox-border-radius);
+          background: var(--secondary-color);
+          border: var(--checkbox-border-width) var(--checkbox-border-style) var(--checkbox-border-color);
+          -webkit-transition: all 0.3s;
+          -o-transition: all 0.3s;
+          transition: all 0.3s;
+          cursor: pointer;
+          position: relative;
+        }
+
+        .ui-checkbox::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          -webkit-box-shadow: 0 0 0 calc(var(--checkbox-diameter) / 2.5) var(--primary-color);
+          box-shadow: 0 0 0 calc(var(--checkbox-diameter) / 2.5) var(--primary-color);
+          border-radius: inherit;
+          opacity: 0;
+          -webkit-transition: all 0.5s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+          -o-transition: all 0.5s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+          transition: all 0.5s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+        }
+
+        .ui-checkbox::before {
+          top: 40%;
+          left: 50%;
+          content: "";
+          position: absolute;
+          width: 4px;
+          height: 7px;
+          border-right: 2px solid var(--secondary-color);
+          border-bottom: 2px solid var(--secondary-color);
+          -webkit-transform: translate(-50%, -50%) rotate(45deg) scale(0);
+          -ms-transform: translate(-50%, -50%) rotate(45deg) scale(0);
+          transform: translate(-50%, -50%) rotate(45deg) scale(0);
+          opacity: 0;
+          -webkit-transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6),opacity 0.1s;
+          -o-transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6),opacity 0.1s;
+          transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6),opacity 0.1s;
+        }
+
+        /* actions */
+        .ui-checkbox:hover {
+          border-color: var(--primary-color);
+        }
+
+        .ui-checkbox:checked {
+          background: var(--primary-color);
+          border-color: transparent;
+        }
+
+        .ui-checkbox:checked::before {
+          opacity: 1;
+          -webkit-transform: translate(-50%, -50%) rotate(45deg) scale(var(--checkmark-size));
+          -ms-transform: translate(-50%, -50%) rotate(45deg) scale(var(--checkmark-size));
+          transform: translate(-50%, -50%) rotate(45deg) scale(var(--checkmark-size));
+          -webkit-transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+          -o-transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+          transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+        }
+
+        .ui-checkbox:active:not(:checked)::after {
+          -webkit-transition: none;
+          -o-transition: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          transition: none;
+          opacity: 1;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "xlsx": "https://esm.sh/xlsx@0.18.5",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.3"
+  }
 }
+</script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
