@@ -1155,9 +1155,9 @@ const App: React.FC = () => {
       const opt = {
         margin: 0,
         filename: fileName,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-          scale: 2, 
+          scale: 3, 
           useCORS: true, 
           logging: false,
           letterRendering: true,
